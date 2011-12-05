@@ -1,0 +1,2 @@
+usr/share/jenkins/cli/java/cli.jar:
+ Main-Class: hudson.cli.CLI

@@ -1,0 +1,27 @@
+grant codeBase "file:/var/lib/tomcat6/webapps/jenkins/-" {
+  permission java.security.AllPermission;
+
+//  FIXME: These permissions don't work - the above is the Jenkins recommendation
+//  which it not good.
+//  permission java.lang.RuntimePermission "modifyThread";
+//  permission java.lang.RuntimePermission "accessClassInPackage.org.apache.tomcat.util.http";
+//  permission java.util.PropertyPermission "sun.arch.data.model", "read";
+//  permission java.util.PropertyPermission "java.io.tmpdir", "read";
+//  permission java.util.PropertyPermission "user.dir", "read";
+//  permission java.util.PropertyPermission "JENKINS_HOME", "read";
+//  permission java.io.FilePermission "/usr/share/java", "read";
+//  permission java.io.FilePermission "/usr/share/java/-", "read";
+//  permission java.io.FilePermission "/usr/share/maven-repo/-", "read";
+//  permission java.io.FilePermission "/var/log/tomcat6/-", "read,write";
+//  permission java.io.FilePermission "/var/lib/tomcat6/webapps/jenkins/-", "read";
+//  permission java.io.FilePermission "/var/lib/tomcat6/temp/-", "read,write";
+//  permission java.io.FilePermission "/var/lib/jenkins", "read,write,delete";
+//  permission java.io.FilePermission "/var/lib/jenkins/-", "read,write,delete";
+//  permission java.io.FilePermission "/usr/share/jenkins/jenkins.war", "read";
+//  permission java.util.PropertyPermission "*", "read,write"; */
+//  permission java.lang.management.ManagementPermission "monitor"; 
+};
+
+grant codeBase "file:/var/lib/jenkins/plugins/-" {
+  permission java.security.AllPermission;
+};

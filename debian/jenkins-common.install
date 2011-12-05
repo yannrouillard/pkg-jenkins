@@ -1,0 +1,2 @@
+debian/bin/maintain-plugins.sh usr/share/jenkins/bin
+war/target/jenkins.war usr/share/jenkins

@@ -1,0 +1,71 @@
+jenkins (1.409.3-1) unstable; urgency=low
+
+  * Initial Debian release (Closes: #561963)
+
+ -- James Page <james.page@ubuntu.com>  Mon, 05 Dec 2011 21:12:59 +0000
+
+jenkins (1.409.3-0ubuntu1) precise; urgency=low
+
+  * New upstream release:
+    - Refreshed patches.
+    - d/maven.rules: Updated jenkins version to 1.409.3.
+  * Pickup new version of jenkins-winstone resolving XSS security 
+    vulnerability (LP: #889181).
+  * d/patches/build/apt-stapler-processing.patch: Temporary patch to fix
+    build when using later versions of stapler which use standard  
+    Java annotation processing.
+
+ -- James Page <james.page@ubuntu.com>  Tue, 22 Nov 2011 08:31:53 +0000
+
+jenkins (1.409.2-0ubuntu1) precise; urgency=low
+
+  * New upstream release:
+    - d/control: Added new BDI's - libjtidy-java, libjenkins-htmlunit-java
+    - Refreshed patches.
+    - d/maven.rules: Updated jenkins version to 1.409.2.
+  * Updated upstart configuration to start on runlevel [2345].
+  * Revised patches to filter on compile/test surplus native integrations 
+    rather than patchout complete files.
+  * Re-organised patches by type.
+  * Fixed issue with projects with spaces in names with jenkins-monitor-job
+    (LP: #880786).
+
+ -- James Page <james.page@ubuntu.com>  Sat, 22 Oct 2011 11:57:35 +0100
+
+jenkins (1.409.1-0ubuntu4) oneiric; urgency=low
+
+  * Resolve conflict between winstone and libservlet2.5-java (LP: #862272):
+    - debian/jenkins.upstart: Use java.net.URLClassLoader instead of
+      standard WebAppClassloader to ensure the winstone classes are used.
+
+ -- James Page <james.page@ubuntu.com>  Tue, 11 Oct 2011 08:53:33 +0100
+
+jenkins (1.409.1-0ubuntu3) oneiric; urgency=low
+
+  * Fix FTBFS with asm3 >= 3.3 (LP: #851659):
+    - d/maven.rules: Use asm-all instead of asm to align to restructure
+      of jar files.
+
+ -- James Page <james.page@ubuntu.com>  Fri, 16 Sep 2011 09:32:28 +0100
+
+jenkins (1.409.1-0ubuntu2) oneiric; urgency=low
+
+  * Resolved issue with specific group being set in upstart
+    configuration (LP: #820938).
+  * Rebuild to pickup new versions of jenkins-xstream to enable ARM
+    compatibility (LP: #827463).
+  * Rebuild to pickup new versions of jcaptcha and jenkins-winstone to
+    resolve compatibiltiy issues with libservlet2.5-java (LP: #827651).
+  * Fix FTBFS due to missing fonts causing test failure in Jenkins core:
+     - debian/control: added ttf-dejavu-core to Build-Depends-Indep.
+  * Fix FTBFS due to change in location of jtidy maven artifact:
+     - debian/maven.rules: switch jtidy -> net.sf.jtidy to pickup new
+       location.
+
+ -- James Page <james.page@ubuntu.com>  Tue, 06 Sep 2011 16:53:57 +0100
+
+jenkins (1.409.1-0ubuntu1) oneiric; urgency=low
+
+  * Initial release.
+
+ -- James Page <james.page@ubuntu.com>  Wed, 20 Jul 2011 11:11:18 +0100

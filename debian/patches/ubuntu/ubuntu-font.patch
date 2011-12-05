@@ -1,0 +1,26 @@
+Description: Add 'Ubuntu' font to styling for Jenkins
+Author: James Page <james.page@ubuntu.com>
+Forwarded: not-needed
+
+Index: jenkins/war/src/main/webapp/css/style.css
+===================================================================
+--- jenkins.orig/war/src/main/webapp/css/style.css	2011-11-22 08:20:17.063239138 +0000
++++ jenkins/war/src/main/webapp/css/style.css	2011-11-22 08:20:37.019222919 +0000
+@@ -29,7 +29,7 @@
+ 
+ body, table, form, input, td, th, p, textarea, select
+ {
+-  font-family: Verdana, Helvetica, sans serif;
++  font-family: Ubuntu, Verdana, Helvetica, sans serif;
+   font-size: 11px;
+ }
+ 
+@@ -367,7 +367,7 @@
+   padding: 4px 0;
+   margin-left: 0;
+   border-bottom: 1px solid #090;
+-  font: bold 12px Verdana, sans-serif;
++  font: bold 12px Ubuntu, Verdana, sans-serif;
+ }
+ 
+ #foldertab li {

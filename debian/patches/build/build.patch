@@ -1,0 +1,40 @@
+Description: Misc patches to main POM file to disable some modules
+Author: James Page <james.page@ubuntu.com>
+Forwarded: not-needed
+
+Index: jenkins/pom.xml
+===================================================================
+--- jenkins.orig/pom.xml	2011-11-22 08:20:18.891237652 +0000
++++ jenkins/pom.xml	2011-11-22 08:20:31.439227453 +0000
+@@ -41,10 +41,7 @@
+   <modules>
+     <module>remoting</module>
+     <module>core</module>
+-    <module>maven-plugin</module>
+-    <module>ui-samples-plugin</module>
+     <module>war</module>
+-    <module>test</module>
+     <module>cli</module>
+   </modules>
+   
+Index: jenkins/core/pom.xml
+===================================================================
+--- jenkins.orig/core/pom.xml	2011-11-22 08:20:18.875237665 +0000
++++ jenkins/core/pom.xml	2011-11-22 08:20:31.439227453 +0000
+@@ -557,6 +557,16 @@
+       <groupId>commons-jelly</groupId>
+       <artifactId>commons-jelly-tags-fmt</artifactId>
+       <version>1.0</version>
++      <exclusions>
++        <exclusion>
++          <groupId>commons-jelly</groupId>
++          <artifactId>commons-jelly</artifactId>
++        </exclusion>
++        <exclusion>
++          <groupId>commons-jexl</groupId>
++          <artifactId>commons-jexl</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>commons-jelly</groupId>

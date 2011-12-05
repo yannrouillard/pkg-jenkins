@@ -1,0 +1,4 @@
+core/target/jenkins-core-*.jar usr/share/jenkins/external-job-monitor/java
+debian/bin/jenkins-monitor-job usr/bin
+debian/etc/external-job-monitor.conf etc/jenkins
+remoting/target/remoting-*.jar usr/share/jenkins/external-job-monitor/java

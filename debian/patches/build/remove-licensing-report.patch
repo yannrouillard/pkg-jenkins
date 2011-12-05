@@ -1,0 +1,35 @@
+Description: Upstream generates a licensing report for Jenkins deps.
+ Not generated during debian build so excluding from About Jenkins page.
+Author: James Page <james.page@ubuntu.com>
+Forwarded: not-needed
+
+Index: jenkins/core/src/main/resources/hudson/AboutJenkins/index.jelly
+===================================================================
+--- jenkins.orig/core/src/main/resources/hudson/AboutJenkins/index.jelly	2011-11-22 08:20:18.359238085 +0000
++++ jenkins/core/src/main/resources/hudson/AboutJenkins/index.jelly	2011-11-22 08:20:33.175226043 +0000
+@@ -30,13 +30,6 @@
+       <p>
+         ${%blurb}
+       </p>
+-
+-      <p>
+-        ${%dependencies}
+-      </p>
+-      <t:thirdPartyLicenses>
+-        <st:include page="/META-INF/licenses.xml" />
+-      </t:thirdPartyLicenses>
+     </l:main-panel>
+   </l:layout>
+ </j:jelly>
+Index: jenkins/core/src/main/resources/hudson/AboutJenkins/index.properties
+===================================================================
+--- jenkins.orig/core/src/main/resources/hudson/AboutJenkins/index.properties	2011-11-22 08:20:18.327238111 +0000
++++ jenkins/core/src/main/resources/hudson/AboutJenkins/index.properties	2011-11-22 08:20:33.175226043 +0000
+@@ -1,4 +1,4 @@
+-about=About Jenkins {0}
++about=About Jenkins {0} (Debian/Ubuntu distribution)
+ blurb=<a href="http://jenkins-ci.org/">Jenkins</a> is a community-developed open-source continuous integration server.
+ 
+-dependencies=Jenkins depends on the following 3rd party libraries.
+\ No newline at end of file
++dependencies=Jenkins depends on the following 3rd party libraries.

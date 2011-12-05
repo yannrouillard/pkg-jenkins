@@ -1,0 +1,2 @@
+debian/jenkins-tomcat.xml /etc/jenkins/
+debian/tomcat.policy /etc/jenkins/

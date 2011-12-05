@@ -1,0 +1,58 @@
+Description: Jenkins 1.409.x upstream uses an older version of stapler and
+ the maven-stapler-plugin that those present in Debian and Ubuntu.  As a result
+ the packaging for Jenkins core needs to be updated to be a straight jar as the
+ newer version of stapler uses JSR-269 for annotation processing and hooks into
+ the standard compile phase of maven.
+ .
+ This patch can be dropped when Jenkins release their next LTS release.
+Author: James Page <james.page@ubuntu.com>
+Forwarded: not-needed
+
+Index: jenkins/core/pom.xml
+===================================================================
+--- jenkins.orig/core/pom.xml	2011-11-22 08:20:31.439227453 +0000
++++ jenkins/core/pom.xml	2011-11-22 08:20:33.767225562 +0000
+@@ -33,7 +33,7 @@
+   </parent>
+ 
+   <artifactId>jenkins-core</artifactId>
+-  <packaging>stapler-jar</packaging>
++ 
+   <name>Jenkins core</name>
+   <description>
+     Contains the core Jenkins code and view files to render HTML.
+@@ -71,16 +71,26 @@
+         </executions>
+       </plugin>
+       <plugin>
++        <groupId>org.apache.maven.plugins</groupId>
++        <artifactId>maven-compiler-plugin</artifactId>
++        <version>2.3.2</version>
++        <configuration>
++          <excludes>
++             <exclude>**/os/solaris/*</exclude>
++             <exclude>**/os/windows/*</exclude>
++             <exclude>**/DCOMSandbox.java</exclude>
++             <exclude>**/DotNet.java</exclude>
++             <exclude>**/WindowsSlaveInstaller.java</exclude>
++             <exclude>**/WindowsInstallerLink.java</exclude>
++          </excludes>
++          <testExcludes>
++             <exclude>**/DCOMSandbox.java</exclude>
++          </testExcludes>
++        </configuration>
++      </plugin>
++      <plugin>
+         <groupId>org.kohsuke.stapler</groupId>
+         <artifactId>maven-stapler-plugin</artifactId>
+-        <extensions>true</extensions>
+-        <dependencies>
+-          <dependency>
+-            <groupId>org.jvnet.maven-jellydoc-plugin</groupId>
+-            <artifactId>maven-jellydoc-plugin</artifactId>
+-            <version>1.4</version>
+-          </dependency>
+-        </dependencies>
+         <configuration>
+           <fork>${staplerFork}</fork><!-- the source code is big enough now that otherwise it fails with OutOfMemoryError -->
+           <maxmem>128m</maxmem>

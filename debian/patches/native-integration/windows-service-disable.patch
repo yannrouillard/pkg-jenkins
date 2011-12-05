@@ -1,0 +1,19 @@
+Description: Removes depenedency on windows specific components for Linux build
+Author: James Page <james.page@ubuntu.com>
+Forwarded: not-needed
+
+Index: jenkins/core/pom.xml
+===================================================================
+--- jenkins.orig/core/pom.xml	2011-11-22 08:20:33.767225562 +0000
++++ jenkins/core/pom.xml	2011-11-22 08:20:34.055225328 +0000
+@@ -177,10 +177,6 @@
+                 <mkdir dir="target/classes/hudson/model" />
+                 <echo file="target/classes/hudson/model/hudson-version.properties">version=${build.version}
+                 </echo>
+-
+-                <!-- download winsw.exe -->
+-                <mkdir dir="target/classes/windows-service" />
+-                <resolveArtifact artifactId="winsw" tofile="target/classes/windows-service/jenkins.exe" />
+               </tasks>
+             </configuration>
+             <goals>

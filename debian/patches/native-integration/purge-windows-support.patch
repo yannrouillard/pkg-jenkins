@@ -1,0 +1,26 @@
+Description: Purges native windows integration for slave from Jenkins.
+ Although this may be useful in some deployments the requirements in terms
+ of additional packages are not insignificant and contain a number of forks.
+Author: James Page <james.page@ubuntu.com>
+Forwarded: not-needed
+
+Index: jenkins/core/src/main/java/hudson/slaves/SlaveComputer.java
+===================================================================
+--- jenkins.orig/core/src/main/java/hudson/slaves/SlaveComputer.java	2011-11-22 08:20:17.719238605 +0000
++++ jenkins/core/src/main/java/hudson/slaves/SlaveComputer.java	2011-11-22 08:20:35.203224395 +0000
+@@ -33,7 +33,6 @@
+ import hudson.util.RingBufferLogHandler;
+ import hudson.util.Futures;
+ import hudson.FilePath;
+-import hudson.lifecycle.WindowsSlaveInstaller;
+ import hudson.Util;
+ import hudson.AbortException;
+ import hudson.remoting.Launcher;
+@@ -348,7 +347,6 @@
+         channel.pinClassLoader(getClass().getClassLoader());
+ 
+         channel.call(new SlaveInitializer());
+-        channel.call(new WindowsSlaveInstaller(remoteFs));
+         for (ComputerListener cl : ComputerListener.all())
+             cl.preOnline(this,channel,root,taskListener);
+ 

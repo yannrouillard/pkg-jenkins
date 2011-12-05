@@ -1,0 +1,30 @@
+#!/bin/sh
+
+JENKINS_LIB=/usr/share/jenkins/external-job-monitor/java
+
+# Check if set in local environment first
+if [ "$JENKINS_HOME" = "" ]
+then
+    # Check global configuration
+    if [ -f /etc/jenkins/external-job-monitor.conf ]
+    then
+         . /etc/jenkins/external-job-monitor.conf
+    fi
+
+    # Check user configuration - overrides global
+    if [ -f ${HOME}/.jenkins/external-job-monitor.conf ]
+    then
+         .  ${HOME}/.jenkins/external-job-monitor.conf
+    fi
+
+    if [ "$JENKINS_HOME" = "" ]
+    then
+        echo "JENKINS_HOME is not set"
+        exit 1
+    fi
+fi
+
+# Export for Java process
+export JENKINS_HOME
+
+java -jar ${JENKINS_LIB}/jenkins-core.jar "$@"

@@ -1,0 +1,26 @@
+Description: Add in new dependencies to support Jenkins with groovy
+ >= 1.7.x.
+Author: James Page <james.page@ubuntu.com>
+Forwarded: not-needed
+
+Index: jenkins/core/pom.xml
+===================================================================
+--- jenkins.orig/core/pom.xml	2011-11-22 08:20:35.491224161 +0000
++++ jenkins/core/pom.xml	2011-11-22 08:20:35.783223924 +0000
+@@ -665,6 +665,16 @@
+       <version>1.6.0</version>
+     </dependency>
+     <dependency>
++      <groupId>jline</groupId>
++      <artifactId>jline</artifactId>
++      <version>0.9.94</version>
++    </dependency>
++    <dependency>
++       <groupId>org.fusesource.jansi</groupId>
++       <artifactId>jansi</artifactId>
++       <version>debian</version>
++    </dependency>
++    <dependency>
+       <!--
+         for Grails spring bean builder.
+         Ideally we should be able to modify BeanBuilder so as not to depend on this.

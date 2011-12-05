@@ -1,0 +1,32 @@
+Description: Disables packagaging of plugins with core Jenkins
+Author: James Page <james.page@ubuntu.com>
+Forwarded: not-needed
+
+Index: jenkins/war/pom.xml
+===================================================================
+--- jenkins.orig/war/pom.xml	2011-11-22 08:20:32.891226274 +0000
++++ jenkins/war/pom.xml	2011-11-22 08:20:33.479225796 +0000
+@@ -122,11 +122,6 @@
+                 <resolveArtifact groupId="${project.groupId}" artifactId="cli" classifier="jar-with-dependencies" version="${project.version}" type="jar" tofile="${basedir}/target/generated-resources/WEB-INF/jenkins-cli.jar" />
+                 <resolveArtifact artifactId="winstone" tofile="${basedir}/target/generated-resources/winstone.jar" />
+                 
+-                <!-- bundled plugins -->
+-                <resolveArtifact type="hpi" groupId="${project.groupId}" artifactId="maven-plugin" version="${project.version}" tofile="${basedir}/target/generated-resources/WEB-INF/plugins/maven-plugin.hpi" />
+-                <resolveArtifact type="hpi" groupId="org.jenkins-ci.plugins" artifactId="ssh-slaves" version="0.15" tofile="${basedir}/target/generated-resources/WEB-INF/plugins/ssh-slaves.hpi" />
+-                <resolveArtifact type="hpi" groupId="org.jenkins-ci.plugins" artifactId="subversion" version="1.25" tofile="${basedir}/target/generated-resources/WEB-INF/plugins/subversion.hpi" />
+-                <resolveArtifact type="hpi" groupId="org.jvnet.hudson.plugins" artifactId="cvs" version="1.2" tofile="${basedir}/target/generated-resources/WEB-INF/plugins/cvs.hpi" />
+               </tasks>
+             </configuration>
+           </execution>
+@@ -281,6 +276,11 @@
+       <scope>system</scope>
+       <systemPath>/usr/local/yjp/lib/yjp.jar</systemPath>
+     </dependency-->
++    <dependency>
++      <groupId>commons-httpclient</groupId>
++      <artifactId>commons-httpclient</artifactId>
++      <version>3.1-rc1</version>
++    </dependency>
+   </dependencies>
+   
+   <properties>

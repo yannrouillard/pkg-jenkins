@@ -1,0 +1,319 @@
+Source: jenkins
+Section: java
+Priority: optional
+Maintainer: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Uploaders: James Page <james.page@ubuntu.com>
+Build-Depends:
+ cdbs,
+ debhelper (>= 7),
+ default-jdk (>= 1:1.6),
+ javahelper,
+ maven-debian-helper,
+ unzip
+Build-Depends-Indep:
+ ant,
+ ant-optional,
+ glassfish-activation,
+ glassfish-mail,
+ groovy,
+ jenkins-crypto-util,
+ jenkins-executable-war,
+ jenkins-memory-monitor,
+ jenkins-task-reactor,
+ jenkins-test-annotations,
+ junit (>= 3.8.2),
+ junit4,
+ libaccess-modifier-checker-java,
+ libacegi-security-java,
+ libakuma-java,
+ libannotation-indexer-java,
+ libantlr-java,
+ libantlr-maven-plugin-java,
+ libaopalliance-java,
+ libargs4j-java,
+ libasm3-java,
+ libbridge-method-injector-java,
+ libclassworlds-java,
+ libcommons-beanutils-java,
+ libcommons-codec-java,
+ libcommons-collections3-java,
+ libcommons-digester-java,
+ libcommons-httpclient-java,
+ libcommons-io-java,
+ libcommons-lang-java,
+ libcommons-logging-java,
+ libjaxen-java,
+ libjcaptcha-java,
+ libjellydoc-java,
+ libjenkins-commons-jelly-java,
+ libjenkins-commons-jexl-java,
+ libjenkins-htmlunit-java,
+ libjenkins-json-java (>= 2.1-rev7),
+ libjenkins-trilead-ssh2-java,
+ libjenkins-winstone-java (>= 0.9.10-jenkins-29),
+ libjenkins-xstream-java,
+ libjetty-java,
+ libjffi-java,
+ libjfreechart-java,
+ libjmdns-java,
+ libjna-java,
+ libjnr-posix-java,
+ libjson-java,
+ libjstl1.1-java,
+ libjtidy-java,
+ liblocalizer-java,
+ libmaven-antrun-extended-plugin-java,
+ libmaven-assembly-plugin-java,
+ libmaven-dependency-plugin-java,
+ libmaven-embedder-java,
+ libmaven-enforcer-plugin-java,
+ libmaven-hpi-plugin-java,
+ libmaven-install-plugin-java,
+ libmaven-javadoc-plugin-java,
+ libmaven-stapler-plugin-java,
+ libmaven-war-plugin-java,
+ libmaven2-core-java,
+ libmetainf-services-java,
+ libpam4j-java,
+ librobust-http-client-java,
+ libservlet2.4-java,
+ libsezpoz-java,
+ libspring-aop-2.5-java,
+ libspring-core-2.5-java,
+ libspring-ldap-java,
+ libspring-web-2.5-java,
+ libspring-webmvc-2.5-java,
+ libstapler-adjunct-timeline-java,
+ libstapler-java,
+ libtrilead-putty-extension-java,
+ libtxw2-java,
+ libxpp3-java,
+ ttf-dejavu-core
+Standards-Version: 3.9.2
+Homepage: http://jenkins-ci.org/
+Vcs-Git: git://git.debian.org/git/pkg-java/jenkins.git
+Vcs-Browser: http://git.debian.org/?p=pkg-java/jenkins.git
+
+Package: libjenkins-java
+Architecture: all
+Depends: ${maven:Depends}, ${misc:Depends}
+Recommends: ${maven:OptionalDepends}
+Description: Jenkins CI core Java libraries
+ Jenkins monitors executions of repeated jobs, such as building a software
+ project or jobs run by cron. Among those things, current Jenkins focuses
+ on the following two jobs:
+ .
+  * Building/testing software projects continuously, just like CruiseControl
+    or DamageControl. In a nutshell, Jenkins provides an easy-to-use
+    so-called continuous integration system, making it easier for developers
+    to integrate changes to the project, and making it easier for users to
+    obtain a fresh build. The automated, continuous build increases
+    productivity.
+  * Monitoring executions of externally-run jobs, such as cron jobs and
+    procmail jobs, even those that are run on a remote machine. For example,
+    with cron, all you receive is regular e-mails that capture the output,
+    and it is up to you to look at them diligently and notice when it broke.
+    Jenkins keeps those outputs and makes it easy for you to notice when
+    something is wrong.
+ .
+ This package contains the core libraries that are used by Jenkins.
+ These are useful when building other components such as plugins.
+
+Package: libjenkins-plugin-parent-java
+Architecture: all
+Depends: libmaven-hpi-plugin-java, libmaven-stapler-plugin-java, ${misc:Depends}
+Description: Jenkins Plugin Parent Maven POM
+ Jenkins monitors executions of repeated jobs, such as building a software
+ project or jobs run by cron. Among those things, current Jenkins focuses
+ on the following two jobs:
+ .
+  * Building/testing software projects continuously, just like CruiseControl
+    or DamageControl. In a nutshell, Jenkins provides an easy-to-use
+    so-called continuous integration system, making it easier for developers
+    to integrate changes to the project, and making it easier for users to
+    obtain a fresh build. The automated, continuous build increases
+    productivity.
+  * Monitoring executions of externally-run jobs, such as cron jobs and
+    procmail jobs, even those that are run on a remote machine. For example,
+    with cron, all you receive is regular e-mails that capture the output,
+    and it is up to you to look at them diligently and notice when it broke.
+    Jenkins keeps those outputs and makes it easy for you to notice when
+    something is wrong.
+ .
+ This package contains the parent POM file that all Jenkins plugins should be
+ built against.
+
+Package: jenkins-common
+Architecture: all
+Depends: libjffi-java, libjna-java, libjnr-posix-java, ${misc:Depends}
+Recommends: jenkins-cli
+Description: Jenkins common Java components and web application
+ Jenkins monitors executions of repeated jobs, such as building a software
+ project or jobs run by cron. Among those things, current Jenkins focuses
+ on the following two jobs:
+ .
+  * Building/testing software projects continuously, just like CruiseControl
+    or DamageControl. In a nutshell, Jenkins provides an easy-to-use
+    so-called continuous integration system, making it easier for developers
+    to integrate changes to the project, and making it easier for users to
+    obtain a fresh build. The automated, continuous build increases
+    productivity.
+  * Monitoring executions of externally-run jobs, such as cron jobs and
+    procmail jobs, even those that are run on a remote machine. For example,
+    with cron, all you receive is regular e-mails that capture the output,
+    and it is up to you to look at them diligently and notice when it broke.
+    Jenkins keeps those outputs and makes it easy for you to notice when
+    something is wrong.
+ .
+ This package contains the main Jenkin Web Application and supporting
+ Java libraries.
+
+Package: jenkins
+Architecture: all
+Depends:
+ adduser,
+ daemon,
+ default-jre-headless | java6-runtime-headless,
+ jenkins-common,
+ ${misc:Depends}
+Conflicts: jenkins-tomcat, tomcat6
+Suggests: jenkins-ssh-slaves-plugin
+Description: Continuous Integration and Job Scheduling Server
+ Jenkins monitors executions of repeated jobs, such as building a software
+ project or jobs run by cron. Among those things, current Jenkins focuses
+ on the following two jobs:
+ .
+  * Building/testing software projects continuously, just like CruiseControl
+    or DamageControl. In a nutshell, Jenkins provides an easy-to-use
+    so-called continuous integration system, making it easier for developers
+    to integrate changes to the project, and making it easier for users to
+    obtain a fresh build. The automated, continuous build increases
+    productivity.
+  * Monitoring executions of externally-run jobs, such as cron jobs and
+    procmail jobs, even those that are run on a remote machine. For example,
+    with cron, all you receive is regular e-mails that capture the output,
+    and it is up to you to look at them diligently and notice when it broke.
+    Jenkins keeps those outputs and makes it easy for you to notice when
+    something is wrong.
+ .
+ This package supports using Jenkins in standalone mode utilising the
+ embedded winstone servlet container.
+
+Package: jenkins-slave
+Architecture: all
+Depends:
+ adduser,
+ daemon,
+ default-jre-headless | java6-runtime-headless,
+ ${misc:Depends}
+Recommends: jenkins-cli, ssh-import-id, ssh-server | openssh-server
+Description: Jenkins slave node helper
+ Jenkins monitors executions of repeated jobs, such as building a software
+ project or jobs run by cron. Among those things, current Jenkins focuses
+ on the following two jobs:
+ .
+  * Building/testing software projects continuously, just like CruiseControl
+    or DamageControl. In a nutshell, Jenkins provides an easy-to-use
+    so-called continuous integration system, making it easier for developers
+    to integrate changes to the project, and making it easier for users to
+    obtain a fresh build. The automated, continuous build increases
+    productivity.
+  * Monitoring executions of externally-run jobs, such as cron jobs and
+    procmail jobs, even those that are run on a remote machine. For example,
+    with cron, all you receive is regular e-mails that capture the output,
+    and it is up to you to look at them diligently and notice when it broke.
+    Jenkins keeps those outputs and makes it easy for you to notice when
+    something is wrong.
+ .
+ This package provides a metapackage to install the dependencies required
+ to support running jenkins slave nodes.
+ .
+ It also includes an upstart configuration and helper script to start a
+ Jenkins Slave locally (where direct network access to the slave might not
+ be possible).
+
+Package: jenkins-external-job-monitor
+Architecture: all
+Depends:
+ ant,
+ default-jre-headless | java6-runtime-headless,
+ libcommons-io-java,
+ libcommons-lang-java,
+ libjenkins-xstream-java,
+ libjffi-java,
+ libjnr-posix-java,
+ ${misc:Depends}
+Description: Jenkins CI external job monitoring
+ Jenkins monitors executions of repeated jobs, such as building a software
+ project or jobs run by cron. Among those things, current Jenkins focuses
+ on the following two jobs:
+ .
+  * Building/testing software projects continuously, just like CruiseControl
+    or DamageControl. In a nutshell, Jenkins provides an easy-to-use
+    so-called continuous integration system, making it easier for developers
+    to integrate changes to the project, and making it easier for users to
+    obtain a fresh build. The automated, continuous build increases
+    productivity.
+  * Monitoring executions of externally-run jobs, such as cron jobs and
+    procmail jobs, even those that are run on a remote machine. For example,
+    with cron, all you receive is regular e-mails that capture the output,
+    and it is up to you to look at them diligently and notice when it broke.
+    Jenkins keeps those outputs and makes it easy for you to notice when
+    something is wrong.
+ .
+ This package provides the Java dependencies and a helper script for
+ running external jobs which are monitored by Jenkins.
+
+Package: jenkins-cli
+Architecture: all
+Depends:
+ default-jre-headless | java6-runtime-headless,
+ libjffi-java,
+ libjnr-posix-java,
+ ${misc:Depends}
+Description: Jenkins CI Command Line Interface
+ Jenkins monitors executions of repeated jobs, such as building a software
+ project or jobs run by cron. Among those things, current Jenkins focuses
+ on the following two jobs:
+ .
+  * Building/testing software projects continuously, just like CruiseControl
+    or DamageControl. In a nutshell, Jenkins provides an easy-to-use
+    so-called continuous integration system, making it easier for developers
+    to integrate changes to the project, and making it easier for users to
+    obtain a fresh build. The automated, continuous build increases
+    productivity.
+  * Monitoring executions of externally-run jobs, such as cron jobs and
+    procmail jobs, even those that are run on a remote machine. For example,
+    with cron, all you receive is regular e-mails that capture the output,
+    and it is up to you to look at them diligently and notice when it broke.
+    Jenkins keeps those outputs and makes it easy for you to notice when
+    something is wrong.
+ .
+ This package provies the Jenkins Command Line Interface that supports a
+ wide range of remote interaction with a Jenkins instance.
+
+Package: jenkins-tomcat
+Architecture: all
+Depends: jenkins-common, tomcat6, ${misc:Depends}
+Conflicts: jenkins
+Provides: jenkins
+Suggests: jenkins-ssh-slaves-plugin
+Description: Jenkins CI on Tomcat 6
+ Jenkins monitors executions of repeated jobs, such as building a software
+ project or jobs run by cron. Among those things, current Jenkins focuses
+ on the following two jobs:
+ .
+  * Building/testing software projects continuously, just like CruiseControl
+    or DamageControl. In a nutshell, Jenkins provides an easy-to-use
+    so-called continuous integration system, making it easier for developers
+    to integrate changes to the project, and making it easier for users to
+    obtain a fresh build. The automated, continuous build increases
+    productivity.
+  * Monitoring executions of externally-run jobs, such as cron jobs and
+    procmail jobs, even those that are run on a remote machine. For example,
+    with cron, all you receive is regular e-mails that capture the output,
+    and it is up to you to look at them diligently and notice when it broke.
+    Jenkins keeps those outputs and makes it easy for you to notice when
+    something is wrong.
+ .
+ This package provides a Jenkins CI instance deployed on Apache Tomcat 6.

@@ -1,0 +1,38 @@
+Description: Purge embeddedsu4j from Jenkins - only required for Solaris
+Author: James Page <james.page@ubuntu.com>
+Forwarded: not-needed
+
+Index: jenkins/core/src/main/java/hudson/os/SU.java
+===================================================================
+--- jenkins.orig/core/src/main/java/hudson/os/SU.java	2011-11-22 08:20:17.863238488 +0000
++++ jenkins/core/src/main/java/hudson/os/SU.java	2011-11-22 08:20:34.627224863 +0000
+@@ -23,7 +23,6 @@
+  */
+ package hudson.os;
+ 
+-import com.sun.solaris.EmbeddedSu;
+ import hudson.Launcher.LocalLauncher;
+ import hudson.Util;
+ import hudson.model.Computer;
+@@ -92,21 +91,6 @@
+                 }
+             }.start(listener,rootPassword);
+ 
+-        if(os.equals("SunOS"))
+-            return new UnixSu() {
+-                protected String sudoExe() {
+-                    return "/usr/bin/pfexec";
+-                }
+-
+-                protected Process sudoWithPass(ArgumentListBuilder args) throws IOException {
+-                    listener.getLogger().println("Running with embedded_su");
+-                    ProcessBuilder pb = new ProcessBuilder(args.prepend(sudoExe()).toCommandArray());
+-                    return EmbeddedSu.startWithSu(rootUsername, rootPassword, pb);
+-                }
+-            // in solaris, pfexec never asks for a password, so username==null means
+-            // we won't be using password. this helps disambiguate empty password
+-            }.start(listener,rootUsername==null?null:rootPassword);
+-
+         // TODO: Mac?
+ 
+         // unsupported platform, take a chance

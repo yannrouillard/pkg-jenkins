@@ -1,0 +1,10 @@
+<!--
+    Context configuration file for the Jenkins Web App
+-->
+<Context path="/jenkins" docBase="/usr/share/jenkins/jenkins.war"
+   debug="0" privileged="true" allowLinking="true" crossContext="true">
+  <!-- make symlinks work in Tomcat -->
+  <Resources className="org.apache.naming.resources.FileDirContext" allowLinking="true" />
+
+  <Environment name="JENKINS_HOME" type="java.lang.String" value="/var/lib/jenkins" override="true" />
+</Context>

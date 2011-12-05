@@ -1,0 +1,36 @@
+#!/bin/sh
+
+set -e
+
+# If proper permissions for the stuff under /var/lib/jenkins haven't
+# been set, set them now
+
+case "$1" in
+    configure)
+
+        chown -R tomcat6:tomcat6 /var/lib/jenkins
+
+        ln -sf /etc/jenkins/tomcat.policy /etc/tomcat6/policy.d/05jenkins.policy
+
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+
+esac
+
+invoke-rc.d --quiet tomcat6 restart || {
+    RESULT=$?
+    # Ignore if tomcat6 init script does not exist (yet)
+    if [ $RESULT != 100 ]; then
+	exit $RESULT
+    fi
+}
+
+#DEBHELPER#

@@ -1,0 +1,38 @@
+jenkins for Debian
+------------------
+
+This package differs in the following ways from the upstream distribution of
+jenkins:
+ 
+ * Plugins are not bundled by default:
+    - SSH Slaves Plugin
+    - Maven Integration Plugin
+    - Subversion Plugin
+   Note that jenkins for Debian retains binary compatibility with upstream
+   plugins so these can be installed through the 'Manage Plugins' option 
+   with Jenkins.
+
+ * Native OS integration features that are disabled:
+    - Solaris: support for libzfs and libembeddedsu4j.
+    - Windows: native control of remote windows slaves, native integration
+      with Windows process management, windows service deployment of
+      Jenkins.
+   Note that it is possible to use Windows slaves; however they will need
+   to be launched using JNLP from the slave itself.
+
+ * Miscellanous dependency changes that Developers should be aware of:
+    - asm v2 -> v3
+    - jcaptcha 1.x -> 2.x
+    - jna-posix -> jnr-posix (inline with upstream project renaming)
+    - groovy 1.6.x -> 1.7.x
+
+ * Branding: if available on the client, the Web UI will use the Ubuntu 
+   font.
+
+ * Packages + wrapper scripts are provided for:
+    - Monitoring of arbitrary jobs: jenkins-external-job-monitor
+	  + see man jenkins-monitor-job for more details.
+    - Jenkins CLI: jenkins-cli
+      + see man jenkins-cli for more details.
+   
+ -- James Page <james.page@ubuntu.com>  Wed, 20 Jul 2011 11:34:02 +0100

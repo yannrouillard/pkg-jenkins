@@ -1,0 +1,8 @@
+/var/log/jenkins/jenkins.log {
+    daily 
+    missingok
+    rotate 7
+    compress
+    notifempty
+    create 644 jenkins jenkins
+}

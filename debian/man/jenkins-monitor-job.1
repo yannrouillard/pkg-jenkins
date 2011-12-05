@@ -1,0 +1,33 @@
+.TH JENKINS\-MONITOR\-JOB 1 "July 2011" 
+
+.SH NAME
+jenkins\-monitor\-job \- Jenkins monitoring of arbitrary jobs
+
+.SH SYNOPSIS
+.B  jenkins\-monitor\-job JOB_NAME COMMAND
+
+.SH DESCRIPTION
+The 
+.B  jenkins\-monitor\-job
+script wraps a command and posts its output to a Jenkins instance.
+.TP
+.B JOB_NAME
+The name of the job as specified in Jenkins.
+.TP
+.B COMMAND
+The command to execute.
+
+.SH FILES
+.B /etc/jenkins/external-job-monitor.conf
+system wide configuration of JENKINS_HOME variable.
+
+.B ~/.jenkins/external-job-monitor.conf
+per user configuration of JENKINS_HOME variable.
+
+.SH NOTES
+The script uses the JENKINS_HOME environment variable to locate the Jenkins instance to post results to.  
+.TP
+This can either be specified in the execution environment or in one of the configuration files as detailed above.
+
+.SH "AUTHOR"
+This man page was written by James Page <james.page@ubuntu.com> and is Copyright (C) 2011 Canonical Ltd.

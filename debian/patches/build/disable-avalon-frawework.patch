@@ -1,0 +1,17 @@
+Description: Removes un-needed dependency on Avalnon framework. Not
+ use in code so suspect its left over cruft.
+Author: James Page <james.page@ubuntu.com>
+Forwarded: no
+
+Index: jenkins/core/src/main/java/hudson/util/DescribableList.java
+===================================================================
+--- jenkins.orig/core/src/main/java/hudson/util/DescribableList.java	2011-11-22 08:20:18.619237873 +0000
++++ jenkins/core/src/main/java/hudson/util/DescribableList.java	2011-11-22 08:20:32.315226742 +0000
+@@ -39,7 +39,6 @@
+ import hudson.model.ReconfigurableDescribable;
+ import hudson.model.Saveable;
+ import net.sf.json.JSONObject;
+-import org.apache.avalon.framework.configuration.Reconfigurable;
+ import org.kohsuke.stapler.StaplerRequest;
+ 
+ import java.io.IOException;

@@ -1,0 +1,22 @@
+Index: jenkins/core/pom.xml
+===================================================================
+--- jenkins.orig/core/pom.xml	2011-11-22 08:20:34.055225328 +0000
++++ jenkins/core/pom.xml	2011-11-22 08:20:34.343225094 +0000
+@@ -94,6 +94,17 @@
+         <configuration>
+           <fork>${staplerFork}</fork><!-- the source code is big enough now that otherwise it fails with OutOfMemoryError -->
+           <maxmem>128m</maxmem>
++          <excludes>
++             <exclude>**/os/solaris/*</exclude>
++             <exclude>**/os/windows/*</exclude>
++             <exclude>**/DCOMSandbox.java</exclude>
++             <exclude>**/DotNet.java</exclude>
++             <exclude>**/WindowsSlaveInstaller.java</exclude>
++             <exclude>**/WindowsInstallerLink.java</exclude>
++          </excludes>
++          <testExcludes>
++             <exclude>**/DCOMSandbox.java</exclude>
++          </testExcludes>
+         </configuration>
+       </plugin>
+       <plugin>

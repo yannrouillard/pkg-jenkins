@@ -1,0 +1,35 @@
+.TH JENKINS\-CLI 1 "July 2011"
+
+.SH NAME
+jenkins\-cli \- Jenkins Command Line interface
+
+.SH SYNOPSIS
+.B  jenkins\-cli [-s JENKINS_URL] COMMAND [options...] [arguments...]
+
+.SH DESCRIPTION
+.B jenkins\-cli
+provides remote adminstration and control for the Jenkins CI toolset.
+.TP
+.B -s JENKINS_URL
+URL of the Jenkins remote instance to administer - use instead of setting JENKINS_URL in global or user configuration files (see below).
+.TP
+.B COMMAND [options...] [arguments...]
+The command to execute with optional options and arguments.
+The 'help' command will give you the list of the available commands, which depends on the server you are talking to.
+
+.SH FILES
+.B /etc/jenkins/cli.conf
+system wide configuration of JENKINS_URL variable.
+
+.B ~/.jenkins/cli.conf
+per user configuration of JENKINS_URL variable.
+
+.SH NOTES
+jenkins-cli uses the JENKINS_URL environment variable to locate the Jenkins instance to use.  
+.TP
+This can either be specified in the execution environment or in one of the configuration files as detailed above.
+.TP
+This environment variable is automatically set when Jenkins fork a process during builds, which allows you to use jenkins-cli from inside the build without explicitly configuring the URL.
+
+.SH "AUTHOR"
+This man page was written by James Page <james.page@ubuntu.com> and is Copyright (C) 2011 Canonical Ltd.

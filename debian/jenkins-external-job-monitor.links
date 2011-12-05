@@ -1,0 +1,7 @@
+/usr/share/java/ant.jar /usr/share/jenkins/external-job-monitor/java/ant-debian.jar
+/usr/share/java/jnr-posix.jar /usr/share/jenkins/external-job-monitor/java/jnr-posix-debian.jar
+/usr/share/java/jaffl.jar  /usr/share/jenkins/external-job-monitor/java/jaffl-debian.jar
+/usr/share/java/jffi.jar  /usr/share/jenkins/external-job-monitor/java/jffi-debian.jar
+/usr/share/java/commons-lang.jar /usr/share/jenkins/external-job-monitor/java/commons-lang-debian.jar
+/usr/share/java/jenkins-xstream.jar /usr/share/jenkins/external-job-monitor/java/xstream-debian.jar
+/usr/share/java/commons-io.jar /usr/share/jenkins/external-job-monitor/java/commons-io-debian.jar

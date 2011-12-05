@@ -1,0 +1,2 @@
+var/log/jenkins
+var/lib/jenkins

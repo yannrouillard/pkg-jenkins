@@ -1,0 +1,59 @@
+# Maven rules - transform Maven dependencies and plugins
+# Forma of this file is:
+# [group] [artifact] [type] [version] [classifier] [scope]
+# where each element can be either
+# - the exact string, for example org.apache for the group, or 3.1
+#   for the version. In this case, the element is simply matched
+#   and left as it is
+# - * (the star character, alone). In this case, anything will
+#   match and be left as it is. For example, using * on the
+#  position of the artifact field will match any artifact id
+# - a regular expression of the form s/match/replace/
+#   in this case, elements that match are transformed using
+#   the regex rule.
+# All elements much match before a rule can be applied
+# Example rule: match jar with groupid= junit, artifactid= junit
+# and version starting with 3., replacing the version with 3.x
+#   junit junit jar s/3\\..*/3.x/
+
+antlr antlr jar s/2\..*/2.x/ * *
+commons-collections commons-collections jar s/3\..*/3.x/ * *
+commons-httpclient commons-httpclient jar s/3\..*/3.x/ * *
+junit junit jar s/3\..*/3.x/ * *
+junit junit jar s/4\..*/4.x/ * *
+# Map onto exact version during build process
+org.jenkins-ci.main * * s/1\..*/1.409.3/ * *
+org.kohsuke access-modifier-annotation jar s/.*/1.0/ * *
+org.kohsuke access-modifier-checker *  s/.*/1.0/ * *
+# 3.x is needed due to later versions of some deps in Debian
+# Patch to be submitted back upstream.
+asm * * s/2\..*/3.x/ * *
+com.octo.captcha s/jcaptcha-all/jcaptcha/ * s/.*/debian/ * *
+commons-collections commons-collections * s/3\..*/3.x/ * *
+commons-httpclient commons-httpclient * s/3\..*/3.x/ * *
+commons-logging s/commons-logging-api/commons-logging/ * s/.*/debian/ * *
+s/groovy/org.codehaus.groovy/ groovy * s/.*/debian/ * *
+org.kohsuke.stapler maven-stapler-plugin * s/.*/1.15/ * *
+s/ant/org.apache.ant/ * * s/.*/debian/ * *
+s/groovy/org.codehaus.groovy/ groovy* * s/.*/debian/ * *
+org.mortbay.jetty * * s/6\..*/6.x/ * *
+org.springframework * * s/2\..*/2.x/ * *
+s/javax.servlet/javax.servlet.jsp/ jsp-api jar s/2\..*/2.1/ * *
+# Remap hudson forks back to standard versions
+s/org.jvnet.hudson/javax.activation/ activation * s/.*/debian/ * *
+s/org.jenkins-ci/javax.jmdns/ jmdns * s/.*/debian/ * *
+s/org.jvnet.hudson/net.sf.jtidy/ jtidy * s/.*/debian/ * *
+s/org.jvnet.hudson/org.apache.maven/ maven-embedder * s/.*/debian/ * *
+org.springframework.security * * s/2\..*/2.x/ * *
+org.jenkins-ci.tools maven-hpi-plugin * s/.*/1.63/ * *
+org.jenkins-ci jenkins pom s/.*/1.x/ * *
+org.jenkins-ci.plugins plugin * s/1\..*/1.x/ * *
+# Remap of jellys to jenkins variant
+s/commons-jelly/org.jenkins-ci/ * * s/.*/debian/ * *
+s/org.jvnet.hudson/org.jenkins-ci/ commons-jelly-tags-define * s/.*/debian/ * *
+# Later version of task-reactor
+s/org.jvnet.hudson/org.jenkins-ci/ task-reactor * s/.*/debian/ * *
+# JSTL 1.1 
+javax.servlet jstl * s/1\.1\..*/1.1/ * *
+# Remap for rename jna->jnr in Debian
+org.jruby.ext.posix s/jna-posix/jnr-posix/ * s/.*/debian/ * *

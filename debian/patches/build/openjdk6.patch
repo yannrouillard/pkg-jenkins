@@ -1,0 +1,24 @@
+Description: Misc patches to get Jenkins to compile using OpenJDK 6. This
+ should not be required and points to an issue with generics compilation in 
+ OpenJDK - reported as such.
+Author: James Page <james.page@ubuntu.com>
+Forwarded: https://bugs.launchpad.net/ubuntu/+source/openjdk-6/+bug/716959
+
+Index: jenkins/core/src/main/java/hudson/model/AbstractBuild.java
+===================================================================
+--- jenkins.orig/core/src/main/java/hudson/model/AbstractBuild.java	2011-11-22 08:20:18.547237932 +0000
++++ jenkins/core/src/main/java/hudson/model/AbstractBuild.java	2011-11-22 08:20:32.603226508 +0000
+@@ -1135,4 +1135,13 @@
+     }
+ 
+     private static final Logger LOGGER = Logger.getLogger(AbstractBuild.class.getName());
++
++    /**
++     * The project this build is for.
++     */
++    public P getParent() {
++        return (P)super.getParent();
++    }
++
++
+ }
