@@ -25,6 +25,6 @@
 #
 pom.xml --has-package-version --no-parent
 remoting/pom.xml --has-package-version --ignore-pom
-core/pom.xml --has-package-version --ignore-pom --artifact=core/target/jenkins-1.409.1.war
+core/pom.xml --has-package-version --ignore-pom
 war/pom.xml --has-package-version --ignore-pom
 cli/pom.xml --has-package-version --ignore-pom

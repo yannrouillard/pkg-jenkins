@@ -67,7 +67,6 @@ Build-Depends-Indep:
  libmaven-dependency-plugin-java,
  libmaven-embedder-java,
  libmaven-enforcer-plugin-java,
- libmaven-hpi-plugin-java,
  libmaven-install-plugin-java,
  libmaven-javadoc-plugin-java,
  libmaven-stapler-plugin-java,
@@ -119,29 +118,29 @@ Description: Jenkins CI core Java libraries
  This package contains the core libraries that are used by Jenkins.
  These are useful when building other components such as plugins.
 
-Package: libjenkins-plugin-parent-java
-Architecture: all
-Depends: libmaven-hpi-plugin-java, libmaven-stapler-plugin-java, ${misc:Depends}
-Description: Jenkins Plugin Parent Maven POM
- Jenkins monitors executions of repeated jobs, such as building a software
- project or jobs run by cron. Among those things, current Jenkins focuses
- on the following two jobs:
- .
-  * Building/testing software projects continuously, just like CruiseControl
-    or DamageControl. In a nutshell, Jenkins provides an easy-to-use
-    so-called continuous integration system, making it easier for developers
-    to integrate changes to the project, and making it easier for users to
-    obtain a fresh build. The automated, continuous build increases
-    productivity.
-  * Monitoring executions of externally-run jobs, such as cron jobs and
-    procmail jobs, even those that are run on a remote machine. For example,
-    with cron, all you receive is regular e-mails that capture the output,
-    and it is up to you to look at them diligently and notice when it broke.
-    Jenkins keeps those outputs and makes it easy for you to notice when
-    something is wrong.
- .
- This package contains the parent POM file that all Jenkins plugins should be
- built against.
+#Package: libjenkins-plugin-parent-java
+#Architecture: all
+#Depends: libmaven-hpi-plugin-java, libmaven-stapler-plugin-java, ${misc:Depends}
+#Description: Jenkins Plugin Parent Maven POM
+# Jenkins monitors executions of repeated jobs, such as building a software
+# project or jobs run by cron. Among those things, current Jenkins focuses
+# on the following two jobs:
+# .
+#  * Building/testing software projects continuously, just like CruiseControl
+#    or DamageControl. In a nutshell, Jenkins provides an easy-to-use
+#    so-called continuous integration system, making it easier for developers
+#    to integrate changes to the project, and making it easier for users to
+#    obtain a fresh build. The automated, continuous build increases
+#    productivity.
+#  * Monitoring executions of externally-run jobs, such as cron jobs and
+#    procmail jobs, even those that are run on a remote machine. For example,
+#    with cron, all you receive is regular e-mails that capture the output,
+#    and it is up to you to look at them diligently and notice when it broke.
+#    Jenkins keeps those outputs and makes it easy for you to notice when
+#    something is wrong.
+# .
+# This package contains the parent POM file that all Jenkins plugins should be
+# built against.
 
 Package: jenkins-common
 Architecture: all
