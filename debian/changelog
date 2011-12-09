@@ -3,8 +3,10 @@ jenkins (1.409.3-1) unstable; urgency=low
   * Initial Debian release (Closes: #561963)
   * Disabled build of libjenkins-plugin-parent-java as not currently
     installable due to broken upstream maven-hpi-plugin.
+  * Added tradditional Debian init scripts for jenkins and jenkins-slave 
+    and updated rules to switch in upstart configuration for Ubuntu builds.
 
- -- James Page <james.page@ubuntu.com>  Wed, 07 Dec 2011 09:16:03 +0000
+ -- James Page <james.page@ubuntu.com>  Fri, 09 Dec 2011 09:44:05 +0000
 
 jenkins (1.409.3-0ubuntu1) precise; urgency=low
 

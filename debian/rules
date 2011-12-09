@@ -28,5 +28,15 @@ binary-post-install/jenkins-external-job-monitor::
 	dh_link -pjenkins-external-job-monitor usr/share/jenkins/external-job-monitor/java/jenkins-core-$(DEB_UPSTREAM_VERSION).jar \
 	    usr/share/jenkins/external-job-monitor/java/jenkins-core.jar
 
+# Switch in upstart configuration if building on Ubuntu
+binary-post-install/jenkins::
+	if dpkg-vendor --derives-from ubuntu ; then \
+        cp debian/jenkins.upstart.in debian/jenkins.upstart ; \
+    fi
+
+# Tidy up any upstart configuration files lying around
+clean::
+	rm -rf debian/*.upstart
+
 get-orig-source:
 	uscan --download-version $(DEB_UPSTREAM_VERSION) --force-download --rename

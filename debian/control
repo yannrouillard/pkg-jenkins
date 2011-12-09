@@ -172,6 +172,7 @@ Architecture: all
 Depends:
  adduser,
  daemon,
+ psmisc,
  default-jre-headless | java6-runtime-headless,
  jenkins-common,
  ${misc:Depends}

@@ -105,6 +105,11 @@ Files: debian/*
 Copyright: 2011 Canonical Ltd (http://www.canonical.com)
 License: MIT
 
+Files: debian/jenkins.init
+       debian/jenkins.default
+Copyright: 2004, Amelia A Lewis <alewis@ibco.com>
+License: MIT
+
 License: Apache-2.0
   On Debian GNU/Linux system you can find the complete text of the
   Apache-2.0 license in '/usr/share/common-licenses/Apache-2.0'
