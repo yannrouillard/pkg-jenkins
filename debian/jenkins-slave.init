@@ -21,20 +21,16 @@ SCRIPTNAME=/etc/init.d/$NAME
 
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME
 
-# Only run this daemon if JENKINS url is specified.
-# in defaults
-[ -n "$JENKINS_URL" ] || exit 0
-
 DAEMON=/usr/bin/daemon
-DAEMON_ARGS="--name=$NAME --inherit --env=JENKINS_HOME=$JENKINS_HOME --output=$JENKINS_SLAVE_LOG --pidfile=$PIDFILE" 
+DAEMON_ARGS="--name=$NAME --inherit --output=$JENKINS_SLAVE_LOG --pidfile=$PIDFILE" 
 
 SU=/bin/su
 
 # Exit if the package is not installed
 [ -x "$DAEMON" ] || exit 0
 
-# Exit if not supposed to run standalone
-[ "$RUN_STANDALONE" = "false" ] && exit 0
+# Only run this daemon if JENKINS_URL is specified.
+[ -n "$JENKINS_URL" ] || exit 0
 
 # load environments
 if [ -r /etc/default/locale ]; then
@@ -81,7 +77,7 @@ do_start()
     fi
 
     # Ensure that slave.jar has been downloaded from JENKINS_URL
-    $JENKINS_ROOT/bin/download-slave.sh
+    $JENKINS_ROOT/bin/download-slave.sh $JENKINS_URL > /dev/null 2>&1 || return 2
     
     # --user in daemon doesn't prepare environment variables like HOME, USER, LOGNAME or USERNAME,
     # so we let su do so for us now
@@ -95,7 +91,7 @@ do_start()
 # 
 get_running() 
 {
-    return `ps -U $JENKINS_USER --no-headers -f | egrep -e '(java|daemon)' | grep -c . `
+    return `ps -U $JENKINS_USER --no-headers -f | egrep -e '(slave)' | grep -c . `
 }
 
 force_stop() 

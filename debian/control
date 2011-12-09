@@ -171,8 +171,7 @@ Package: jenkins
 Architecture: all
 Depends:
  adduser,
- daemon,
- psmisc,
+ ${jenkins-daemon-deps},
  default-jre-headless | java6-runtime-headless,
  jenkins-common,
  ${misc:Depends}
@@ -203,7 +202,7 @@ Package: jenkins-slave
 Architecture: all
 Depends:
  adduser,
- daemon,
+ ${jenkins-daemon-deps},
  default-jre-headless | java6-runtime-headless,
  ${misc:Depends}
 Recommends: jenkins-cli, ssh-import-id, ssh-server | openssh-server

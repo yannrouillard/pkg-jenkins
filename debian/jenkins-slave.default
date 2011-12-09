@@ -25,11 +25,6 @@ JENKINS_HOME=/var/lib/jenkins
 # jenkins /run location
 JENKINS_RUN=/var/run/jenkins
 
-# set this to false if you don't want Hudson to run by itself
-# in this set up, you are expected to provide a servlet container
-# to host jenkins.
-RUN_STANDALONE=true
-
 # URL of jenkins server to connect to 
 # Not specifying this parameter will stop the slave 
 # job from running.
@@ -40,7 +35,7 @@ RUN_STANDALONE=true
 # hostname of the server the slave is running on.
 JENKINS_HOSTNAME="$(hostname)"
 
-# log location.  this may be a syslog facility.priority
+# Log file location for use in Debian init script
 JENKINS_SLAVE_LOG=/var/log/jenkins/$NAME.log
 
 # OS LIMITS SETUP

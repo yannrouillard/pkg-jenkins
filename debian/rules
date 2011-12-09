@@ -8,6 +8,12 @@ DEB_MAVEN_BUILD_TARGET := install
 DEB_MAVEN_ARGS := -e -Dbuild.version="$(DEB_UPSTREAM_VERSION)"
 DEB_MAVEN_INSTALL_TO_USJ := false
 
+# Debian package version use daemon to control jenkins processes
+# Ubuntu does not need this - managed by upstart
+ifeq ($(shell dpkg-vendor --derives-from ubuntu || echo debian ),debian)
+DEB_DH_GENCONTROL_ARGS:= -- -Tdebian/debian_control_vars
+endif
+
 # Install the POM for plugin-parent manually as not part
 # of main build
 binary-post-install/libjenkins-plugin-parent-java::
@@ -29,12 +35,13 @@ binary-post-install/jenkins-external-job-monitor::
 	    usr/share/jenkins/external-job-monitor/java/jenkins-core.jar
 
 # Switch in upstart configuration if building on Ubuntu
-binary-post-install/jenkins::
+# and generate control with/without daemon.
+build/jenkins::
 	if dpkg-vendor --derives-from ubuntu ; then \
         cp debian/jenkins.upstart.in debian/jenkins.upstart ; \
     fi
 
-binary-post-install/jenkins-slave::
+build/jenkins-slave::
 	if dpkg-vendor --derives-from ubuntu ; then \
         cp debian/jenkins-slave.upstart.in debian/jenkins-slave.upstart ; \
     fi

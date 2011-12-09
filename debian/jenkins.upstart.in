@@ -17,7 +17,5 @@ end script
 script
     [ -r /etc/default/jenkins ] && . /etc/default/jenkins
     exec su -l $JENKINS_USER --shell=/bin/bash -c \
-       "daemon --name=$NAME --inherit --output=$JENKINS_LOG \
-        --env=JENKINS_HOME=$JENKINS_HOME -- \
-        $JAVA $JAVA_ARGS -jar $JENKINS_WAR $JENKINS_ARGS"
+        "JENKINS_HOME=$JENKINS_HOME $JAVA $JAVA_ARGS -jar $JENKINS_WAR $JENKINS_ARGS --logfile=$JENKINS_LOG"
 end script
