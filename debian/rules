@@ -34,6 +34,11 @@ binary-post-install/jenkins::
         cp debian/jenkins.upstart.in debian/jenkins.upstart ; \
     fi
 
+binary-post-install/jenkins-slave::
+	if dpkg-vendor --derives-from ubuntu ; then \
+        cp debian/jenkins-slave.upstart.in debian/jenkins-slave.upstart ; \
+    fi
+
 # Tidy up any upstart configuration files lying around
 clean::
 	rm -rf debian/*.upstart
