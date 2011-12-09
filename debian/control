@@ -176,7 +176,6 @@ Depends:
  jenkins-common,
  ${misc:Depends}
 Conflicts: jenkins-tomcat, tomcat6
-Suggests: jenkins-ssh-slaves-plugin
 Description: Continuous Integration and Job Scheduling Server
  Jenkins monitors executions of repeated jobs, such as building a software
  project or jobs run by cron. Among those things, current Jenkins focuses
@@ -296,7 +295,6 @@ Architecture: all
 Depends: jenkins-common, tomcat6, ${misc:Depends}
 Conflicts: jenkins
 Provides: jenkins
-Suggests: jenkins-ssh-slaves-plugin
 Description: Jenkins CI on Tomcat 6
  Jenkins monitors executions of repeated jobs, such as building a software
  project or jobs run by cron. Among those things, current Jenkins focuses
