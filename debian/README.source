@@ -7,3 +7,21 @@ from the maven-debian-helper package.
 The build system uses Maven but prevents it from downloading
 anything from the Internet, making the build compliant with
 the Debian policy.
+
+Upstream Plugin Compatiblity
+----------------------------
+
+Jenkins for Debian retains compatibility with plugins distributed by
+Jenkins upstream through the Jenkins Updates Site.  These plugins are 
+signed to allow them to be verified by Jenkins prior to installation.
+
+This signature is verified through the use of the a root Certificate
+that is distributed as part of the source code and resulting binary
+package:
+
+ war/src/main/webapp/WEB-INF/update-center-rootCAs/hudson-community
+
+This file is generated from the Private key held by Jenkins upstream and
+as a result cannot be re-created from the source tree.
+
+Note that it is superceeded with a new key in later versions of jenkins.
