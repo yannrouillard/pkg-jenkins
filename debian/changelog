@@ -1,6 +1,7 @@
-jenkins (1.409.3-1) unstable; urgency=low
+jenkins (1.409.3+dfsg-1) unstable; urgency=low
 
-  * Initial Debian release (Closes: #561963)
+  * Initial Debian release (Closes: #561963):
+    - Repack for DFSG compliance.
   * Disabled build of libjenkins-plugin-parent-java as not currently
     installable due to broken upstream maven-hpi-plugin.
   * Added Debian init scripts and default configuration for jenkins 
