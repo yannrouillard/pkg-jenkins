@@ -1,4 +1,0 @@
-[jenkins]
-name=Jenkins@RELEASELINE@
-baseurl=http://pkg.jenkins-ci.org/redhat@RELEASELINE@/
-gpgcheck=1
