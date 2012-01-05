@@ -58,6 +58,8 @@ get-orig-source:
 	mv ../jenkins_$(DEB_UPSTREAM_VERSION).orig.tar.gz \
         ../jenkins_$(DEB_UPSTREAM_VERSION)+dfsg.orig.tar.gz
 
+before-mvn-build:: generate-keystore
+
 generate-keystore:
 	keytool -genkeypair -dname "cn=Jenkins, ou=Jenkins Project, o=Debian, c=US" \
       -alias jenkins -keypass jenkins -keystore dummy.keystore \
