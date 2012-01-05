@@ -50,9 +50,15 @@ build/jenkins-slave::
 
 # Tidy up any upstart configuration files lying around
 clean::
+	[ ! -f dummy.keystore ] || rm dummy.keystore
 	rm -rf debian/*.upstart
 
 get-orig-source:
 	uscan --download-version $(DEB_UPSTREAM_VERSION) --force-download --rename
 	mv ../jenkins_$(DEB_UPSTREAM_VERSION).orig.tar.gz \
         ../jenkins_$(DEB_UPSTREAM_VERSION)+dfsg.orig.tar.gz
+
+generate-keystore:
+	keytool -genkeypair -dname "cn=Jenkins, ou=Jenkins Project, o=Debian, c=US" \
+      -alias jenkins -keypass jenkins -keystore dummy.keystore \
+      -storepass jenkins -validity 3650
