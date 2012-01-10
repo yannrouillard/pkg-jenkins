@@ -204,7 +204,7 @@ Depends:
  ${jenkins-daemon-deps},
  default-jre-headless | java6-runtime-headless,
  ${misc:Depends}
-Recommends: jenkins-cli, ssh-import-id, ssh-server | openssh-server
+Recommends: jenkins-cli, ssh-server | openssh-server
 Description: Jenkins slave node helper
  Jenkins monitors executions of repeated jobs, such as building a software
  project or jobs run by cron. Among those things, current Jenkins focuses

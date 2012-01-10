@@ -101,6 +101,10 @@ Copyright: 2004- Kohsuke Kawaguchi,
            2004- Sun Microsystems, Inc.
 License: CDDL
 
+Files: core/src/main/java/hudson/util/VersionNumber.java
+Copyright:
+License: CDDL or GPL-2
+
 Files: debian/*
 Copyright: 2011 Canonical Ltd (http://www.canonical.com)
 License: MIT
@@ -117,6 +121,10 @@ License: Apache-2.0
 License: LGPL-2.1
   On Debian GNU/Linux system you can find the complete text of the
   LGPL-2.1 license in '/usr/share/common-licenses/LGPL-2.1'
+
+License: GPL-2
+  On Debian GNU/Linux system you can find the complete text of the
+  GPL-2 license in '/usr/share/common-licenses/GPL-2'
 
 License: MIT
   Permission is hereby granted, free of charge, to any person obtaining a copy
