@@ -1,3 +1,12 @@
+jenkins (1.409.3+dfsg-2) unstable; urgency=low
+
+  * http://www.cloudbees.com/jenkins-advisory/jenkins-security-advisory-2012-01-10.cb
+    - Rebuild to pickup new versions of jenkins-winstone (>= 0.9.10-jenkins-31)
+      and jenkins-executable-war (>= 1.25) to fix Hash DoS vulnerability in
+      jenkins when running standalone.
+
+ -- James Page <james.page@ubuntu.com>  Fri, 13 Jan 2012 20:51:01 +0000
+
 jenkins (1.409.3+dfsg-1) unstable; urgency=low
 
   * Initial Debian release (Closes: #561963):
