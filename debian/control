@@ -92,6 +92,7 @@ Standards-Version: 3.9.2
 Homepage: http://jenkins-ci.org/
 Vcs-Git: git://git.debian.org/git/pkg-java/jenkins.git
 Vcs-Browser: http://git.debian.org/?p=pkg-java/jenkins.git
+DM-Upload-Allowed: yes
 
 Package: libjenkins-java
 Architecture: all
