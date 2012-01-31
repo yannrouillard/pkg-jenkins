@@ -6,7 +6,7 @@ include /usr/share/cdbs/1/class/maven.mk
 JAVA_HOME := /usr/lib/jvm/default-java
 # Parse upstream version without +dfsg for source download+
 DEB_UPSTREAM_VERSION=$(shell dpkg-parsechangelog | sed -rne 's,^Version: ([^+]+).*,\1,p')
-DEB_MAVEN_BUILD_TARGET := install 
+DEB_MAVEN_BUILD_TARGET := install
 DEB_MAVEN_ARGS := -e -Dbuild.version="$(DEB_UPSTREAM_VERSION)"
 DEB_MAVEN_INSTALL_TO_USJ := false
 
@@ -31,8 +31,6 @@ binary-post-install/jenkins-cli::
 
 # Create handy links for script wrapper
 binary-post-install/jenkins-external-job-monitor::
-	dh_link -pjenkins-external-job-monitor usr/share/jenkins/external-job-monitor/java/remoting-$(DEB_UPSTREAM_VERSION).jar \
-        usr/share/jenkins/external-job-monitor/java/remoting.jar
 	dh_link -pjenkins-external-job-monitor usr/share/jenkins/external-job-monitor/java/jenkins-core-$(DEB_UPSTREAM_VERSION).jar \
 	    usr/share/jenkins/external-job-monitor/java/jenkins-core.jar
 

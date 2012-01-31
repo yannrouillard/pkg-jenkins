@@ -4,16 +4,38 @@ Forwarded: not-needed
 
 Index: jenkins/core/pom.xml
 ===================================================================
---- jenkins.orig/core/pom.xml	2011-11-22 08:20:33.767225562 +0000
-+++ jenkins/core/pom.xml	2011-11-22 08:20:34.055225328 +0000
-@@ -177,10 +177,6 @@
-                 <mkdir dir="target/classes/hudson/model" />
-                 <echo file="target/classes/hudson/model/hudson-version.properties">version=${build.version}
-                 </echo>
--
--                <!-- download winsw.exe -->
--                <mkdir dir="target/classes/windows-service" />
--                <resolveArtifact artifactId="winsw" tofile="target/classes/windows-service/jenkins.exe" />
-               </tasks>
-             </configuration>
-             <goals>
+--- jenkins.orig/core/pom.xml	2012-01-31 10:35:34.520316354 +0000
++++ jenkins/core/pom.xml	2012-01-31 10:35:34.780316349 +0000
+@@ -655,32 +655,6 @@
+           </execution>
+         </executions>
+       </plugin>
+-      <plugin>
+-        <artifactId>maven-dependency-plugin</artifactId>
+-        <executions>
+-          <execution>
+-            <id>winsw</id>
+-            <phase>generate-resources</phase>
+-            <goals>
+-              <!-- we use copy as this is a dependency from outside the reactor -->
+-              <goal>copy</goal>
+-            </goals>
+-            <configuration>
+-              <artifactItems>
+-                <artifactItem>
+-                  <groupId>com.sun.winsw</groupId>
+-                  <artifactId>winsw</artifactId>
+-                  <version>1.10</version>
+-                  <classifier>bin</classifier>
+-                  <type>exe</type>
+-                  <outputDirectory>${project.build.outputDirectory}/windows-service</outputDirectory>
+-                  <destFileName>jenkins.exe</destFileName>
+-                </artifactItem>
+-              </artifactItems>
+-            </configuration>
+-          </execution>
+-        </executions>
+-      </plugin>
+       <plugin><!-- set main class -->
+         <artifactId>maven-jar-plugin</artifactId>
+         <!-- version specified in grandparent pom -->

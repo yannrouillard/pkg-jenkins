@@ -5,8 +5,8 @@ Forwarded: not-needed
 
 Index: jenkins/core/src/main/java/hudson/os/PosixAPI.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/os/PosixAPI.java	2011-11-22 08:20:17.307238939 +0000
-+++ jenkins/core/src/main/java/hudson/os/PosixAPI.java	2011-11-22 08:20:36.343223468 +0000
+--- jenkins.orig/core/src/main/java/hudson/os/PosixAPI.java	2012-01-31 10:35:18.760316749 +0000
++++ jenkins/core/src/main/java/hudson/os/PosixAPI.java	2012-01-31 10:35:36.612316303 +0000
 @@ -1,10 +1,9 @@
  package hudson.os;
  
@@ -44,8 +44,8 @@ Index: jenkins/core/src/main/java/hudson/os/PosixAPI.java
          public File getCurrentWorkingDirectory() {
 Index: jenkins/core/src/main/java/hudson/os/PosixException.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/os/PosixException.java	2011-11-22 08:20:17.275238965 +0000
-+++ jenkins/core/src/main/java/hudson/os/PosixException.java	2011-11-22 08:20:36.343223468 +0000
+--- jenkins.orig/core/src/main/java/hudson/os/PosixException.java	2012-01-31 10:35:18.780316750 +0000
++++ jenkins/core/src/main/java/hudson/os/PosixException.java	2012-01-31 10:35:36.612316303 +0000
 @@ -1,6 +1,6 @@
  package hudson.os;
  
@@ -74,9 +74,9 @@ Index: jenkins/core/src/main/java/hudson/os/PosixException.java
  
 Index: jenkins/core/pom.xml
 ===================================================================
---- jenkins.orig/core/pom.xml	2011-11-22 08:20:36.059223700 +0000
-+++ jenkins/core/pom.xml	2011-11-22 08:20:36.347223465 +0000
-@@ -394,6 +394,11 @@
+--- jenkins.orig/core/pom.xml	2012-01-31 10:35:36.356316308 +0000
++++ jenkins/core/pom.xml	2012-01-31 10:35:36.612316303 +0000
+@@ -86,6 +86,11 @@
        <version>1.0.3</version>
      </dependency>
      <dependency>

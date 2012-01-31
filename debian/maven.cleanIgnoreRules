@@ -68,3 +68,9 @@ org.kohsuke access-modifier-checker * * * *
 org.codehaus.mojo antlr-maven-plugin * * * *
 org.apache.maven.plugins maven-war-plugin * * * *
 org.apache.maven.plugins maven-dependency-plugin * * * *
+org.apache.maven.plugins maven-assembly-plugin * * * *
+# New deps to ignore for 1.424.1
+org.codehaus.mojo build-helper-maven-plugin * * * *
+org.codehaus.mojo animal-sniffer-maven-plugin * * * *
+org.jenkins-ci.tools maven-hpi-plugin * * * *
+

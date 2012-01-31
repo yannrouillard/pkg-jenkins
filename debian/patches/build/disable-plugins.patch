@@ -4,21 +4,9 @@ Forwarded: not-needed
 
 Index: jenkins/war/pom.xml
 ===================================================================
---- jenkins.orig/war/pom.xml	2011-11-22 08:20:32.891226274 +0000
-+++ jenkins/war/pom.xml	2011-11-22 08:20:33.479225796 +0000
-@@ -122,11 +122,6 @@
-                 <resolveArtifact groupId="${project.groupId}" artifactId="cli" classifier="jar-with-dependencies" version="${project.version}" type="jar" tofile="${basedir}/target/generated-resources/WEB-INF/jenkins-cli.jar" />
-                 <resolveArtifact artifactId="winstone" tofile="${basedir}/target/generated-resources/winstone.jar" />
-                 
--                <!-- bundled plugins -->
--                <resolveArtifact type="hpi" groupId="${project.groupId}" artifactId="maven-plugin" version="${project.version}" tofile="${basedir}/target/generated-resources/WEB-INF/plugins/maven-plugin.hpi" />
--                <resolveArtifact type="hpi" groupId="org.jenkins-ci.plugins" artifactId="ssh-slaves" version="0.15" tofile="${basedir}/target/generated-resources/WEB-INF/plugins/ssh-slaves.hpi" />
--                <resolveArtifact type="hpi" groupId="org.jenkins-ci.plugins" artifactId="subversion" version="1.25" tofile="${basedir}/target/generated-resources/WEB-INF/plugins/subversion.hpi" />
--                <resolveArtifact type="hpi" groupId="org.jvnet.hudson.plugins" artifactId="cvs" version="1.2" tofile="${basedir}/target/generated-resources/WEB-INF/plugins/cvs.hpi" />
-               </tasks>
-             </configuration>
-           </execution>
-@@ -281,6 +276,11 @@
+--- jenkins.orig/war/pom.xml	2012-01-31 10:35:19.368316735 +0000
++++ jenkins/war/pom.xml	2012-01-31 10:35:34.256316362 +0000
+@@ -121,6 +121,11 @@
        <scope>system</scope>
        <systemPath>/usr/local/yjp/lib/yjp.jar</systemPath>
      </dependency-->
@@ -28,5 +16,36 @@ Index: jenkins/war/pom.xml
 +      <version>3.1-rc1</version>
 +    </dependency>
    </dependencies>
-   
-   <properties>
+ 
+   <build>
+@@ -208,30 +213,6 @@
+                   <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+                   <destFileName>winstone.jar</destFileName>
+                 </artifactItem>
+-                <!-- bundled plugins -->
+-                <artifactItem>
+-                  <groupId>${project.groupId}</groupId>
+-                  <artifactId>maven-plugin</artifactId>
+-                  <type>hpi</type>
+-                </artifactItem>
+-                <artifactItem>
+-                  <groupId>org.jenkins-ci.plugins</groupId>
+-                  <artifactId>ssh-slaves</artifactId>
+-                  <version>0.17</version>
+-                  <type>hpi</type>
+-                </artifactItem>
+-                <artifactItem>
+-                  <groupId>org.jenkins-ci.plugins</groupId>
+-                  <artifactId>subversion</artifactId>
+-                  <version>1.28</version>
+-                  <type>hpi</type>
+-                </artifactItem>
+-                <artifactItem>
+-                  <groupId>org.jvnet.hudson.plugins</groupId>
+-                  <artifactId>cvs</artifactId>
+-                  <version>1.2</version>
+-                  <type>hpi</type>
+-                </artifactItem>
+               </artifactItems>
+               <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/plugins</outputDirectory>
+               <stripVersion>true</stripVersion>

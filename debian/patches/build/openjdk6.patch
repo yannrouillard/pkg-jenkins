@@ -6,9 +6,9 @@ Forwarded: https://bugs.launchpad.net/ubuntu/+source/openjdk-6/+bug/716959
 
 Index: jenkins/core/src/main/java/hudson/model/AbstractBuild.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/model/AbstractBuild.java	2011-11-22 08:20:18.547237932 +0000
-+++ jenkins/core/src/main/java/hudson/model/AbstractBuild.java	2011-11-22 08:20:32.603226508 +0000
-@@ -1135,4 +1135,13 @@
+--- jenkins.orig/core/src/main/java/hudson/model/AbstractBuild.java	2012-01-31 10:35:19.484316732 +0000
++++ jenkins/core/src/main/java/hudson/model/AbstractBuild.java	2012-01-31 10:35:33.684316375 +0000
+@@ -1186,4 +1186,13 @@
      }
  
      private static final Logger LOGGER = Logger.getLogger(AbstractBuild.class.getName());
@@ -22,3 +22,19 @@ Index: jenkins/core/src/main/java/hudson/model/AbstractBuild.java
 +
 +
  }
+Index: jenkins/core/src/main/java/hudson/DescriptorExtensionList.java
+===================================================================
+--- jenkins.orig/core/src/main/java/hudson/DescriptorExtensionList.java	2012-01-31 10:35:19.464316733 +0000
++++ jenkins/core/src/main/java/hudson/DescriptorExtensionList.java	2012-01-31 10:35:33.684316375 +0000
+@@ -79,8 +79,9 @@
+      * @deprecated as of 1.416
+      *      Use {@link #create(Jenkins, Class)}
+      */
+-    public static <T extends Describable<T>,D extends Descriptor<T>>
+-    DescriptorExtensionList<T,D> createDescriptorList(Hudson hudson, Class<T> describableType) {
++    @SuppressWarnings({"unchecked", "rawtypes"})
++    public static /*<T extends Describable<T>,D extends Descriptor<T>>*/
++    DescriptorExtensionList/*<T,D>*/ createDescriptorList(Hudson hudson, Class/*<T>*/ describableType) {
+         return createDescriptorList((Jenkins)hudson,describableType);
+     }
+ 

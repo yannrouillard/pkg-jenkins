@@ -26,6 +26,7 @@ Build-Depends-Indep:
  libaccess-modifier-checker-java,
  libacegi-security-java,
  libakuma-java,
+ libanimal-sniffer-java,
  libannotation-indexer-java,
  libantlr-java,
  libantlr-maven-plugin-java,
@@ -43,12 +44,12 @@ Build-Depends-Indep:
  libcommons-lang-java,
  libcommons-logging-java,
  libjaxen-java,
- libjcaptcha-java,
  libjellydoc-java,
  libjenkins-commons-jelly-java,
  libjenkins-commons-jexl-java,
  libjenkins-htmlunit-java,
  libjenkins-json-java (>= 2.1-rev7),
+ libjenkins-remoting-java,
  libjenkins-trilead-ssh2-java,
  libjenkins-winstone-java (>= 0.9.10-jenkins-31),
  libjenkins-xstream-java,
@@ -67,6 +68,7 @@ Build-Depends-Indep:
  libmaven-dependency-plugin-java,
  libmaven-embedder-java,
  libmaven-enforcer-plugin-java,
+ libmaven-hpi-plugin-java,
  libmaven-install-plugin-java,
  libmaven-javadoc-plugin-java,
  libmaven-stapler-plugin-java,
@@ -77,11 +79,11 @@ Build-Depends-Indep:
  librobust-http-client-java,
  libservlet2.4-java,
  libsezpoz-java,
- libspring-aop-2.5-java,
- libspring-core-2.5-java,
+ libspring-aop-java,
+ libspring-core-java,
  libspring-ldap-java,
- libspring-web-2.5-java,
- libspring-webmvc-2.5-java,
+ libspring-web-java,
+ libstapler-adjunct-codemirror-java,
  libstapler-adjunct-timeline-java,
  libstapler-java,
  libtrilead-putty-extension-java,
@@ -145,7 +147,12 @@ Description: Jenkins CI core Java libraries
 
 Package: jenkins-common
 Architecture: all
-Depends: libjffi-java, libjna-java, libjnr-posix-java, ${misc:Depends}
+Depends: 
+ libjenkins-remoting-java,
+ libjffi-java,
+ libjna-java,
+ libjnr-posix-java,
+ ${misc:Depends}
 Recommends: jenkins-cli
 Description: Jenkins common Java components and web application
  Jenkins monitors executions of repeated jobs, such as building a software
@@ -238,6 +245,7 @@ Depends:
  default-jre-headless | java6-runtime-headless,
  libcommons-io-java,
  libcommons-lang-java,
+ libjenkins-remoting-java,
  libjenkins-xstream-java,
  libjffi-java,
  libjnr-posix-java,

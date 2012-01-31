@@ -5,11 +5,11 @@ Forwarded: not-needed
 
 Index: jenkins/core/pom.xml
 ===================================================================
---- jenkins.orig/core/pom.xml	2011-11-22 08:20:34.343225094 +0000
-+++ jenkins/core/pom.xml	2011-11-22 08:20:35.491224161 +0000
-@@ -767,6 +767,12 @@
-         </exclusion>
-       </exclusions>
+--- jenkins.orig/core/pom.xml	2012-01-31 10:35:35.048316342 +0000
++++ jenkins/core/pom.xml	2012-01-31 10:35:36.104316316 +0000
+@@ -435,6 +435,12 @@
+       <artifactId>memory-monitor</artifactId>
+       <version>1.5</version>
      </dependency>
 +    <!-- JCaptcha 2.0 uses slf4j which needs an implementation class -->
 +    <dependency>

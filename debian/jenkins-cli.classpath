@@ -1,1 +1,1 @@
-usr/share/jenkins/cli/java/cli.jar /usr/share/java/args4j.jar /usr/share/java/localizer.jar /usr/share/jenkins/cli/java/remoting.jar
+usr/share/jenkins/cli/java/cli.jar /usr/share/java/args4j.jar /usr/share/java/localizer.jar /usr/share/java/jenkins-remoting.jar

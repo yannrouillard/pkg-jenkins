@@ -1,4 +1,3 @@
-#remoting/target/remoting-*.jar usr/share/jenkins/cli/java
 cli/target/cli-*-jar-with-dependencies.jar usr/share/jenkins/cli/java
 debian/bin/jenkins-cli usr/bin
 debian/etc/cli.conf etc/jenkins

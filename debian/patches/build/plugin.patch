@@ -5,53 +5,53 @@ Forwarded: not-needed
 
 Index: jenkins/plugins/pom.xml
 ===================================================================
---- jenkins.orig/plugins/pom.xml	2011-11-22 08:20:18.751237766 +0000
-+++ jenkins/plugins/pom.xml	2011-11-22 08:20:31.743227207 +0000
+--- jenkins.orig/plugins/pom.xml	2012-01-31 10:35:19.584316730 +0000
++++ jenkins/plugins/pom.xml	2012-01-31 10:35:33.136316390 +0000
 @@ -10,7 +10,7 @@
    <groupId>org.jenkins-ci.plugins</groupId>
    <artifactId>plugin</artifactId>
    <name>Jenkins plugin POM</name>
--  <version>1.409-SNAPSHOT</version>
-+  <version>1.409.3</version>
+-  <version>1.424.2-SNAPSHOT</version>
++  <version>1.424.2</version>
    <packaging>pom</packaging>
  
-   <properties>
-@@ -38,7 +38,7 @@
+   <!--
+@@ -33,7 +33,7 @@
        <dependency><!-- if a plugin wants to depend on the maven plugin, choose the right version automatically -->
          <groupId>org.jenkins-ci.main</groupId>
          <artifactId>maven-plugin</artifactId>
--        <version>1.409-SNAPSHOT</version>
-+        <version>1.409.3</version>
+-        <version>1.424.2-SNAPSHOT</version>
++        <version>1.424.2</version>
        </dependency>
      </dependencies>
    </dependencyManagement>
-@@ -48,25 +48,25 @@
+@@ -43,25 +43,25 @@
        <groupId>org.jenkins-ci.main</groupId>
        <artifactId>jenkins-war</artifactId>
        <type>war</type>
--      <version>1.409-SNAPSHOT</version>
-+      <version>1.409.3</version>
+-      <version>1.424.2-SNAPSHOT</version>
++      <version>1.424.2</version>
        <scope>test</scope>
      </dependency>
      <dependency>
        <groupId>org.jenkins-ci.main</groupId>
        <artifactId>jenkins-core</artifactId>
--      <version>1.409-SNAPSHOT</version>
-+      <version>1.409.3</version>
+-      <version>1.424.2-SNAPSHOT</version>
++      <version>1.424.2</version>
        <scope>provided</scope>
      </dependency>
      <dependency>
        <groupId>org.jenkins-ci.main</groupId>
        <artifactId>jenkins-test-harness</artifactId>
--      <version>1.409-SNAPSHOT</version>
-+      <version>1.409.3</version>
+-      <version>1.424.2-SNAPSHOT</version>
++      <version>1.424.2</version>
        <scope>test</scope>
      </dependency>
      <dependency>
        <groupId>org.jenkins-ci.main</groupId>
        <artifactId>ui-samples-plugin</artifactId>
--      <version>1.409-SNAPSHOT</version>
-+      <version>1.409.3</version>
+-      <version>1.424.2-SNAPSHOT</version>
++      <version>1.424.2</version>
        <scope>test</scope>
      </dependency>
      <dependency>

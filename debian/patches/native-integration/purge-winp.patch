@@ -5,8 +5,8 @@ Forwarded: not-needed
 
 Index: jenkins/core/src/main/java/hudson/util/ProcessTree.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/util/ProcessTree.java	2011-11-22 08:20:17.795238543 +0000
-+++ jenkins/core/src/main/java/hudson/util/ProcessTree.java	2011-11-22 08:20:34.923224623 +0000
+--- jenkins.orig/core/src/main/java/hudson/util/ProcessTree.java	2012-01-31 10:35:19.036316742 +0000
++++ jenkins/core/src/main/java/hudson/util/ProcessTree.java	2012-01-31 10:35:35.580316329 +0000
 @@ -37,8 +37,6 @@
  import hudson.util.ProcessTreeRemoting.IOSProcess;
  import hudson.util.ProcessTreeRemoting.IProcessTree;
@@ -108,7 +108,7 @@ Index: jenkins/core/src/main/java/hudson/util/ProcessTree.java
      static abstract class Unix extends Local {
          @Override
          public OSProcess get(Process proc) {
-@@ -1219,4 +1139,4 @@
+@@ -1223,4 +1143,4 @@
       */
      public static boolean enabled = !Boolean.getBoolean(ProcessTreeKiller.class.getName()+".disable")
                                   && !Boolean.getBoolean(ProcessTree.class.getName()+".disable");

@@ -45,11 +45,6 @@ Copyright: 2004- Kohsuke Kawaguchi,
            2004- and a number of other of contributers
 License: MIT
 
-Files: remoting/src/main/java/hudson/remoting/FastPipedOutputStream.java
-       remoting/src/main/java/hudson/remoting/FastPipedInputStream.java
-Copyright: 2006-2008 Makoto YUI
-License: Apache-2.0
-
 Files: test/src/test/java/hudson/maven/Maven3BuildTest.java
        maven-plugin/src/main/java/hudson/maven/util/ExecutionEventLogger.java
        maven-plugin/src/main/java/hudson/maven/MavenEmbedderRequest.java

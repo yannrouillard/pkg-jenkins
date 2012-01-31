@@ -10,18 +10,9 @@ Forwarded: not-needed
 
 Index: jenkins/core/pom.xml
 ===================================================================
---- jenkins.orig/core/pom.xml	2011-11-22 08:20:31.439227453 +0000
-+++ jenkins/core/pom.xml	2011-11-22 08:20:33.767225562 +0000
-@@ -33,7 +33,7 @@
-   </parent>
- 
-   <artifactId>jenkins-core</artifactId>
--  <packaging>stapler-jar</packaging>
-+ 
-   <name>Jenkins core</name>
-   <description>
-     Contains the core Jenkins code and view files to render HTML.
-@@ -71,16 +71,26 @@
+--- jenkins.orig/core/pom.xml	2012-01-31 10:35:32.864316397 +0000
++++ jenkins/core/pom.xml	2012-01-31 10:35:34.520316354 +0000
+@@ -573,6 +573,24 @@
          </executions>
        </plugin>
        <plugin>
@@ -45,14 +36,4 @@ Index: jenkins/core/pom.xml
 +      <plugin>
          <groupId>org.kohsuke.stapler</groupId>
          <artifactId>maven-stapler-plugin</artifactId>
--        <extensions>true</extensions>
--        <dependencies>
--          <dependency>
--            <groupId>org.jvnet.maven-jellydoc-plugin</groupId>
--            <artifactId>maven-jellydoc-plugin</artifactId>
--            <version>1.4</version>
--          </dependency>
--        </dependencies>
-         <configuration>
-           <fork>${staplerFork}</fork><!-- the source code is big enough now that otherwise it fails with OutOfMemoryError -->
-           <maxmem>128m</maxmem>
+         <version>1.16</version>

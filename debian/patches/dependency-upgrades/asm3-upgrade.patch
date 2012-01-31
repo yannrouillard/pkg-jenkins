@@ -6,8 +6,8 @@ Forwarded: no
 
 Index: jenkins/core/src/main/java/hudson/util/SubClassGenerator.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/util/SubClassGenerator.java	2011-11-22 08:20:17.135239080 +0000
-+++ jenkins/core/src/main/java/hudson/util/SubClassGenerator.java	2011-11-22 08:20:36.671223202 +0000
+--- jenkins.orig/core/src/main/java/hudson/util/SubClassGenerator.java	2012-01-31 10:35:18.708316752 +0000
++++ jenkins/core/src/main/java/hudson/util/SubClassGenerator.java	2012-01-31 10:35:36.912316294 +0000
 @@ -44,7 +44,7 @@
      }
  
@@ -17,59 +17,3 @@ Index: jenkins/core/src/main/java/hudson/util/SubClassGenerator.java
          cw.visit(49, ACC_PUBLIC, name.replace('.', '/'), null,
                  Type.getInternalName(base),null);
  
-Index: jenkins/remoting/src/test/java/hudson/remoting/ClassRemotingTest.java
-===================================================================
---- jenkins.orig/remoting/src/test/java/hudson/remoting/ClassRemotingTest.java	2011-11-22 08:20:17.199239028 +0000
-+++ jenkins/remoting/src/test/java/hudson/remoting/ClassRemotingTest.java	2011-11-22 08:20:36.675223199 +0000
-@@ -48,7 +48,7 @@
-         // make sure the bytes are what we are expecting
-         System.out.println("Resource is "+((byte[])r[1]).length+" bytes");
-         ClassReader cr = new ClassReader((byte[])r[1]);
--        cr.accept(new EmptyVisitor(),false);
-+        cr.accept(new EmptyVisitor(),0);
- 
-         // make sure cache is taking effect
-         System.out.println(r[2]);
-Index: jenkins/remoting/src/test/java/hudson/remoting/DummyClassLoader.java
-===================================================================
---- jenkins.orig/remoting/src/test/java/hudson/remoting/DummyClassLoader.java	2011-11-22 08:20:17.151239067 +0000
-+++ jenkins/remoting/src/test/java/hudson/remoting/DummyClassLoader.java	2011-11-22 08:20:36.675223199 +0000
-@@ -64,12 +64,12 @@
- 
-         // rename a class
-         ClassReader cr = new ClassReader(in);
--        ClassWriter w = new ClassWriter(cr,true) {
-+        ClassWriter w = new ClassWriter(cr,0) {
-             public void visit(int version, int access, String _name, String sig, String superName, String[] interfaces) {
-                 super.visit(version, access, name.replace('.','/'), sig, superName, interfaces);
-             }
-         };
--        cr.accept(w,false);
-+        cr.accept(w,0);
- 
-         return w.toByteArray();
-     }
-Index: jenkins/remoting/src/test/java/hudson/remoting/PrefetchTest.java
-===================================================================
---- jenkins.orig/remoting/src/test/java/hudson/remoting/PrefetchTest.java	2011-11-22 08:20:17.167239054 +0000
-+++ jenkins/remoting/src/test/java/hudson/remoting/PrefetchTest.java	2011-11-22 08:20:36.675223199 +0000
-@@ -24,7 +24,7 @@
- package hudson.remoting;
- 
- import org.objectweb.asm.ClassReader;
--import org.objectweb.asm.attrs.StackMapAttribute;
-+import org.objectweb.asm.Label;
- 
- import java.io.IOException;
- 
-@@ -42,8 +42,8 @@
- 
-     private static class VerifyTask implements Callable<String,IOException> {
-         public String call() throws IOException {
--            StackMapAttribute sma = new StackMapAttribute();
--            return Which.jarFile(sma.getClass()).getPath();
-+            Label l = new Label();
-+            return Which.jarFile(l.getClass()).getPath();
-         }
-     }
- }

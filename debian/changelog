@@ -1,3 +1,21 @@
+jenkins (1.424.2+dfsg-1) unstable; urgency=low
+
+  [ Miguel Landaeta ]
+  * Replace dependencies on Spring Framework 2.5 libraries with 3.0 ones.
+    (Closes: #655906).
+
+  [ James Page ]
+  * New upstream release.
+    - d/control: Add new dependencies on libjenkins-remoting-java, 
+      libstapler-adjunct-codemirror-java and libmaven-hpi-plugin-java.
+    - d/control: Dropped libjcaptcha-java; no longer needed.
+  * d/control: Switch to using packaged animal-sniffer.
+  * Refreshed patches:
+    - d/patches/build/{debianize-antrun-war,animal-sniffer-annotation}.patch:
+      dropped as no longer required.
+
+ -- James Page <james.page@ubuntu.com>  Tue, 31 Jan 2012 10:33:56 +0000
+
 jenkins (1.409.3+dfsg-2) unstable; urgency=low
 
   [ James Page ]
