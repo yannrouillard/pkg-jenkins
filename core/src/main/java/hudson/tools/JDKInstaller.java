@@ -23,6 +23,9 @@
  */
 package hudson.tools;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.DefaultCredentialsProvider;
+import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -31,6 +34,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.FilePath;
+import hudson.ProxyConfiguration;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
 import hudson.Util;
@@ -42,9 +46,11 @@ import hudson.remoting.Callable;
 import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
 import hudson.util.HttpResponses;
+import hudson.util.IOException2;
 import hudson.util.Secret;
-import hudson.model.Hudson;
+import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
+import org.apache.commons.httpclient.auth.CredentialsProvider;
 import org.apache.commons.io.IOUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.HttpResponse;
@@ -300,7 +306,7 @@ public class JDKInstaller extends ToolInstaller {
      * This is where we locally cache this JDK.
      */
     private File getLocalCacheFile(Platform platform, CPU cpu) {
-        return new File(Hudson.getInstance().getRootDir(),"cache/jdks/"+platform+"/"+cpu+"/"+id);
+        return new File(Jenkins.getInstance().getRootDir(),"cache/jdks/"+platform+"/"+cpu+"/"+id);
     }
 
     /**
@@ -344,6 +350,21 @@ public class JDKInstaller extends ToolInstaller {
         URL src = new URL(primary.filepath);
 
         WebClient wc = new WebClient();
+        // honor jenkins proxy settings in WebClient
+        Jenkins h = Jenkins.getInstance();
+        ProxyConfiguration jpc = h!=null ? h.proxy : null;
+        if(jpc != null) {
+            ProxyConfig pc = new ProxyConfig();
+            pc.setProxyHost(jpc.name);
+            pc.setProxyPort(jpc.port);
+            wc.setProxyConfig(pc);
+            if(jpc.getUserName() != null) {
+                DefaultCredentialsProvider cp = new DefaultCredentialsProvider();
+                cp.addCredentials(jpc.getUserName(), jpc.getPassword(), jpc.name, jpc.port, null);
+                wc.setCredentialsProvider(cp);
+            }
+        }
+        
         wc.setJavaScriptEnabled(false);
         wc.setCssEnabled(false);
         Page page = wc.getPage(src);
@@ -392,9 +413,6 @@ public class JDKInstaller extends ToolInstaller {
 
             throw new IOException("Unable to find the login form in "+html.asXml());
         }
-
-        // TODO: there's awful inefficiency in htmlunit where it loads the whole binary into one big byte array.
-        // needs to modify it to use temporary file or something
 
         // download to a temporary file and rename it in to handle concurrency and failure correctly,
         File tmp = new File(cache.getPath()+".tmp");
@@ -629,7 +647,7 @@ public class JDKInstaller extends ToolInstaller {
 
         public FormValidation doCheckAcceptLicense(@QueryParameter boolean value) {
             if (username==null || password==null)
-                return FormValidation.errorWithMarkup(Messages.JDKInstaller_RequireOracleAccount(Stapler.getCurrentRequest().getContextPath()+'/'+getDescriptorUrl()+"/enterCredential"));
+                return FormValidation.errorWithMarkup(Messages.JDKInstaller_RequireOracleAccount(Stapler.getCurrentRequest().getContextPath()+getDescriptorUrl()+"/enterCredential"));
             if (value) {
                 return FormValidation.ok();
             } else {
