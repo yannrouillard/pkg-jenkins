@@ -25,14 +25,19 @@ package hudson.maven;
 
 import hudson.EnvVars;
 import hudson.FilePath;
+import hudson.maven.reporters.MavenArtifactRecord;
+import hudson.maven.reporters.SurefireArchiver;
+import hudson.slaves.WorkspaceList;
+import hudson.slaves.WorkspaceList.Lease;
 import hudson.maven.agent.AbortException;
 import hudson.maven.reporters.SurefireArchiver;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.Computer;
+import hudson.model.Descriptor;
 import hudson.model.Environment;
 import hudson.model.Executor;
-import hudson.model.Hudson;
+import jenkins.model.Jenkins;
 import hudson.model.Node;
 import hudson.model.Result;
 import hudson.model.Run;
@@ -44,9 +49,22 @@ import hudson.slaves.WorkspaceList;
 import hudson.slaves.WorkspaceList.Lease;
 import hudson.tasks.BuildWrapper;
 import hudson.tasks.Maven.MavenInstallation;
+import hudson.tasks.Publisher;
 import hudson.util.ArgumentListBuilder;
+import hudson.util.DescribableList;
 import hudson.util.IOUtils;
 import hudson.util.ReflectionUtils;
+import org.apache.maven.BuildFailureException;
+import org.apache.maven.artifact.versioning.ComparableVersion;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.execution.ReactorManager;
+import org.apache.maven.lifecycle.LifecycleExecutionException;
+import org.apache.maven.monitor.event.EventDispatcher;
+import org.apache.maven.project.MavenProject;
+import org.kohsuke.stapler.Ancestor;
+import org.kohsuke.stapler.Stapler;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.export.Exported;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -61,6 +79,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.apache.maven.BuildFailureException;
 import org.apache.maven.artifact.versioning.ComparableVersion;
@@ -160,6 +179,14 @@ public class MavenBuild extends AbstractMavenBuild<MavenModule,MavenBuild> {
     }
 
     /**
+     * The same as {@link #getParentBuild()}.
+     */
+    @Override
+    public AbstractBuild<?, ?> getRootBuild() {
+        return getParentBuild();
+    }
+
+    /**
      * Gets the "governing" {@link MavenModuleSet} that has set
      * the workspace for this build.
      *
@@ -186,6 +213,14 @@ public class MavenBuild extends AbstractMavenBuild<MavenModule,MavenBuild> {
     }
 
     /**
+     * Information about artifacts produced by Maven.
+     */
+    @Exported
+    public MavenArtifactRecord getMavenArtifacts() {
+        return getAction(MavenArtifactRecord.class);
+    }
+
+    /**
      * Exposes {@code MAVEN_OPTS} to forked processes.
      *
      * <p>
@@ -203,9 +238,7 @@ public class MavenBuild extends AbstractMavenBuild<MavenModule,MavenBuild> {
         // or if Maven calls itself e.g. maven-release-plugin
         MavenInstallation mvn = project.getParent().getMaven();
         if (mvn == null)
-            throw new AbortException(
-                    "A Maven installation needs to be available for this project to be built.\n"
-                    + "Either your server has no Maven installations defined, or the requested Maven version does not exist.");
+            throw new hudson.AbortException(Messages.MavenModuleSetBuild_NoMavenConfigured());
         mvn = mvn.forEnvironment(envs).forNode(Computer.currentComputer().getNode(), log);
         envs.put("M2_HOME", mvn.getHome());
         envs.put("PATH+MAVEN", mvn.getHome() + "/bin");
@@ -273,16 +306,20 @@ public class MavenBuild extends AbstractMavenBuild<MavenModule,MavenBuild> {
         super.setWorkspace(path);
     }
     
-    
+    @Override
+    public MavenModule getParent() {// don't know why, but javac wants this
+        return super.getParent();
+    }
+
     /**
      * @see hudson.model.AbstractBuild#getBuiltOn()
      * @since 1.394
      */
     public Node getBuiltOn() {
         if(builtOn==null || builtOn.equals(""))
-            return Hudson.getInstance();
+            return Jenkins.getInstance();
         else
-            return Hudson.getInstance().getNode(builtOn);
+            return Jenkins.getInstance().getNode(builtOn);
     }
 
     /**
@@ -503,7 +540,7 @@ public class MavenBuild extends AbstractMavenBuild<MavenModule,MavenBuild> {
         }
 
         /**
-         * Sends the accumuldated log in {@link SplittableBuildListener} to the log of this build.
+         * Sends the accumulated log in {@link SplittableBuildListener} to the log of this build.
          */
         public void appendLastLog() {
             try {
@@ -541,23 +578,37 @@ public class MavenBuild extends AbstractMavenBuild<MavenModule,MavenBuild> {
                     public void cleanUp(BuildListener listener) {
                     }
                 });
-                
-                
+            }
+            
+            rememberModulesToBuildAgainNextTime();
+        }
+
+        private void rememberModulesToBuildAgainNextTime() {
+            MavenModuleSetBuild moduleSetBuild = getModuleSetBuild();
+            
+            if (moduleSetBuild == null) {
+                // ModuleSetBuild is gone, for whatever reason JENKINS-9822
+                return;
+            }
+            
+            if(hasntStartedYet()) {
                 // record modules which have not been build though they should have - i.e. because they
                 // have SCM changes.
                 // see JENKINS-5764
-                if (getParentBuild().getParent().isIncrementalBuild() && getParentBuild().getResult() == Result.FAILURE) {
-                    UnbuiltModuleAction action = getParentBuild().getAction(UnbuiltModuleAction.class);
+                if (moduleSetBuild.getParent().isIncrementalBuild()
+                    && moduleSetBuild.getResult() != Result.SUCCESS
+                    && moduleSetBuild.getResult() != Result.UNSTABLE) {
+                    UnbuiltModuleAction action = moduleSetBuild.getAction(UnbuiltModuleAction.class);
                     if (action == null) {
                         action = new UnbuiltModuleAction();
-                        getParentBuild().getActions().add(action);
+                        moduleSetBuild.getActions().add(action);
                     }
                     action.addUnbuiltModule(getParent().getModuleName());
                 }
             } else {
                 // mark that this module has been built now, if it has previously been remembered as unbuilt
                 // JENKINS-5764
-                MavenModuleSetBuild previousParentBuild = getParentBuild().getPreviousBuild();
+                MavenModuleSetBuild previousParentBuild = moduleSetBuild.getPreviousBuild();
                 if (previousParentBuild != null) {
                     UnbuiltModuleAction unbuiltModuleAction = previousParentBuild.getAction(UnbuiltModuleAction.class);
                     if (unbuiltModuleAction != null) {
@@ -567,6 +618,32 @@ public class MavenBuild extends AbstractMavenBuild<MavenModule,MavenBuild> {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                    }
+                }
+                
+                if (moduleSetBuild.getParent().isIncrementalBuild() &&
+                        (moduleSetBuild.getResult() != Result.SUCCESS)) {
+                
+                    // JENKINS-5121: maybe module needs to be deployed on next build over the deployment threshold
+                    MavenModuleSet mavenModuleSet = moduleSetBuild.getParent();
+                    boolean isDeploying = false;
+                    Result deploymentThreshold = Result.SUCCESS;
+                    DescribableList<Publisher,Descriptor<Publisher>> publishers = mavenModuleSet.getPublishersList();
+                    for (Publisher publisher : publishers) {
+                        if (publisher instanceof RedeployPublisher) {
+                            isDeploying = true;
+                            deploymentThreshold = ((RedeployPublisher)publisher).getTreshold();
+                            break;
+                        }
+                    }
+                    
+                    if (isDeploying && moduleSetBuild.getResult().isWorseThan(deploymentThreshold)) {
+                        UnbuiltModuleAction action = moduleSetBuild.getAction(UnbuiltModuleAction.class);
+                        if (action == null) {
+                            action = new UnbuiltModuleAction();
+                            moduleSetBuild.getActions().add(action);
+                        }
+                        action.addUnbuiltModule(getParent().getModuleName());
                     }
                 }
             }
@@ -620,8 +697,8 @@ public class MavenBuild extends AbstractMavenBuild<MavenModule,MavenBuild> {
             MavenInformation mavenInformation = getModuleRoot().act( new MavenVersionCallable( mvn.getHome() ));
             
             String mavenVersion = mavenInformation.getVersion();
-            
-            listener.getLogger().println("Found mavenVersion " + mavenVersion + " from file " + mavenInformation.getVersionResourcePath());
+
+            LOGGER.fine(getFullDisplayName()+" is building with mavenVersion " + mavenVersion + " from file " + mavenInformation.getVersionResourcePath());
             
             ProcessCache.MavenProcess process = null;
             
@@ -718,11 +795,10 @@ public class MavenBuild extends AbstractMavenBuild<MavenModule,MavenBuild> {
                 ReflectionUtils.findMethod(clazz, "expand", new Class[]{ AbstractBuild.class, TaskListener.class, String.class} );
             opts = (String) expandMethod.invoke( null, this, listener, opts );
             //opts = TokenMacro.expand(this, listener, opts);
-        //} catch (MacroEvaluationException e) {
-        //    listener.error( "Ignore MacroEvaluationException " + e.getMessage() );            
         }
         catch(Exception tokenException) {
-            listener.error("Ignore Problem expanding maven opts macros " + tokenException.getMessage());
+            //Token plugin not present. Ignore, this is OK.
+            //listener.error("Ignore Problem expanding maven opts macros " + tokenException.getMessage());
         }
         catch(LinkageError linkageError) {
             // Token plugin not present. Ignore, this is OK.
@@ -739,12 +815,6 @@ public class MavenBuild extends AbstractMavenBuild<MavenModule,MavenBuild> {
      * Set true to produce debug output.
      */
     public static boolean debug = false;
-    
-    @Override
-    public MavenModule getParent() {// don't know why, but javac wants this
-        return super.getParent();
-    }
 
-    
-
+    private static final Logger LOGGER = Logger.getLogger(MavenBuild.class.getName());
 }
