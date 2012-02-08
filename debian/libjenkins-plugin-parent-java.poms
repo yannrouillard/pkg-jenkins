@@ -22,5 +22,5 @@
 #   --classifier=<classifier>: Optional, the classifier for the jar. Empty by default.
 #   --ignore-pom: don't install the POM with mh_install or mh_installpoms. To use with POM files that are created
 #     temporarily for certain artifacts such as Javadoc jars.
-#
-plugins/pom.xml --has-package-version --keep-elements=build --no-parent
+
+debian/plugin-pom.xml --has-package-version --keep-elements=build --no-parent
