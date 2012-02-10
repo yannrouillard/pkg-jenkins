@@ -63,15 +63,9 @@ org.jenkins-ci jinterop-wmi * * * *
 org.jenkins-ci windows-remote-command * * * *
 # OK: Ignore asm2 components not present in asm3
 #asm asm-attrs * * * *
-# OK: Ignore identity stuff in Jenkins for now
-org.jenkins-ci.modules instance-identity * * * *
 # New deps to ignore for 1.424.1
 org.codehaus.mojo build-helper-maven-plugin * * * *
 # Ignore JRebel - does not appear to by used
 org.kohsuke.stapler stapler-jrebel * * * *
 # Ignore core annotation processors - this is a dummy pakcage
 org.jenkins-ci core-annotation-processors * * * *
-# FIXME: Temp ignore - these need packaging but maven-hpi-plugin 
-# needs fixing up first.
-org.jenkins-ci.modules instance-identity * * * *
-org.jenkins-ci.modules ssh-cli-auth * * * *

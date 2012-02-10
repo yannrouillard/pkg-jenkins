@@ -1,3 +1,11 @@
+jenkins (1.424.2+dfsg-3) unstable; urgency=low
+
+  * Enable use of jenkins-instance-identity and jenkins-ssh-cli-auth to 
+    support use of public/private keypairs when using the jenkins remote
+    cli tool. 
+
+ -- James Page <james.page@ubuntu.com>  Fri, 10 Feb 2012 15:32:33 +0000
+
 jenkins (1.424.2+dfsg-2) unstable; urgency=low
 
   * Enable Jenkins plugin components to support building plugins and 
