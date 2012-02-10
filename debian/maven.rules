@@ -23,7 +23,7 @@ junit junit jar s/3\..*/3.x/ * *
 junit junit jar s/4\..*/4.x/ * *
 # Map onto exact version during build process
 org.jenkins-ci.main * * s/1\..*/1.424.2/ * *
-org.jenkins-ci.plugins plugin * s/.*/1.424.2/ * *
+# Handle plugin package
 org.kohsuke access-modifier-annotation jar s/.*/1.0/ * *
 org.kohsuke access-modifier-checker *  s/.*/1.0/ * *
 # 3.x is needed due to later versions of some deps in Debian

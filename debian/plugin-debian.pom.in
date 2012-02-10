@@ -12,7 +12,7 @@
   <groupId>org.jenkins-ci.plugins</groupId>
   <artifactId>plugin</artifactId>
   <name>Jenkins plugin POM</name>
-  <version>__VERSION__</version>
+  <version>debian</version>
   <packaging>pom</packaging>
 
   <dependencies>
@@ -63,12 +63,6 @@
         <artifactId>maven-stapler-plugin</artifactId>
         <version>1.16</version>
         <extensions>true</extensions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <goals>deploy</goals>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.jvnet.localizer</groupId>

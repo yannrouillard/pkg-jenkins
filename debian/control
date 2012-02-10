@@ -123,8 +123,15 @@ Description: Jenkins CI core Java libraries
 
 Package: libjenkins-plugin-parent-java
 Architecture: all
-Depends: libmaven-hpi-plugin-java, libmaven-stapler-plugin-java,
- libjenkins-java, junit4, libservlet2.5-java, ${misc:Depends}
+Depends:
+ junit4,
+ libjenkins-java,
+ libmaven-hpi-plugin-java,
+ libmaven-javadoc-plugin-java,
+ libmaven-stapler-plugin-java,
+ libservlet2.5-java,
+ libsurefire-java,
+ ${misc:Depends}
 Description: Jenkins Plugin Parent Maven POM
  Jenkins monitors executions of repeated jobs, such as building a software
  project or jobs run by cron. Among those things, current Jenkins focuses
@@ -148,7 +155,7 @@ Description: Jenkins Plugin Parent Maven POM
 
 Package: jenkins-common
 Architecture: all
-Depends: 
+Depends:
  libjenkins-remoting-java,
  libjffi-java,
  libjna-java,
@@ -180,9 +187,9 @@ Package: jenkins
 Architecture: all
 Depends:
  adduser,
- ${jenkins-daemon-deps},
  default-jre-headless | java6-runtime-headless,
  jenkins-common,
+ ${jenkins-daemon-deps},
  ${misc:Depends}
 Conflicts: jenkins-tomcat, tomcat6
 Description: Continuous Integration and Job Scheduling Server
@@ -210,8 +217,8 @@ Package: jenkins-slave
 Architecture: all
 Depends:
  adduser,
- ${jenkins-daemon-deps},
  default-jre-headless | java6-runtime-headless,
+ ${jenkins-daemon-deps},
  ${misc:Depends}
 Recommends: jenkins-cli, ssh-server | openssh-server
 Description: Jenkins slave node helper
