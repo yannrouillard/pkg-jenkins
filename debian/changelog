@@ -1,6 +1,7 @@
 jenkins (1.424.2+dfsg-2) unstable; urgency=low
 
-  * Enable Jenkins plugin components to support building plugins and modules:
+  * Enable Jenkins plugin components to support building plugins and 
+    modules (Closes: #658071):
     - d/control: Enabled libjenkins-plugin-parent-java, updated dependencies.
     - d/plugin-debian.pom.in,rules: Install pom file to act as parent POM for 
       plugin development based on upstream plugin pom file.
@@ -8,7 +9,7 @@ jenkins (1.424.2+dfsg-2) unstable; urgency=low
     - d/patches/build/plugin.patch: Dropped - no longer required.
   * Switch to using libservlet2.5-java (Closes: #658805)
 
- -- James Page <james.page@ubuntu.com>  Fri, 10 Feb 2012 11:26:17 +0000
+ -- James Page <james.page@ubuntu.com>  Fri, 10 Feb 2012 14:20:19 +0000
 
 jenkins (1.424.2+dfsg-1) unstable; urgency=low
 
