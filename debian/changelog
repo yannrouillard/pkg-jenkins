@@ -1,4 +1,4 @@
-jenkins (1.424.2+dfsg-3) unstable; urgency=low
+jenkins (1.424.2+dfsg-3) UNRELEASED; urgency=low
 
   * Enable use of jenkins-instance-identity and jenkins-ssh-cli-auth to 
     support use of public/private keypairs when using the jenkins remote
