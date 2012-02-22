@@ -64,6 +64,12 @@ get-orig-source:
         ../jenkins_$(DEB_UPSTREAM_VERSION)+dfsg.orig.tar.gz
 
 before-mvn-build:: dummy.keystore
+	# Purge out links relating to jenkins from the copy of the maven repo
+	# fixes issue with circular dependency and the need to use the install
+	# maven target
+	for module in jenkins-core cli pom jenkins-war; do \
+		find debian/maven-repo/org/jenkins-ci/main/$${module} -type l -delete || true ;\
+	done
 
 dummy.keystore:
 	keytool -genkeypair -dname "cn=Jenkins, ou=Jenkins Project, o=Debian, c=US" \

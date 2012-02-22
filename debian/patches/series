@@ -9,10 +9,8 @@ native-integration/filter-native-integrations.patch
 native-integration/purge-embedded-su4j.patch
 native-integration/purge-winp.patch
 native-integration/purge-windows-support.patch
-dependency-upgrades/jcaptcha-slf4j.patch
 dependency-upgrades/groovy-upgrade.patch
 dependency-upgrades/jnr-posix-upgrade.patch
 dependency-upgrades/asm3-upgrade.patch
 dependency-upgrades/animal-sniffer-upgrade.patch
 ubuntu/ubuntu-font.patch
-#groovy-2.0.0-compat.patch

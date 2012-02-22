@@ -47,6 +47,7 @@ Build-Depends-Indep:
  libcommons-logging-java,
  libjaxen-java,
  libjellydoc-java,
+ libjenkins-plugin-parent-java,
  libjenkins-commons-jelly-java,
  libjenkins-commons-jexl-java,
  libjenkins-htmlunit-java,
