@@ -1,4 +1,4 @@
-jenkins (1.424.2+dfsg-3) UNRELEASED; urgency=low
+jenkins (1.424.2+dfsg-3) unstable; urgency=low
 
   * Enable use of jenkins-instance-identity and jenkins-ssh-cli-auth to 
     support use of public/private keypairs when using the jenkins remote
@@ -6,8 +6,11 @@ jenkins (1.424.2+dfsg-3) UNRELEASED; urgency=low
   * Dropped jcaptcha-slf4j.patch; no longer required as library not used.
   * Updated plugin parent pom file to specifiy default source/target for
     maven-compiler-plugin as Java 1.5.
+  * Ensure that jenkins group exists and that its the primary group for
+    the jenkins user to deal with transition from upstream packaging 
+    (Closes: #661203).
 
- -- James Page <james.page@ubuntu.com>  Mon, 13 Feb 2012 10:06:54 +0000
+ -- James Page <james.page@ubuntu.com>  Sun, 26 Feb 2012 18:57:50 +0000
 
 jenkins (1.424.2+dfsg-2) unstable; urgency=low
 

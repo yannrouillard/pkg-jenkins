@@ -17,7 +17,7 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-# Setup environment variables for JOnAS
+# Setup environment variables for Jenkins
 export JENKINS_ROOT="/usr/share/jenkins"
 export JENKINS_HOME="/var/lib/jenkins"
 
@@ -28,6 +28,12 @@ case "$1" in
             adduser --system --home /var/lib/jenkins --no-create-home \
                 --group --disabled-password --quiet --shell /bin/bash \
                 jenkins 
+        fi
+        # Deal with migration from upstream packaging
+        # which does not user jenkins group - uses nogroup
+        if ! getent group jenkins > /dev/null 2>&1 ; then
+            addgroup --system --quiet jenkins
+            usermod -g jenkins jenkins > /dev/null 2>&1
         fi
         # Fix directory permissions
         chown -R jenkins:jenkins /var/log/jenkins || true
