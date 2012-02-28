@@ -1,5 +1,6 @@
-jenkins (1.424.2+dfsg-3) unstable; urgency=low
+jenkins (1.424.3+dfsg-1) unstable; urgency=low
 
+  * New upstream bugfix release.
   * Enable use of jenkins-instance-identity and jenkins-ssh-cli-auth to 
     support use of public/private keypairs when using the jenkins remote
     cli tool. 
@@ -7,10 +8,10 @@ jenkins (1.424.2+dfsg-3) unstable; urgency=low
   * Updated plugin parent pom file to specifiy default source/target for
     maven-compiler-plugin as Java 1.5.
   * Ensure that jenkins group exists and that its the primary group for
-    the jenkins user to deal with transition from upstream packaging 
+    the jenkins user to help deal with transition from upstream packaging 
     (Closes: #661203).
 
- -- James Page <james.page@ubuntu.com>  Sun, 26 Feb 2012 18:57:50 +0000
+ -- James Page <james.page@ubuntu.com>  Tue, 28 Feb 2012 16:46:30 +0000
 
 jenkins (1.424.2+dfsg-2) unstable; urgency=low
 
