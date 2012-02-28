@@ -3,6 +3,7 @@ jenkins (1.424.3+dfsg-1) unstable; urgency=low
   * New upstream bugfix release.
   * Refreshed patches:
     - Dropped disable-avalon-frawework.patch - no longer required.
+  * Bumped Standards-Version: 3.9.3; no changes required.
   * Enable use of jenkins-instance-identity and jenkins-ssh-cli-auth to 
     support use of public/private keypairs when using the jenkins remote
     cli tool. 
@@ -13,7 +14,7 @@ jenkins (1.424.3+dfsg-1) unstable; urgency=low
     the jenkins user to help deal with transition from upstream packaging 
     (Closes: #661203).
 
- -- James Page <james.page@ubuntu.com>  Tue, 28 Feb 2012 16:49:57 +0000
+ -- James Page <james.page@ubuntu.com>  Tue, 28 Feb 2012 16:51:50 +0000
 
 jenkins (1.424.2+dfsg-2) unstable; urgency=low
 

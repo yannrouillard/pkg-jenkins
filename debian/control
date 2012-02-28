@@ -93,7 +93,7 @@ Build-Depends-Indep:
  libtxw2-java,
  libxpp3-java,
  ttf-dejavu-core
-Standards-Version: 3.9.2
+Standards-Version: 3.9.3
 Homepage: http://jenkins-ci.org/
 Vcs-Git: git://git.debian.org/git/pkg-java/jenkins.git
 Vcs-Browser: http://git.debian.org/?p=pkg-java/jenkins.git
