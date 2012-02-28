@@ -4,8 +4,8 @@ Forwarded: not-needed
 
 Index: jenkins/war/src/main/webapp/css/style.css
 ===================================================================
---- jenkins.orig/war/src/main/webapp/css/style.css	2012-01-31 10:35:18.568316756 +0000
-+++ jenkins/war/src/main/webapp/css/style.css	2012-01-31 10:35:37.608316278 +0000
+--- jenkins.orig/war/src/main/webapp/css/style.css	2012-02-10 15:39:23.029867344 +0000
++++ jenkins/war/src/main/webapp/css/style.css	2012-02-28 16:49:19.749828573 +0000
 @@ -29,7 +29,7 @@
  
  body, table, form, input, td, th, p, textarea, select

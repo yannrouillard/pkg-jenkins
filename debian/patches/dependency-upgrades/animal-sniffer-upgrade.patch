@@ -5,8 +5,8 @@ Forwarded: https://github.com/jenkinsci/jenkins/commit/dd8cdda6eeb4a29d991a61d58
 
 Index: jenkins/core/src/main/java/hudson/Functions.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/Functions.java	2012-01-31 10:35:18.596316754 +0000
-+++ jenkins/core/src/main/java/hudson/Functions.java	2012-01-31 10:35:37.188316288 +0000
+--- jenkins.orig/core/src/main/java/hudson/Functions.java	2012-02-10 15:39:22.669867336 +0000
++++ jenkins/core/src/main/java/hudson/Functions.java	2012-02-28 16:49:18.501824775 +0000
 @@ -63,7 +63,7 @@
  import org.apache.commons.jelly.XMLOutput;
  import org.apache.commons.jexl.parser.ASTSizeFunction;
@@ -18,8 +18,8 @@ Index: jenkins/core/src/main/java/hudson/Functions.java
  import org.kohsuke.stapler.Stapler;
 Index: jenkins/core/src/main/java/hudson/Util.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/Util.java	2012-01-31 10:35:18.604316753 +0000
-+++ jenkins/core/src/main/java/hudson/Util.java	2012-01-31 10:35:37.188316288 +0000
+--- jenkins.orig/core/src/main/java/hudson/Util.java	2012-02-10 15:39:22.673867336 +0000
++++ jenkins/core/src/main/java/hudson/Util.java	2012-02-28 16:49:18.505824788 +0000
 @@ -42,7 +42,7 @@
  import org.jruby.ext.posix.FileStat;
  import org.jruby.ext.posix.POSIX;
@@ -31,8 +31,8 @@ Index: jenkins/core/src/main/java/hudson/Util.java
  import javax.crypto.spec.SecretKeySpec;
 Index: jenkins/core/src/main/java/hudson/diagnosis/HudsonHomeDiskUsageChecker.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/diagnosis/HudsonHomeDiskUsageChecker.java	2012-01-31 10:35:18.640316752 +0000
-+++ jenkins/core/src/main/java/hudson/diagnosis/HudsonHomeDiskUsageChecker.java	2012-01-31 10:35:37.188316288 +0000
+--- jenkins.orig/core/src/main/java/hudson/diagnosis/HudsonHomeDiskUsageChecker.java	2012-02-10 15:39:22.677867336 +0000
++++ jenkins/core/src/main/java/hudson/diagnosis/HudsonHomeDiskUsageChecker.java	2012-02-28 16:49:18.505824788 +0000
 @@ -26,7 +26,7 @@
  import hudson.Extension;
  import jenkins.model.Jenkins;
@@ -44,8 +44,8 @@ Index: jenkins/core/src/main/java/hudson/diagnosis/HudsonHomeDiskUsageChecker.ja
  
 Index: jenkins/core/src/main/java/hudson/model/ExternalRun.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/model/ExternalRun.java	2012-01-31 10:35:18.616316754 +0000
-+++ jenkins/core/src/main/java/hudson/model/ExternalRun.java	2012-01-31 10:35:37.188316288 +0000
+--- jenkins.orig/core/src/main/java/hudson/model/ExternalRun.java	2012-02-10 15:39:22.693867337 +0000
++++ jenkins/core/src/main/java/hudson/model/ExternalRun.java	2012-02-28 16:49:18.505824788 +0000
 @@ -26,7 +26,7 @@
  import hudson.Proc;
  import hudson.util.DecodingStream;
@@ -57,8 +57,8 @@ Index: jenkins/core/src/main/java/hudson/model/ExternalRun.java
  import javax.xml.stream.XMLStreamException;
 Index: jenkins/core/src/main/java/hudson/node_monitors/DiskSpaceMonitorDescriptor.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/node_monitors/DiskSpaceMonitorDescriptor.java	2012-01-31 10:35:18.624316754 +0000
-+++ jenkins/core/src/main/java/hudson/node_monitors/DiskSpaceMonitorDescriptor.java	2012-01-31 10:35:37.188316288 +0000
+--- jenkins.orig/core/src/main/java/hudson/node_monitors/DiskSpaceMonitorDescriptor.java	2012-02-10 15:39:22.709867337 +0000
++++ jenkins/core/src/main/java/hudson/node_monitors/DiskSpaceMonitorDescriptor.java	2012-02-28 16:49:18.505824788 +0000
 @@ -29,7 +29,7 @@
  import hudson.Util;
  import hudson.slaves.OfflineCause;
@@ -70,8 +70,8 @@ Index: jenkins/core/src/main/java/hudson/node_monitors/DiskSpaceMonitorDescripto
  import java.io.IOException;
 Index: jenkins/core/src/main/java/hudson/node_monitors/TemporarySpaceMonitor.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/node_monitors/TemporarySpaceMonitor.java	2012-01-31 10:35:18.632316753 +0000
-+++ jenkins/core/src/main/java/hudson/node_monitors/TemporarySpaceMonitor.java	2012-01-31 10:35:37.188316288 +0000
+--- jenkins.orig/core/src/main/java/hudson/node_monitors/TemporarySpaceMonitor.java	2012-02-10 15:39:22.709867337 +0000
++++ jenkins/core/src/main/java/hudson/node_monitors/TemporarySpaceMonitor.java	2012-02-28 16:49:18.505824788 +0000
 @@ -31,7 +31,7 @@
  import jenkins.model.Jenkins;
  import hudson.node_monitors.DiskSpaceMonitorDescriptor.DiskSpace;
@@ -83,8 +83,8 @@ Index: jenkins/core/src/main/java/hudson/node_monitors/TemporarySpaceMonitor.jav
  import java.io.File;
 Index: jenkins/core/src/main/java/hudson/security/AbstractPasswordBasedSecurityRealm.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/security/AbstractPasswordBasedSecurityRealm.java	2012-01-31 10:35:18.668316753 +0000
-+++ jenkins/core/src/main/java/hudson/security/AbstractPasswordBasedSecurityRealm.java	2012-01-31 10:35:37.188316288 +0000
+--- jenkins.orig/core/src/main/java/hudson/security/AbstractPasswordBasedSecurityRealm.java	2012-02-10 15:39:22.713867337 +0000
++++ jenkins/core/src/main/java/hudson/security/AbstractPasswordBasedSecurityRealm.java	2012-02-28 16:49:18.509824800 +0000
 @@ -16,7 +16,7 @@
  import org.acegisecurity.userdetails.UserDetails;
  import org.acegisecurity.userdetails.UserDetailsService;
@@ -96,8 +96,8 @@ Index: jenkins/core/src/main/java/hudson/security/AbstractPasswordBasedSecurityR
  import org.springframework.web.context.WebApplicationContext;
 Index: jenkins/core/src/main/java/hudson/tools/ZipExtractionInstaller.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/tools/ZipExtractionInstaller.java	2012-01-31 10:35:18.652316753 +0000
-+++ jenkins/core/src/main/java/hudson/tools/ZipExtractionInstaller.java	2012-01-31 10:35:37.188316288 +0000
+--- jenkins.orig/core/src/main/java/hudson/tools/ZipExtractionInstaller.java	2012-02-10 15:39:22.733867337 +0000
++++ jenkins/core/src/main/java/hudson/tools/ZipExtractionInstaller.java	2012-02-28 16:49:18.509824800 +0000
 @@ -45,7 +45,7 @@
  import java.net.URLConnection;
  import org.kohsuke.stapler.DataBoundConstructor;

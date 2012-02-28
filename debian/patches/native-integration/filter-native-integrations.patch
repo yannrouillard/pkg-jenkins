@@ -1,8 +1,8 @@
 Index: jenkins/core/pom.xml
 ===================================================================
---- jenkins.orig/core/pom.xml	2012-01-31 10:35:34.780316349 +0000
-+++ jenkins/core/pom.xml	2012-01-31 10:35:35.048316342 +0000
-@@ -598,6 +598,17 @@
+--- jenkins.orig/core/pom.xml	2012-02-28 16:49:09.501797382 +0000
++++ jenkins/core/pom.xml	2012-02-28 16:49:10.609800755 +0000
+@@ -587,6 +587,17 @@
          <configuration>
            <fork>${staplerFork}</fork><!-- the source code is big enough now that otherwise it fails with OutOfMemoryError -->
            <maxmem>128m</maxmem>

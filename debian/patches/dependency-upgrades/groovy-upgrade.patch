@@ -5,9 +5,9 @@ Forwarded: not-needed
 
 Index: jenkins/core/pom.xml
 ===================================================================
---- jenkins.orig/core/pom.xml	2012-01-31 10:35:36.104316316 +0000
-+++ jenkins/core/pom.xml	2012-01-31 10:35:36.356316308 +0000
-@@ -376,6 +376,16 @@
+--- jenkins.orig/core/pom.xml	2012-02-28 16:49:10.609800755 +0000
++++ jenkins/core/pom.xml	2012-02-28 16:49:15.769816461 +0000
+@@ -365,6 +365,16 @@
        <version>1.6.0</version>
      </dependency>
      <dependency>

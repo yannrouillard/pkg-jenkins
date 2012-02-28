@@ -6,8 +6,8 @@ Forwarded: not-needed
 
 Index: jenkins/core/src/main/java/hudson/slaves/SlaveComputer.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/slaves/SlaveComputer.java	2012-01-31 10:35:18.996316743 +0000
-+++ jenkins/core/src/main/java/hudson/slaves/SlaveComputer.java	2012-01-31 10:35:35.840316321 +0000
+--- jenkins.orig/core/src/main/java/hudson/slaves/SlaveComputer.java	2012-02-10 15:39:22.725867337 +0000
++++ jenkins/core/src/main/java/hudson/slaves/SlaveComputer.java	2012-02-28 16:49:14.885813770 +0000
 @@ -34,7 +34,6 @@
  import hudson.util.RingBufferLogHandler;
  import hudson.util.Futures;

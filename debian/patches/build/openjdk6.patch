@@ -6,9 +6,9 @@ Forwarded: https://bugs.launchpad.net/ubuntu/+source/openjdk-6/+bug/716959
 
 Index: jenkins/core/src/main/java/hudson/model/AbstractBuild.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/model/AbstractBuild.java	2012-01-31 10:35:19.484316732 +0000
-+++ jenkins/core/src/main/java/hudson/model/AbstractBuild.java	2012-01-31 10:35:33.684316375 +0000
-@@ -1186,4 +1186,13 @@
+--- jenkins.orig/core/src/main/java/hudson/model/AbstractBuild.java	2012-02-28 16:46:08.813245244 +0000
++++ jenkins/core/src/main/java/hudson/model/AbstractBuild.java	2012-02-28 16:48:39.265705276 +0000
+@@ -1196,4 +1196,13 @@
      }
  
      private static final Logger LOGGER = Logger.getLogger(AbstractBuild.class.getName());
@@ -24,8 +24,8 @@ Index: jenkins/core/src/main/java/hudson/model/AbstractBuild.java
  }
 Index: jenkins/core/src/main/java/hudson/DescriptorExtensionList.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/DescriptorExtensionList.java	2012-01-31 10:35:19.464316733 +0000
-+++ jenkins/core/src/main/java/hudson/DescriptorExtensionList.java	2012-01-31 10:35:33.684316375 +0000
+--- jenkins.orig/core/src/main/java/hudson/DescriptorExtensionList.java	2012-02-10 15:39:22.665867336 +0000
++++ jenkins/core/src/main/java/hudson/DescriptorExtensionList.java	2012-02-28 16:48:39.265705276 +0000
 @@ -79,8 +79,9 @@
       * @deprecated as of 1.416
       *      Use {@link #create(Jenkins, Class)}

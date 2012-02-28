@@ -1,5 +1,4 @@
 build/build.patch
-build/disable-avalon-frawework.patch
 build/openjdk6.patch
 build/remove-licensing-report.patch
 build/disable-plugins.patch
