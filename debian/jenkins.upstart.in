@@ -16,6 +16,7 @@ end script
 
 script
     [ -r /etc/default/jenkins ] && . /etc/default/jenkins
-    exec su -l $JENKINS_USER --shell=/bin/bash -c \
-        "JENKINS_HOME=$JENKINS_HOME $JAVA $JAVA_ARGS -jar $JENKINS_WAR $JENKINS_ARGS --logfile=$JENKINS_LOG"
+    export JENKINS_HOME
+    exec start-stop-daemon --start -c $JENKINS_USER --exec $JAVA --name jenkins \
+        -- $JAVA_ARGS -jar $JENKINS_WAR $JENKINS_ARGS --logfile=$JENKINS_LOG
 end script

@@ -1,3 +1,10 @@
+jenkins (1.424.3+dfsg-2) UNRELEASED; urgency=low
+
+  * Switch upstart configuration to use start-stop-daemon to allow
+    desktop systems to shutdown.
+
+ -- James Page <james.page@ubuntu.com>  Mon, 12 Mar 2012 11:42:43 +0000
+
 jenkins (1.424.3+dfsg-1) unstable; urgency=low
 
   * New upstream bugfix release.
