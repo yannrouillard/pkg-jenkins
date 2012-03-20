@@ -1,9 +1,13 @@
-jenkins (1.424.3+dfsg-2) UNRELEASED; urgency=low
+jenkins (1.424.6+dfsg-1) UNRELEASED; urgency=low
 
+  * New upstream release, fixing XSS security vulnerability (Closes: #664057):
+    - d/control: Add new dependency on libowasp-java-html-sanitizer-java.
+    - d/maven.rules: Add new rule to use artifacts 
+      from libowasp-java-html-sanitizer-java.
   * Switch upstart configuration to use start-stop-daemon to allow
     desktop systems to shutdown.
 
- -- James Page <james.page@ubuntu.com>  Mon, 12 Mar 2012 11:42:43 +0000
+ -- James Page <james.page@ubuntu.com>  Tue, 20 Mar 2012 13:05:03 +0000
 
 jenkins (1.424.3+dfsg-1) unstable; urgency=low
 

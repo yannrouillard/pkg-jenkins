@@ -78,6 +78,7 @@ Build-Depends-Indep:
  libmaven-war-plugin-java,
  libmaven2-core-java,
  libmetainf-services-java,
+ libowasp-java-html-sanitizer-java,
  libpam4j-java,
  librobust-http-client-java,
  libservlet2.5-java,
