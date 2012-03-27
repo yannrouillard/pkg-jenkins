@@ -1,13 +1,16 @@
-jenkins (1.424.6+dfsg-1) UNRELEASED; urgency=low
+jenkins (1.424.6+dfsg-1) unstable; urgency=low
 
   * New upstream release, fixing XSS security vulnerability (Closes: #664057):
     - d/control: Add new dependency on libowasp-java-html-sanitizer-java.
     - d/maven.rules: Add new rule to use artifacts 
       from libowasp-java-html-sanitizer-java.
-  * Switch upstart configuration to use start-stop-daemon to allow
+  * Switch upstart configurations to use start-stop-daemon to allow
     desktop systems to shutdown.
+  * d/jenkins-slave.upstart.in: Ensure /var/run/jenkins exists before
+    trying to download the jenkins slave.jar file to it.
+    Thanks to Al Stone for providing this fix.
 
- -- James Page <james.page@ubuntu.com>  Tue, 20 Mar 2012 13:05:03 +0000
+ -- James Page <james.page@ubuntu.com>  Tue, 27 Mar 2012 09:17:51 +0100
 
 jenkins (1.424.3+dfsg-1) unstable; urgency=low
 
