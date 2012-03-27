@@ -1,3 +1,8 @@
+Description: Filter non-Linux based native integrations from
+ compliation using stapler.
+Author: James Page <james.page@ubuntu.com>
+Forwarded: not-needed
+
 Index: jenkins/core/pom.xml
 ===================================================================
 --- jenkins.orig/core/pom.xml	2012-02-28 16:49:09.501797382 +0000
