@@ -1,15 +1,21 @@
-jenkins (1.424.2+dfsg-1) precise; urgency=low
+jenkins (1.424.6+dfsg-1) unstable; urgency=low
 
-  * This new upstream release of Jenkins does not currently include 
-    the new ssh-cli and rsa identity management features.
+  Jenkins ssh-cli and rsa identity management features have now been enabled.
+
+ -- James Page <james.page@ubuntu.com>  Tue, 27 Mar 2012 09:26:42 +0100
+
+jenkins (1.424.2+dfsg-1) unstable; urgency=low
+
+  This new upstream release of Jenkins does not currently include 
+  the new ssh-cli and rsa identity management features.
 
  -- James Page <james.page@ubuntu.com>  Tue, 31 Jan 2012 10:37:33 +0000
 
 jenkins (1.409.3+dfsg-1) unstable; urgency=low
 
-  * This release of jenkins for Debian makes some changes to the way that
-    the upstart configuration files work when built for Ubuntu; specifically 
-    all environment variable changes should now be made in /etc/default/jenkins
-    and /etc/default/jenkins-slave rather than using upstart override files.
+  This release of jenkins for Debian makes some changes to the way that
+  the upstart configuration files work when built for Ubuntu; specifically 
+  all environment variable changes should now be made in /etc/default/jenkins
+  and /etc/default/jenkins-slave rather than using upstart override files.
 
  -- James Page <james.page@ubuntu.com>  Fri, 09 Dec 2011 13:02:09 +0000
