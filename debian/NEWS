@@ -1,3 +1,13 @@
+jenkins (1.447.1+dfsg-1) unstable; urgency=low
+
+  This new upstream release of Jenkins does not currently include
+  the new sshd (Jenkins as a SSH server) feature. 
+
+  This will be added at a late date once this module and its dependencies
+  have been packaged for Debian.
+
+ -- James Page <james.page@ubuntu.com>  Wed, 02 May 2012 15:05:57 +0100
+
 jenkins (1.424.6+dfsg-1) unstable; urgency=low
 
   Jenkins ssh-cli and rsa identity management features have now been enabled.

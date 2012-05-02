@@ -6,9 +6,9 @@ Forwarded: https://bugs.launchpad.net/ubuntu/+source/openjdk-6/+bug/716959
 
 Index: jenkins/core/src/main/java/hudson/model/AbstractBuild.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/model/AbstractBuild.java	2012-02-28 16:46:08.813245244 +0000
-+++ jenkins/core/src/main/java/hudson/model/AbstractBuild.java	2012-02-28 16:48:39.265705276 +0000
-@@ -1196,4 +1196,13 @@
+--- jenkins.orig/core/src/main/java/hudson/model/AbstractBuild.java	2012-05-02 14:12:34.000000000 +0100
++++ jenkins/core/src/main/java/hudson/model/AbstractBuild.java	2012-05-02 14:16:24.006955598 +0100
+@@ -1243,6 +1243,15 @@
      }
  
      private static final Logger LOGGER = Logger.getLogger(AbstractBuild.class.getName());
@@ -22,11 +22,13 @@ Index: jenkins/core/src/main/java/hudson/model/AbstractBuild.java
 +
 +
  }
+ 
+ 
 Index: jenkins/core/src/main/java/hudson/DescriptorExtensionList.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/DescriptorExtensionList.java	2012-02-10 15:39:22.665867336 +0000
-+++ jenkins/core/src/main/java/hudson/DescriptorExtensionList.java	2012-02-28 16:48:39.265705276 +0000
-@@ -79,8 +79,9 @@
+--- jenkins.orig/core/src/main/java/hudson/DescriptorExtensionList.java	2012-05-02 14:12:34.000000000 +0100
++++ jenkins/core/src/main/java/hudson/DescriptorExtensionList.java	2012-05-02 14:16:24.006955598 +0100
+@@ -81,8 +81,9 @@
       * @deprecated as of 1.416
       *      Use {@link #create(Jenkins, Class)}
       */
@@ -38,3 +40,15 @@ Index: jenkins/core/src/main/java/hudson/DescriptorExtensionList.java
          return createDescriptorList((Jenkins)hudson,describableType);
      }
  
+Index: jenkins/core/src/main/java/jenkins/model/GlobalConfiguration.java
+===================================================================
+--- jenkins.orig/core/src/main/java/jenkins/model/GlobalConfiguration.java	2012-05-02 14:12:34.000000000 +0100
++++ jenkins/core/src/main/java/jenkins/model/GlobalConfiguration.java	2012-05-02 14:20:43.095765584 +0100
+@@ -48,6 +48,6 @@
+      * Returns all the registered {@link GlobalConfiguration} descriptors.
+      */
+     public static ExtensionList<GlobalConfiguration> all() {
+-        return Jenkins.getInstance().getDescriptorList(GlobalConfiguration.class);
++        return Jenkins.getInstance().<GlobalConfiguration,GlobalConfiguration>getDescriptorList(GlobalConfiguration.class);
+     }
+ }

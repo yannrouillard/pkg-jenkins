@@ -1,3 +1,24 @@
+jenkins (1.447.1+dfsg-1) unstable; urgency=low
+
+  * New upstream release:
+    - d/patches/dependency-upgrade/groovy-upgrade.patch: Dropped - now
+      aligned to upstream version.
+    - d/patches/build/jenkins-version-number.patch: Patch in small version
+      handling library from Jenkins project rather than package separately.
+    - d/patches/build/use-stock-jmdns.patch, d/maven.rules: Revert upstream 
+      use of minor fork of JmDNS.
+    - d/patches/build/build.patch: Allow building with Maven 2, this works 
+      OK for this package as Maven 3 features are not used by the package
+      build process at the moment.
+    - Refreshed all other patches.
+    - d/maven.ignoreRules, d/maven.properties: Disable unit testing and ignore
+      powermock dependencies until powermock is packaged.
+    - d/maven.ignoreRules, d/NEWS: Ignore jenkins sshd module until it gets
+      packaged and let users know this feature is missing.
+    - d/control: Added new dependencies on libsisu-guice-java, libmockito-java.
+
+ -- James Page <james.page@ubuntu.com>  Wed, 02 May 2012 15:10:44 +0100
+
 jenkins (1.424.6+dfsg-1) unstable; urgency=low
 
   * New upstream release, fixing XSS security vulnerability (Closes: #664057):

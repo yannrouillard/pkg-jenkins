@@ -6,8 +6,8 @@ Forwarded: no
 
 Index: jenkins/core/src/main/java/hudson/util/SubClassGenerator.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/util/SubClassGenerator.java	2012-02-10 15:39:22.741867338 +0000
-+++ jenkins/core/src/main/java/hudson/util/SubClassGenerator.java	2012-02-28 16:49:17.545821866 +0000
+--- jenkins.orig/core/src/main/java/hudson/util/SubClassGenerator.java	2012-02-28 16:49:30.829862282 +0000
++++ jenkins/core/src/main/java/hudson/util/SubClassGenerator.java	2012-04-26 14:15:34.236629652 +0100
 @@ -44,7 +44,7 @@
      }
  

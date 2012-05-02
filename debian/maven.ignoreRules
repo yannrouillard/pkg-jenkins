@@ -69,3 +69,14 @@ org.codehaus.mojo build-helper-maven-plugin * * * *
 org.kohsuke.stapler stapler-jrebel * * * *
 # Ignore core annotation processors - this is a dummy pakcage
 org.jenkins-ci core-annotation-processors * * * *
+# New suff for 1.447.1
+org.codehaus.gmaven gmaven-plugin * * * *
+# FIXME - package powermock and re-enable testing
+org.powermock * * * * *
+# Ignore
+findbugs annotations * * * *
+# This is a single Java file - patching into jenkins for the time being
+org.jenkins-ci version-number * * * *
+# FIXME - ignore sshd module until its packaged
+org.jenkins-ci.modules sshd * * * *
+

@@ -10,9 +10,9 @@ Forwarded: not-needed
 
 Index: jenkins/core/pom.xml
 ===================================================================
---- jenkins.orig/core/pom.xml	2012-02-28 16:48:34.425690522 +0000
-+++ jenkins/core/pom.xml	2012-02-28 16:49:08.125793192 +0000
-@@ -562,6 +562,24 @@
+--- jenkins.orig/core/pom.xml	2012-04-26 14:11:30.000000000 +0100
++++ jenkins/core/pom.xml	2012-04-26 14:15:07.100640255 +0100
+@@ -617,6 +617,24 @@
          </executions>
        </plugin>
        <plugin>

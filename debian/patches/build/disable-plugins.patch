@@ -4,9 +4,9 @@ Forwarded: not-needed
 
 Index: jenkins/war/pom.xml
 ===================================================================
---- jenkins.orig/war/pom.xml	2012-01-31 10:35:19.368316735 +0000
-+++ jenkins/war/pom.xml	2012-01-31 10:35:34.256316362 +0000
-@@ -121,6 +121,11 @@
+--- jenkins.orig/war/pom.xml	2012-04-26 14:09:39.411340903 +0100
++++ jenkins/war/pom.xml	2012-04-26 14:15:02.484642064 +0100
+@@ -149,6 +149,11 @@
        <scope>system</scope>
        <systemPath>/usr/local/yjp/lib/yjp.jar</systemPath>
      </dependency-->
@@ -18,7 +18,7 @@ Index: jenkins/war/pom.xml
    </dependencies>
  
    <build>
-@@ -208,30 +213,6 @@
+@@ -236,48 +241,6 @@
                    <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
                    <destFileName>winstone.jar</destFileName>
                  </artifactItem>
@@ -31,19 +31,37 @@ Index: jenkins/war/pom.xml
 -                <artifactItem>
 -                  <groupId>org.jenkins-ci.plugins</groupId>
 -                  <artifactId>ssh-slaves</artifactId>
--                  <version>0.17</version>
+-                  <version>0.21</version>
 -                  <type>hpi</type>
 -                </artifactItem>
 -                <artifactItem>
 -                  <groupId>org.jenkins-ci.plugins</groupId>
 -                  <artifactId>subversion</artifactId>
--                  <version>1.28</version>
+-                  <version>1.34</version>
 -                  <type>hpi</type>
 -                </artifactItem>
 -                <artifactItem>
--                  <groupId>org.jvnet.hudson.plugins</groupId>
+-                  <groupId>org.jenkins-ci.plugins</groupId>
 -                  <artifactId>cvs</artifactId>
--                  <version>1.2</version>
+-                  <version>1.6</version>
+-                  <type>hpi</type>
+-                </artifactItem>
+-                <artifactItem>
+-                  <groupId>org.jenkins-ci.plugins</groupId>
+-                  <artifactId>ant</artifactId>
+-                  <version>1.1</version>
+-                  <type>hpi</type>
+-                </artifactItem>
+-                <artifactItem>
+-                  <groupId>org.jenkins-ci.plugins</groupId>
+-                  <artifactId>javadoc</artifactId>
+-                  <version>1.0</version>
+-                  <type>hpi</type>
+-                </artifactItem>
+-                <artifactItem>
+-                  <groupId>org.jenkins-ci.plugins</groupId>
+-                  <artifactId>translation</artifactId>
+-                  <version>1.8</version>
 -                  <type>hpi</type>
 -                </artifactItem>
                </artifactItems>

@@ -4,8 +4,8 @@ Forwarded: not-needed
 
 Index: jenkins/core/src/main/java/hudson/os/SU.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/os/SU.java	2012-02-10 15:39:22.709867337 +0000
-+++ jenkins/core/src/main/java/hudson/os/SU.java	2012-02-28 16:49:11.729804164 +0000
+--- jenkins.orig/core/src/main/java/hudson/os/SU.java	2012-02-28 16:49:31.061862988 +0000
++++ jenkins/core/src/main/java/hudson/os/SU.java	2012-04-26 14:15:19.288635490 +0100
 @@ -23,7 +23,6 @@
   */
  package hudson.os;

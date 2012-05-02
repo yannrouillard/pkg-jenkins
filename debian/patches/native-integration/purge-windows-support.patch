@@ -6,9 +6,9 @@ Forwarded: not-needed
 
 Index: jenkins/core/src/main/java/hudson/slaves/SlaveComputer.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/slaves/SlaveComputer.java	2012-02-10 15:39:22.725867337 +0000
-+++ jenkins/core/src/main/java/hudson/slaves/SlaveComputer.java	2012-02-28 16:49:14.885813770 +0000
-@@ -34,7 +34,6 @@
+--- jenkins.orig/core/src/main/java/hudson/slaves/SlaveComputer.java	2012-04-26 14:09:39.211341006 +0100
++++ jenkins/core/src/main/java/hudson/slaves/SlaveComputer.java	2012-04-26 14:15:25.276633148 +0100
+@@ -35,7 +35,6 @@
  import hudson.util.RingBufferLogHandler;
  import hudson.util.Futures;
  import hudson.FilePath;
@@ -16,7 +16,7 @@ Index: jenkins/core/src/main/java/hudson/slaves/SlaveComputer.java
  import hudson.Util;
  import hudson.AbortException;
  import hudson.remoting.Launcher;
-@@ -350,7 +349,6 @@
+@@ -362,7 +361,6 @@
          channel.pinClassLoader(getClass().getClassLoader());
  
          channel.call(new SlaveInitializer());

@@ -3,13 +3,16 @@ build/openjdk6.patch
 build/remove-licensing-report.patch
 build/disable-plugins.patch
 build/apt-stapler-processing.patch
+build/jenkins-version-number.patch
+build/remove-findbugs.patch
 native-integration/windows-service-disable.patch
 native-integration/filter-native-integrations.patch
 native-integration/purge-embedded-su4j.patch
 native-integration/purge-winp.patch
 native-integration/purge-windows-support.patch
-dependency-upgrades/groovy-upgrade.patch
+#dependency-upgrades/groovy-upgrade.patch
 dependency-upgrades/jnr-posix-upgrade.patch
 dependency-upgrades/asm3-upgrade.patch
 dependency-upgrades/animal-sniffer-upgrade.patch
+build/use-stock-jmdns.patch
 ubuntu/ubuntu-font.patch

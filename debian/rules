@@ -57,6 +57,7 @@ clean::
 	[ ! -f dummy.keystore ] || rm dummy.keystore
 	rm -rf debian/*.upstart
 	rm -rf debian/plugin-debian.pom
+	rm -rf core/src/main/java/jenkins/util
 
 get-orig-source:
 	uscan --download-version $(DEB_UPSTREAM_VERSION) --force-download --rename
@@ -70,6 +71,10 @@ before-mvn-build:: dummy.keystore
 	for module in jenkins-core cli pom jenkins-war; do \
 		find debian/maven-repo/org/jenkins-ci/main/$${module} -type l -delete || true ;\
 	done
+	# Hack in java files from groovy source folder - no idea why they are there
+	# might be maven3 related.
+	mkdir -p core/src/main/java/jenkins/util
+	cp core/src/main/groovy/jenkins/util/ServerTcpPort.java core/src/main/java/jenkins/util
 
 dummy.keystore:
 	keytool -genkeypair -dname "cn=Jenkins, ou=Jenkins Project, o=Debian, c=US" \
