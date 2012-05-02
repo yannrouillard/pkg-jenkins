@@ -1,0 +1,96 @@
+Description: The Debian build process does not run findbugs as
+ this is not packaged for Debian.
+ .
+ This patch removes all calls to the findbugs annotations package
+ as this is not packaged either.
+Author: James Page <james.page@ubuntu.com>
+Forwarded: not-needed
+
+Index: jenkins/core/src/main/java/hudson/logging/LogRecorderManager.java
+===================================================================
+--- jenkins.orig/core/src/main/java/hudson/logging/LogRecorderManager.java	2012-04-26 14:09:39.199341012 +0100
++++ jenkins/core/src/main/java/hudson/logging/LogRecorderManager.java	2012-04-30 12:26:52.355201214 +0100
+@@ -112,7 +112,6 @@
+     /**
+      * Configure the logging level.
+      */
+-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("LG_LOST_LOGGER_DUE_TO_WEAK_REFERENCE")
+     public HttpResponse doConfigLogger(@QueryParameter String name, @QueryParameter String level) {
+         Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
+         Level lv;
+Index: jenkins/core/src/main/java/hudson/util/PluginServletFilter.java
+===================================================================
+--- jenkins.orig/core/src/main/java/hudson/util/PluginServletFilter.java	2012-04-26 14:09:39.215341004 +0100
++++ jenkins/core/src/main/java/hudson/util/PluginServletFilter.java	2012-04-30 12:27:25.555306327 +0100
+@@ -58,7 +58,6 @@
+     public PluginServletFilter() {
+     }
+ 
+-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
+     public void init(FilterConfig filterConfig) throws ServletException {
+     	PluginServletFilter.filterConfig = filterConfig;
+     	synchronized (LIST)  {
+Index: jenkins/core/src/main/java/hudson/WebAppMain.java
+===================================================================
+--- jenkins.orig/core/src/main/java/hudson/WebAppMain.java	2012-04-26 14:09:39.195341014 +0100
++++ jenkins/core/src/main/java/hudson/WebAppMain.java	2012-04-30 12:27:08.699252835 +0100
+@@ -260,7 +260,6 @@
+ 	/**
+      * Installs log handler to monitor all Hudson logs.
+      */
+-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("LG_LOST_LOGGER_DUE_TO_WEAK_REFERENCE")
+     private void installLogger() {
+         Jenkins.logRecords = handler.getView();
+         Logger.getLogger("hudson").addHandler(handler);
+Index: jenkins/core/src/main/java/jenkins/model/Jenkins.java
+===================================================================
+--- jenkins.orig/core/src/main/java/jenkins/model/Jenkins.java	2012-04-26 14:09:39.219341002 +0100
++++ jenkins/core/src/main/java/jenkins/model/Jenkins.java	2012-04-30 12:26:58.503220606 +0100
+@@ -670,7 +670,6 @@
+      * @param pluginManager
+      *      If non-null, use existing plugin manager.  create a new one.
+      */
+-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("SC_START_IN_CTOR") // bug in FindBugs. It flags UDPBroadcastThread.start() call but that's for another class
+     protected Jenkins(File root, ServletContext context, PluginManager pluginManager) throws IOException, InterruptedException, ReactorException {
+     	// As hudson is starting, grant this process full control
+     	SecurityContextHolder.getContext().setAuthentication(ACL.SYSTEM);
+@@ -2871,7 +2870,6 @@
+     /**
+      * For debugging. Expose URL to perform GC.
+      */
+-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("DM_GC")
+     public void doGc(StaplerResponse rsp) throws IOException {
+         checkPermission(Jenkins.ADMINISTER);
+         System.gc();
+Index: jenkins/maven-plugin/src/main/java/hudson/maven/MavenUtil.java
+===================================================================
+--- jenkins.orig/maven-plugin/src/main/java/hudson/maven/MavenUtil.java	2012-04-26 14:09:39.399340909 +0100
++++ jenkins/maven-plugin/src/main/java/hudson/maven/MavenUtil.java	2012-04-30 12:26:17.835092970 +0100
+@@ -52,7 +52,6 @@
+ import org.apache.maven.project.MavenProject;
+ import org.apache.maven.project.ProjectBuildingException;
+ 
+-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+ 
+ /**
+  * @author Kohsuke Kawaguchi
+@@ -138,7 +137,6 @@
+      * Creates a fresh {@link MavenEmbedder} instance.
+      *
+      */
+-    @SuppressWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
+     public static MavenEmbedder createEmbedder(MavenEmbedderRequest mavenEmbedderRequest) throws MavenEmbedderException, IOException {
+         
+         
+Index: jenkins/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java
+===================================================================
+--- jenkins.orig/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java	2012-04-26 14:09:39.403340907 +0100
++++ jenkins/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java	2012-04-30 12:26:32.387138474 +0100
+@@ -168,7 +168,6 @@
+         return true;
+     }
+     
+-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="It's okay to write to static fields here, as each Maven build is started in its own VM")
+     private void markBuildAsSuccess(Throwable mojoError, MavenBuildInformation buildInfo) {
+         if(mojoError == null // in the success case we don't get any exception in Maven 3.0.2+; Maven < 3.0.2 returns no exception anyway
+            || mojoError instanceof MojoFailureException) {

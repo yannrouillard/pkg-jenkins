@@ -10,6 +10,8 @@ jenkins (1.447.1+dfsg-1) unstable; urgency=low
     - d/patches/build/build.patch: Allow building with Maven 2, this works 
       OK for this package as Maven 3 features are not used by the package
       build process at the moment.
+    - d/patches/build/remove-findbugs.patch: Drop findbugs annotations from
+      the codebase as this tool is not packaged for Debian.
     - Refreshed all other patches.
     - d/maven.ignoreRules, d/maven.properties: Disable unit testing and ignore
       powermock dependencies until powermock is packaged.
@@ -17,7 +19,7 @@ jenkins (1.447.1+dfsg-1) unstable; urgency=low
       packaged and let users know this feature is missing.
     - d/control: Added new dependencies on libsisu-guice-java, libmockito-java.
 
- -- James Page <james.page@ubuntu.com>  Wed, 02 May 2012 15:10:44 +0100
+ -- James Page <james.page@ubuntu.com>  Wed, 02 May 2012 15:12:45 +0100
 
 jenkins (1.424.6+dfsg-1) unstable; urgency=low
 
