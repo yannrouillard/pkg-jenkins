@@ -1,6 +1,9 @@
 jenkins (1.447.2+dfsg-1) unstable; urgency=low
 
   * New upstream release. 
+  * Ensure jenkins keeps logging after log rotation (LP: #993065).
+    - d/*.logrotate: Switch to copytruncate so jenkins does not lose
+      the original file handle.
 
  -- James Page <james.page@ubuntu.com>  Thu, 21 Jun 2012 09:47:58 +0100
 
