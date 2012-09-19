@@ -1,14 +1,33 @@
-jenkins (1.447.2+dfsg-2) unstable; urgency=low
+jenkins (1.466.2+dfsg-0ubuntu1) quantal; urgency=low
 
-  * Fix multiple security issues in Jenkins core (Closes: #688298):
-    - d/p/security/CVE-2012-4438_CVE-2012-4439.patch: Cherry picked
-      fixes from 1.466.2 release to resolve remote code execution
-      and XSS security vulnerabilities.
-    - d/rules: Tweaked handling of groovy -> java source file copy to
-      accommodate the file created by the above patch.
-    - Fixes: CVE-2012-4438, CVE-2012-4439
+  * New upstream bug fix release.
+  * d/rules: Updated handling of java files in groovy source folder.
 
- -- James Page <james.page@ubuntu.com>  Tue, 25 Sep 2012 11:01:53 +0100
+ -- James Page <james.page@ubuntu.com>  Wed, 19 Sep 2012 13:00:20 +0100
+
+jenkins (1.466.1+dfsg-0ubuntu2) quantal; urgency=low
+
+  * Fix maven based builds in slave mode (LP: #1045795):
+    - d/rules: Copy all java files incorrectly located in groovy src
+      folder to the correct location to fixup problem with missing
+      class MarkFindingOutputStream.
+
+ -- James Page <james.page@ubuntu.com>  Wed, 05 Sep 2012 09:41:33 +0100
+
+jenkins (1.466.1+dfsg-0ubuntu1) quantal; urgency=low
+
+  * New upstream release:
+    - d/p/dependency-upgrades/asm3-upgrade.patch,
+      d/p/animal-sniffer-upgrade.patch: Dropped - upgrades now in upstream.
+    - d/maven.ignoreRules: Ignore new stapler-adjunct-zeroclipboard and
+      windows-package-checker dependencies; not required for Debian.
+    - d/maven.rules,d/p/use-stock-asm3.patch: Don't use Jenkins jarjar of
+      asm3; we have a consistent asm3 dependency chain in Debian/Ubuntu.
+    - d/p/remove-findbugs.patch: Updated with new annotations to remove.
+    - d/control: Bumped minimum versions of libjenkins-remoting-java and
+      libstapler-java inline with upstream.
+
+ -- James Page <james.page@ubuntu.com>  Fri, 27 Jul 2012 15:53:57 +0100
 
 jenkins (1.447.2+dfsg-1) unstable; urgency=low
 

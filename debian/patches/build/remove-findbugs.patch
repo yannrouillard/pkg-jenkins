@@ -8,8 +8,8 @@ Forwarded: not-needed
 
 Index: jenkins/core/src/main/java/hudson/logging/LogRecorderManager.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/logging/LogRecorderManager.java	2012-04-26 14:09:39.199341012 +0100
-+++ jenkins/core/src/main/java/hudson/logging/LogRecorderManager.java	2012-04-30 12:26:52.355201214 +0100
+--- jenkins.orig/core/src/main/java/hudson/logging/LogRecorderManager.java	2012-07-24 17:48:11.807867241 +0100
++++ jenkins/core/src/main/java/hudson/logging/LogRecorderManager.java	2012-07-24 17:48:22.495901489 +0100
 @@ -112,7 +112,6 @@
      /**
       * Configure the logging level.
@@ -20,8 +20,8 @@ Index: jenkins/core/src/main/java/hudson/logging/LogRecorderManager.java
          Level lv;
 Index: jenkins/core/src/main/java/hudson/util/PluginServletFilter.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/util/PluginServletFilter.java	2012-04-26 14:09:39.215341004 +0100
-+++ jenkins/core/src/main/java/hudson/util/PluginServletFilter.java	2012-04-30 12:27:25.555306327 +0100
+--- jenkins.orig/core/src/main/java/hudson/util/PluginServletFilter.java	2012-07-24 17:48:11.807867241 +0100
++++ jenkins/core/src/main/java/hudson/util/PluginServletFilter.java	2012-07-24 17:48:22.495901489 +0100
 @@ -58,7 +58,6 @@
      public PluginServletFilter() {
      }
@@ -32,9 +32,9 @@ Index: jenkins/core/src/main/java/hudson/util/PluginServletFilter.java
      	synchronized (LIST)  {
 Index: jenkins/core/src/main/java/hudson/WebAppMain.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/WebAppMain.java	2012-04-26 14:09:39.195341014 +0100
-+++ jenkins/core/src/main/java/hudson/WebAppMain.java	2012-04-30 12:27:08.699252835 +0100
-@@ -260,7 +260,6 @@
+--- jenkins.orig/core/src/main/java/hudson/WebAppMain.java	2012-07-24 17:48:11.807867241 +0100
++++ jenkins/core/src/main/java/hudson/WebAppMain.java	2012-07-24 17:48:22.495901489 +0100
+@@ -251,7 +251,6 @@
  	/**
       * Installs log handler to monitor all Hudson logs.
       */
@@ -44,17 +44,17 @@ Index: jenkins/core/src/main/java/hudson/WebAppMain.java
          Logger.getLogger("hudson").addHandler(handler);
 Index: jenkins/core/src/main/java/jenkins/model/Jenkins.java
 ===================================================================
---- jenkins.orig/core/src/main/java/jenkins/model/Jenkins.java	2012-04-26 14:09:39.219341002 +0100
-+++ jenkins/core/src/main/java/jenkins/model/Jenkins.java	2012-04-30 12:26:58.503220606 +0100
-@@ -670,7 +670,6 @@
+--- jenkins.orig/core/src/main/java/jenkins/model/Jenkins.java	2012-07-24 17:48:11.807867241 +0100
++++ jenkins/core/src/main/java/jenkins/model/Jenkins.java	2012-07-24 17:48:22.499901502 +0100
+@@ -699,7 +699,6 @@
       * @param pluginManager
       *      If non-null, use existing plugin manager.  create a new one.
       */
 -    @edu.umd.cs.findbugs.annotations.SuppressWarnings("SC_START_IN_CTOR") // bug in FindBugs. It flags UDPBroadcastThread.start() call but that's for another class
      protected Jenkins(File root, ServletContext context, PluginManager pluginManager) throws IOException, InterruptedException, ReactorException {
-     	// As hudson is starting, grant this process full control
-     	SecurityContextHolder.getContext().setAuthentication(ACL.SYSTEM);
-@@ -2871,7 +2870,6 @@
+         long start = System.currentTimeMillis();
+         
+@@ -2963,7 +2962,6 @@
      /**
       * For debugging. Expose URL to perform GC.
       */
@@ -64,9 +64,9 @@ Index: jenkins/core/src/main/java/jenkins/model/Jenkins.java
          System.gc();
 Index: jenkins/maven-plugin/src/main/java/hudson/maven/MavenUtil.java
 ===================================================================
---- jenkins.orig/maven-plugin/src/main/java/hudson/maven/MavenUtil.java	2012-04-26 14:09:39.399340909 +0100
-+++ jenkins/maven-plugin/src/main/java/hudson/maven/MavenUtil.java	2012-04-30 12:26:17.835092970 +0100
-@@ -52,7 +52,6 @@
+--- jenkins.orig/maven-plugin/src/main/java/hudson/maven/MavenUtil.java	2012-07-24 17:48:11.803867228 +0100
++++ jenkins/maven-plugin/src/main/java/hudson/maven/MavenUtil.java	2012-07-24 17:48:22.499901502 +0100
+@@ -53,7 +53,6 @@
  import org.apache.maven.project.MavenProject;
  import org.apache.maven.project.ProjectBuildingException;
  
@@ -74,7 +74,7 @@ Index: jenkins/maven-plugin/src/main/java/hudson/maven/MavenUtil.java
  
  /**
   * @author Kohsuke Kawaguchi
-@@ -138,7 +137,6 @@
+@@ -140,7 +139,6 @@
       * Creates a fresh {@link MavenEmbedder} instance.
       *
       */
@@ -84,9 +84,9 @@ Index: jenkins/maven-plugin/src/main/java/hudson/maven/MavenUtil.java
          
 Index: jenkins/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java
 ===================================================================
---- jenkins.orig/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java	2012-04-26 14:09:39.403340907 +0100
-+++ jenkins/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java	2012-04-30 12:26:32.387138474 +0100
-@@ -168,7 +168,6 @@
+--- jenkins.orig/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java	2012-07-24 17:48:11.803867228 +0100
++++ jenkins/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java	2012-07-24 17:48:22.499901502 +0100
+@@ -170,7 +170,6 @@
          return true;
      }
      
@@ -94,3 +94,23 @@ Index: jenkins/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchive
      private void markBuildAsSuccess(Throwable mojoError, MavenBuildInformation buildInfo) {
          if(mojoError == null // in the success case we don't get any exception in Maven 3.0.2+; Maven < 3.0.2 returns no exception anyway
             || mojoError instanceof MojoFailureException) {
+Index: jenkins/core/src/main/java/hudson/cli/GroovyshCommand.java
+===================================================================
+--- jenkins.orig/core/src/main/java/hudson/cli/GroovyshCommand.java	2012-07-24 16:27:16.102613000 +0100
++++ jenkins/core/src/main/java/hudson/cli/GroovyshCommand.java	2012-07-24 17:49:02.640030167 +0100
+@@ -87,7 +87,6 @@
+             private static final long serialVersionUID = 1L;
+ 
+             @SuppressWarnings("unused")
+-            @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS",justification="Closure invokes this via reflection")
+             public Object doCall(Object[] args) {
+                 assert(args.length == 1);
+                 assert(args[0] instanceof Shell);
+@@ -110,7 +109,6 @@
+             private static final long serialVersionUID = 1L;
+ 
+             @SuppressWarnings("unused")
+-            @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS",justification="Closure invokes this via reflection")
+             public Object doCall(Object[] args) throws ChannelClosedException {
+                 if (args.length == 1 && args[0] instanceof ChannelClosedException) {
+                     throw (ChannelClosedException)args[0];

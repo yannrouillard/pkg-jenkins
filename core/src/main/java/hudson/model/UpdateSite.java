@@ -25,7 +25,6 @@
 
 package hudson.model;
 
-import com.trilead.ssh2.crypto.Base64;
 import hudson.PluginManager;
 import hudson.PluginWrapper;
 import hudson.lifecycle.Lifecycle;
@@ -35,40 +34,31 @@ import hudson.util.FormValidation.Kind;
 import hudson.util.HttpResponses;
 import hudson.util.IOUtils;
 import hudson.util.TextFile;
+import hudson.util.TimeUnit2;
 import hudson.util.VersionNumber;
 import jenkins.model.Jenkins;
+import jenkins.util.JSONSignatureValidator;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
-import org.apache.commons.io.output.NullOutputStream;
-import org.apache.commons.io.output.TeeOutputStream;
-import org.jvnet.hudson.crypto.CertificateUtil;
-import org.jvnet.hudson.crypto.SignatureOutputStream;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
 import javax.servlet.ServletContext;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.security.DigestOutputStream;
 import java.security.GeneralSecurityException;
-import java.security.MessageDigest;
-import java.security.Signature;
-import java.security.cert.CertificateExpiredException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.CertificateNotYetValidException;
-import java.security.cert.TrustAnchor;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -106,6 +96,22 @@ public class UpdateSite {
      * all at once.
      */
     private transient volatile long lastAttempt = -1;
+
+    /**
+     * If the attempt to fetch data fails, we progressively use longer time out before retrying,
+     * to avoid overloading the server.
+     */
+    private transient volatile long retryWindow;
+
+    /**
+     * lastModified time of the data file when it was last read.
+     */
+    private transient long dataLastReadFromFile;
+
+    /**
+     * Latest data as read from the data file.
+     */
+    private Data data;
 
     /**
      * ID string for this update source.
@@ -162,6 +168,7 @@ public class UpdateSite {
         }
 
         LOGGER.info("Obtained the latest update center data file for UpdateSource " + id);
+        retryWindow = 0;
         getDataFile().write(json);
         return FormValidation.ok();
     }
@@ -174,100 +181,7 @@ public class UpdateSite {
      * Verifies the signature in the update center data file.
      */
     private FormValidation verifySignature(JSONObject o) throws IOException {
-        try {
-            FormValidation warning = null;
-
-            JSONObject signature = o.getJSONObject("signature");
-            if (signature.isNullObject()) {
-                return FormValidation.error("No signature block found in update center '"+id+"'");
-            }
-            o.remove("signature");
-
-            List<X509Certificate> certs = new ArrayList<X509Certificate>();
-            {// load and verify certificates
-                CertificateFactory cf = CertificateFactory.getInstance("X509");
-                for (Object cert : signature.getJSONArray("certificates")) {
-                    X509Certificate c = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(Base64.decode(cert.toString().toCharArray())));
-                    try {
-                        c.checkValidity();
-                    } catch (CertificateExpiredException e) { // even if the certificate isn't valid yet, we'll proceed it anyway
-                        warning = FormValidation.warning(e,String.format("Certificate %s has expired in update center '%s'",cert.toString(),id));
-                    } catch (CertificateNotYetValidException e) {
-                        warning = FormValidation.warning(e,String.format("Certificate %s is not yet valid in update center '%s'",cert.toString(),id));
-                    }
-                    certs.add(c);
-                }
-
-                // if we trust default root CAs, we end up trusting anyone who has a valid certificate,
-                // which isn't useful at all
-                Set<TrustAnchor> anchors = new HashSet<TrustAnchor>(); // CertificateUtil.getDefaultRootCAs();
-                Jenkins j = Jenkins.getInstance();
-                for (String cert : (Set<String>) j.servletContext.getResourcePaths("/WEB-INF/update-center-rootCAs")) {
-                    if (cert.endsWith(".txt"))  continue;       // skip text files that are meant to be documentation
-                    anchors.add(new TrustAnchor((X509Certificate)cf.generateCertificate(j.servletContext.getResourceAsStream(cert)),null));
-                }
-                File[] cas = new File(j.root, "update-center-rootCAs").listFiles();
-                if (cas!=null) {
-                    for (File cert : cas) {
-                        if (cert.getName().endsWith(".txt"))  continue;       // skip text files that are meant to be documentation
-                        FileInputStream in = new FileInputStream(cert);
-                        try {
-                            anchors.add(new TrustAnchor((X509Certificate)cf.generateCertificate(in),null));
-                        } finally {
-                            in.close();
-                        }
-                    }
-                }
-                CertificateUtil.validatePath(certs,anchors);
-            }
-
-            // this is for computing a digest to check sanity
-            MessageDigest sha1 = MessageDigest.getInstance("SHA1");
-            DigestOutputStream dos = new DigestOutputStream(new NullOutputStream(),sha1);
-
-            // this is for computing a signature
-            Signature sig = Signature.getInstance("SHA1withRSA");
-            sig.initVerify(certs.get(0));
-            SignatureOutputStream sos = new SignatureOutputStream(sig);
-
-            // until JENKINS-11110 fix, UC used to serve invalid digest (and therefore unverifiable signature)
-            // that only covers the earlier portion of the file. This was caused by the lack of close() call
-            // in the canonical writing, which apparently leave some bytes somewhere that's not flushed to
-            // the digest output stream. This affects Jenkins [1.424,1,431].
-            // Jenkins 1.432 shipped with the "fix" (1eb0c64abb3794edce29cbb1de50c93fa03a8229) that made it
-            // compute the correct digest, but it breaks all the existing UC json metadata out there. We then
-            // quickly discovered ourselves in the catch-22 situation. If we generate UC with the correct signature,
-            // it'll cut off [1.424,1.431] from the UC. But if we don't, we'll cut off [1.432,*).
-            //
-            // In 1.433, we revisited 1eb0c64abb3794edce29cbb1de50c93fa03a8229 so that the original "digest"/"signature"
-            // pair continues to be generated in a buggy form, while "correct_digest"/"correct_signature" are generated
-            // correctly.
-            //
-            // Jenkins should ignore "digest"/"signature" pair. Accepting it creates a vulnerability that allows
-            // the attacker to inject a fragment at the end of the json.
-            o.writeCanonical(new OutputStreamWriter(new TeeOutputStream(dos,sos),"UTF-8")).close();
-
-            // did the digest match? this is not a part of the signature validation, but if we have a bug in the c14n
-            // (which is more likely than someone tampering with update center), we can tell
-            String computedDigest = new String(Base64.encode(sha1.digest()));
-            String providedDigest = signature.optString("correct_digest");
-            if (providedDigest==null) {
-                return FormValidation.error("No correct_digest parameter in update center '"+id+"'. This metadata appears to be old.");
-            }
-            if (!computedDigest.equalsIgnoreCase(providedDigest)) {
-                return FormValidation.error("Digest mismatch: "+computedDigest+" vs "+providedDigest+" in update center '"+id+"'");
-            }
-
-            String providedSignature = signature.getString("correct_signature");
-            if (!sig.verify(Base64.decode(providedSignature.toCharArray()))) {
-                return FormValidation.error("Signature in the update center doesn't match with the certificate in update center '"+id+"'");
-            }
-
-            if (warning!=null)  return warning;
-            return FormValidation.ok();
-        } catch (GeneralSecurityException e) {
-            return FormValidation.error(e,"Signature verification failed in the update center '"+id+"'");
-        }
+        return new JSONSignatureValidator("update site '"+id+"'").verifySignature(o);
     }
 
     /**
@@ -278,8 +192,14 @@ public class UpdateSite {
         if(dataTimestamp==-1)
             dataTimestamp = getDataFile().file.lastModified();
         long now = System.currentTimeMillis();
-        boolean due = now - dataTimestamp > DAY && now - lastAttempt > 15000;
-        if(due)     lastAttempt = now;
+        
+        retryWindow = Math.max(retryWindow,SECONDS.toMillis(15));
+        
+        boolean due = now - dataTimestamp > DAY && now - lastAttempt > retryWindow;
+        if(due) {
+            lastAttempt = now;
+            retryWindow = Math.min(retryWindow*2, HOURS.toMillis(1)); // exponential back off but at most 1 hour
+        }
         return due;
     }
 
@@ -295,14 +215,22 @@ public class UpdateSite {
     }
 
     /**
-     * Loads the update center data, if any.
+     * Loads the update center data, if any and if modified since last read.
      *
      * @return  null if no data is available.
      */
     public Data getData() {
-        JSONObject o = getJSONObject();
-        if (o!=null)    return new Data(o);
-        return null;
+        TextFile df = getDataFile();
+        if (df.exists() && dataLastReadFromFile != df.file.lastModified()) {
+            JSONObject o = getJSONObject();
+            if (o!=null) {
+                data = new Data(o);
+                dataLastReadFromFile = df.file.lastModified();
+            } else {
+                data = null;
+            }
+        }
+        return data;
     }
 
     /**
@@ -501,23 +429,28 @@ public class UpdateSite {
         }
     }
 
+    @ExportedBean
     public static class Entry {
         /**
          * {@link UpdateSite} ID.
          */
+        @Exported
         public final String sourceId;
 
         /**
          * Artifact ID.
          */
+        @Exported
         public final String name;
         /**
          * The version.
          */
+        @Exported
         public final String version;
         /**
          * Download URL.
          */
+        @Exported
         public final String url;
 
         public Entry(String sourceId, JSONObject o) {
@@ -545,12 +478,17 @@ public class UpdateSite {
             }
         }
 
+        public Api getApi() {
+            return new Api(this);
+        }
+
     }
 
     public final class Plugin extends Entry {
         /**
          * Optional URL to the Wiki page that discusses this plugin.
          */
+        @Exported
         public final String wiki;
         /**
          * Human readable title of the plugin, taken from Wiki page.
@@ -559,28 +497,34 @@ public class UpdateSite {
          * <p>
          * beware of XSS vulnerability since this data comes from Wiki
          */
+        @Exported
         public final String title;
         /**
          * Optional excerpt string.
          */
+        @Exported
         public final String excerpt;
         /**
          * Optional version # from which this plugin release is configuration-compatible.
          */
+        @Exported
         public final String compatibleSinceVersion;
         /**
          * Version of Jenkins core this plugin was compiled against.
          */
+        @Exported
         public final String requiredCore;
         /**
          * Categories for grouping plugins, taken from labels assigned to wiki page.
          * Can be null.
          */
+        @Exported
         public final String[] categories;
 
         /**
          * Dependencies of this plugin.
          */
+        @Exported
         public final Map<String,String> dependencies = new HashMap<String,String>();
         
         @DataBoundConstructor
@@ -622,6 +566,7 @@ public class UpdateSite {
          * If some version of this plugin is currently installed, return {@link PluginWrapper}.
          * Otherwise null.
          */
+        @Exported
         public PluginWrapper getInstalled() {
             PluginManager pm = Jenkins.getInstance().getPluginManager();
             return pm.getPlugin(name);
@@ -634,6 +579,7 @@ public class UpdateSite {
          * If it's not older, or it's not installed, or it's installed but there's no compatibleSinceVersion
          * specified, it'll return true.
          */
+        @Exported
         public boolean isCompatibleWithInstalledVersion() {
             PluginWrapper installedVersion = getInstalled();
             if (installedVersion != null) {
@@ -650,6 +596,7 @@ public class UpdateSite {
         /**
          * Returns a list of dependent plugins which need to be installed or upgraded for this plugin to work.
          */
+        @Exported
         public List<Plugin> getNeededDependencies() {
             List<Plugin> deps = new ArrayList<Plugin>();
 

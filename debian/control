@@ -1,7 +1,8 @@
 Source: jenkins
 Section: java
 Priority: optional
-Maintainer: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
 Uploaders: James Page <james.page@ubuntu.com>
 Build-Depends:
  cdbs,
@@ -52,7 +53,7 @@ Build-Depends-Indep:
  libjenkins-commons-jexl-java (>= 1.1-jenkins-20111212),
  libjenkins-htmlunit-java,
  libjenkins-json-java (>= 2.1-rev7),
- libjenkins-remoting-java (>= 2.11),
+ libjenkins-remoting-java (>= 2.16),
  libjenkins-trilead-ssh2-java,
  libjenkins-winstone-java (>= 0.9.10-jenkins-35),
  libjenkins-xstream-java,
@@ -91,7 +92,7 @@ Build-Depends-Indep:
  libspring-web-java,
  libstapler-adjunct-codemirror-java,
  libstapler-adjunct-timeline-java,
- libstapler-java (>= 1.182),
+ libstapler-java (>= 1.189),
  libtrilead-putty-extension-java,
  libtxw2-java,
  libxpp3-java,

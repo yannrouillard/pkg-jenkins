@@ -21,10 +21,7 @@ jenkins:
    to be launched using JNLP from the slave itself.
 
  * Miscellanous dependency changes that Developers should be aware of:
-    - asm v2 -> v3
-    - jcaptcha 1.x -> 2.x
     - jna-posix -> jnr-posix (inline with upstream project renaming)
-    - groovy 1.6.x -> 1.7.x
 
  * Branding: if available on the client, the Web UI will use the Ubuntu 
    font.

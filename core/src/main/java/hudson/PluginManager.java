@@ -28,13 +28,14 @@ import hudson.init.InitMilestone;
 import hudson.init.InitStrategy;
 import hudson.init.InitializerFinder;
 import hudson.model.AbstractModelObject;
+import hudson.model.AdministrativeMonitor;
+import hudson.model.Api;
 import hudson.model.Descriptor;
 import hudson.model.Failure;
 import hudson.model.UpdateCenter;
 import hudson.model.UpdateSite;
 import hudson.util.CyclicGraphDetector;
 import hudson.util.CyclicGraphDetector.CycleDetectedException;
-import hudson.util.FormValidation;
 import hudson.util.IOException2;
 import hudson.util.PersistedList;
 import hudson.util.Service;
@@ -60,6 +61,8 @@ import org.kohsuke.stapler.HttpResponses;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -93,6 +96,7 @@ import static hudson.init.InitMilestone.*;
  *
  * @author Kohsuke Kawaguchi
  */
+@ExportedBean
 public abstract class PluginManager extends AbstractModelObject {
     /**
      * All discovered plugins.
@@ -155,6 +159,10 @@ public abstract class PluginManager extends AbstractModelObject {
             rootDir.mkdirs();
         
         strategy = createPluginStrategy();
+    }
+
+    public Api getApi() {
+        return new Api(this);
     }
 
     /**
@@ -243,6 +251,18 @@ public abstract class PluginManager extends AbstractModelObject {
                                                         r.add(p);
                                                 }
                                             }
+                                            
+                                            @Override
+                                            protected void reactOnCycle(PluginWrapper q, List<PluginWrapper> cycle)
+                                                    throws hudson.util.CyclicGraphDetector.CycleDetectedException {
+                                                
+                                                LOGGER.log(Level.SEVERE, "found cycle in plugin dependencies: (root="+q+", deactivating all involved) "+Util.join(cycle," -> "));
+                                                for (PluginWrapper pluginWrapper : cycle) {
+                                                    pluginWrapper.setHasCycleDependency(true);
+                                                    failedPlugins.add(new FailedPlugin(pluginWrapper.getShortName(), new CycleDetectedException(cycle)));
+                                                }
+                                            }
+                                            
                                         };
                                         cgd.run(getPlugins());
 
@@ -484,7 +504,11 @@ public abstract class PluginManager extends AbstractModelObject {
     public boolean isPluginUploaded() {
         return pluginUploaded;
     }
-    
+
+    /**
+     * All discovered plugins.
+     */
+    @Exported
     public List<PluginWrapper> getPlugins() {
         return plugins;
     }
@@ -558,12 +582,16 @@ public abstract class PluginManager extends AbstractModelObject {
      * @since 1.402.
      */
     public PluginWrapper whichPlugin(Class c) {
+        PluginWrapper oneAndOnly = null;
         ClassLoader cl = c.getClassLoader();
         for (PluginWrapper p : activePlugins) {
-            if (p.classLoader==cl)
-                return p;
+            if (p.classLoader==cl) {
+                if (oneAndOnly!=null)
+                    return null;    // ambigious
+                oneAndOnly = p;
+            }
         }
-        return null;
+        return oneAndOnly;
     }
 
     /**
@@ -825,5 +853,33 @@ public abstract class PluginManager extends AbstractModelObject {
      */
     /*package*/ static final class PluginInstanceStore {
         final Map<PluginWrapper,Plugin> store = new Hashtable<PluginWrapper,Plugin>();
+    }
+    
+    /**
+     * {@link AdministrativeMonitor} that checks if there are any plugins with cycle dependencies.
+     */
+    @Extension
+    public static final class PluginCycleDependenciesMonitor extends AdministrativeMonitor {
+        
+        private transient volatile boolean isActive = false;
+        
+        private transient volatile List<String> pluginsWithCycle; 
+        
+        public boolean isActivated() {
+            if(pluginsWithCycle == null){
+                pluginsWithCycle = new ArrayList<String>();
+                for (PluginWrapper p : Jenkins.getInstance().getPluginManager().getPlugins()) {
+                    if(p.hasCycleDependency()){
+                        pluginsWithCycle.add(p.getShortName());
+                        isActive = true;
+                    }
+                }
+            }
+            return isActive;
+        }
+
+        public List<String> getPluginsWithCycle() {
+            return pluginsWithCycle;
+        }
     }
 }

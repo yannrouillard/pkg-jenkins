@@ -57,7 +57,8 @@ clean::
 	[ ! -f dummy.keystore ] || rm dummy.keystore
 	rm -rf debian/*.upstart
 	rm -rf debian/plugin-debian.pom
-	rm -rf core/src/main/java/jenkins/util/ServerTcpPort.java
+	rm -f core/src/main/java/jenkins/util/MarkFindingOutputStream.java \
+		  core/src/main/java/jenkins/util/ServerTcpPort.java
 
 get-orig-source:
 	uscan --download-version $(DEB_UPSTREAM_VERSION) --force-download --rename
@@ -73,6 +74,7 @@ before-mvn-build:: dummy.keystore
 	done
 	# Hack in java files from groovy source folder - no idea why they are there
 	# might be maven3 related.
+	cp core/src/main/groovy/jenkins/util/MarkFindingOutputStream.java core/src/main/java/jenkins/util
 	cp core/src/main/groovy/jenkins/util/ServerTcpPort.java core/src/main/java/jenkins/util
 
 dummy.keystore:

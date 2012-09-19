@@ -9,9 +9,9 @@ Forwarded: not-needed
 
 Index: jenkins/core/src/main/java/hudson/DNSMultiCast.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/DNSMultiCast.java	2012-05-02 14:34:03.000000000 +0100
-+++ jenkins/core/src/main/java/hudson/DNSMultiCast.java	2012-05-02 14:37:53.066974670 +0100
-@@ -52,12 +52,12 @@
+--- jenkins.orig/core/src/main/java/hudson/DNSMultiCast.java	2012-07-24 16:32:51.194005512 +0100
++++ jenkins/core/src/main/java/hudson/DNSMultiCast.java	2012-07-24 16:33:08.474067138 +0100
+@@ -67,12 +67,12 @@
  
      public void close() {
          if (jmdns!=null) {

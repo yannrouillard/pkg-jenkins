@@ -1,0 +1,49 @@
+Description: Upstream use a remapped version of asm3 to ensure
+ that it does not conflict with asm2 elsewhere in the Jenkins
+ dependency tree.
+ .
+ In Debian/Ubuntu we have a consistent version in the tree (unlike
+ upstream) so we don't need todo this.
+Author: James Page <james.page@ubuntu.com>
+Forwarded: not-needed
+
+Index: jenkins/core/src/main/java/hudson/util/SubClassGenerator.java
+===================================================================
+--- jenkins.orig/core/src/main/java/hudson/util/SubClassGenerator.java	2012-07-24 16:27:16.000000000 +0100
++++ jenkins/core/src/main/java/hudson/util/SubClassGenerator.java	2012-07-24 17:12:02.125151475 +0100
+@@ -25,13 +25,13 @@
+ 
+ import hudson.PluginManager.UberClassLoader;
+ import jenkins.model.Jenkins;
+-import org.kohsuke.asm3.ClassWriter;
+-import org.kohsuke.asm3.MethodVisitor;
+-import org.kohsuke.asm3.Type;
++import org.objectweb.asm.ClassWriter;
++import org.objectweb.asm.MethodVisitor;
++import org.objectweb.asm.Type;
+ 
+ import java.lang.reflect.Constructor;
+ 
+-import static org.kohsuke.asm3.Opcodes.*;
++import static org.objectweb.asm.Opcodes.*;
+ 
+ /**
+  * Generates a new class that just defines constructors into the super types.
+Index: jenkins/core/pom.xml
+===================================================================
+--- jenkins.orig/core/pom.xml	2012-07-24 16:33:21.826114780 +0100
++++ jenkins/core/pom.xml	2012-07-24 17:16:17.865891211 +0100
+@@ -577,6 +577,13 @@
+     </dependency>
+ 
+     <dependency>
++      <!-- with this, stapler can load parameter names from the debug info -->
++      <groupId>asm</groupId>
++      <artifactId>asm-commons</artifactId>
++      <version>2.2.3</version>
++    </dependency>
++
++    <dependency>
+       <groupId>org.kohsuke</groupId>
+       <artifactId>access-modifier-annotation</artifactId>
+       <version>1.0</version>

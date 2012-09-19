@@ -4,8 +4,8 @@ Forwarded: not-needed
 
 Index: jenkins/war/src/main/webapp/css/style.css
 ===================================================================
---- jenkins.orig/war/src/main/webapp/css/style.css	2012-04-26 14:09:39.411340903 +0100
-+++ jenkins/war/src/main/webapp/css/style.css	2012-04-26 14:15:40.692627130 +0100
+--- jenkins.orig/war/src/main/webapp/css/style.css	2012-07-24 16:32:51.166005413 +0100
++++ jenkins/war/src/main/webapp/css/style.css	2012-07-24 16:33:08.642067737 +0100
 @@ -29,7 +29,7 @@
  
  body, table, form, input, td, th, p, textarea, select
@@ -15,7 +15,7 @@ Index: jenkins/war/src/main/webapp/css/style.css
    font-size: 11px;
  }
  
-@@ -376,7 +376,7 @@
+@@ -357,7 +357,7 @@
    padding: 4px 0;
    margin-left: 0;
    border-bottom: 1px solid #090;

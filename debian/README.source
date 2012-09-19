@@ -25,3 +25,13 @@ This file is generated from the Private key held by Jenkins upstream and
 as a result cannot be re-created from the source tree.
 
 Note that it is superceeded with a new key in later versions of jenkins.
+
+stapler-adjunct-zeroclipboard
+-----------------------------
+
+This dependency is currently ignored during the build of jenkins.
+
+This library provides a flash based way on copying text to the clipboard.
+
+The supporting code in Jenkins has been left in place as it appears to 
+be unused in 1.466.1.

@@ -5,8 +5,8 @@ Forwarded: not-needed
 
 Index: jenkins/core/src/main/resources/hudson/AboutJenkins/index.jelly
 ===================================================================
---- jenkins.orig/core/src/main/resources/hudson/AboutJenkins/index.jelly	2012-02-10 15:39:22.749867338 +0000
-+++ jenkins/core/src/main/resources/hudson/AboutJenkins/index.jelly	2012-02-28 16:48:45.517724331 +0000
+--- jenkins.orig/core/src/main/resources/hudson/AboutJenkins/index.jelly	2012-07-24 16:32:51.818007739 +0100
++++ jenkins/core/src/main/resources/hudson/AboutJenkins/index.jelly	2012-07-24 16:33:05.318055881 +0100
 @@ -31,13 +31,6 @@
        <p>
          ${%blurb}
@@ -23,8 +23,8 @@ Index: jenkins/core/src/main/resources/hudson/AboutJenkins/index.jelly
  </j:jelly>
 Index: jenkins/core/src/main/resources/hudson/AboutJenkins/index.properties
 ===================================================================
---- jenkins.orig/core/src/main/resources/hudson/AboutJenkins/index.properties	2012-02-10 15:39:22.749867338 +0000
-+++ jenkins/core/src/main/resources/hudson/AboutJenkins/index.properties	2012-02-28 16:48:45.517724331 +0000
+--- jenkins.orig/core/src/main/resources/hudson/AboutJenkins/index.properties	2012-07-24 16:32:51.818007739 +0100
++++ jenkins/core/src/main/resources/hudson/AboutJenkins/index.properties	2012-07-24 16:33:05.318055881 +0100
 @@ -20,7 +20,7 @@
  # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  # THE SOFTWARE.

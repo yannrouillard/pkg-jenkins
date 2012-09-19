@@ -5,8 +5,8 @@ Forwarded: not-needed
 
 Index: jenkins/core/src/main/java/hudson/util/ProcessTree.java
 ===================================================================
---- jenkins.orig/core/src/main/java/hudson/util/ProcessTree.java	2012-04-26 14:09:39.215341004 +0100
-+++ jenkins/core/src/main/java/hudson/util/ProcessTree.java	2012-04-26 14:15:22.328634299 +0100
+--- jenkins.orig/core/src/main/java/hudson/util/ProcessTree.java	2012-07-24 16:32:51.282005826 +0100
++++ jenkins/core/src/main/java/hudson/util/ProcessTree.java	2012-07-24 16:33:07.630064127 +0100
 @@ -37,8 +37,6 @@
  import hudson.util.ProcessTreeRemoting.IOSProcess;
  import hudson.util.ProcessTreeRemoting.IProcessTree;

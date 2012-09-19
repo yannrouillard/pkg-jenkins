@@ -4,8 +4,8 @@ Forwarded: not-needed
 
 Index: jenkins/war/pom.xml
 ===================================================================
---- jenkins.orig/war/pom.xml	2012-04-26 14:09:39.411340903 +0100
-+++ jenkins/war/pom.xml	2012-04-26 14:15:02.484642064 +0100
+--- jenkins.orig/war/pom.xml	2012-07-24 16:32:51.758007525 +0100
++++ jenkins/war/pom.xml	2012-07-24 16:33:05.618056952 +0100
 @@ -149,6 +149,11 @@
        <scope>system</scope>
        <systemPath>/usr/local/yjp/lib/yjp.jar</systemPath>

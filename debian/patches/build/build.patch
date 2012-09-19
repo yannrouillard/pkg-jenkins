@@ -4,8 +4,8 @@ Forwarded: not-needed
 
 Index: jenkins/pom.xml
 ===================================================================
---- jenkins.orig/pom.xml	2012-04-26 14:29:34.000000000 +0100
-+++ jenkins/pom.xml	2012-04-26 14:35:33.009556068 +0100
+--- jenkins.orig/pom.xml	2012-07-24 16:32:51.990008351 +0100
++++ jenkins/pom.xml	2012-07-24 16:33:04.738053812 +0100
 @@ -48,10 +48,7 @@
  
    <modules>
@@ -17,7 +17,7 @@ Index: jenkins/pom.xml
      <module>cli</module>
    </modules>
  
-@@ -574,9 +571,6 @@
+@@ -575,9 +572,6 @@
                  <requireJavaVersion>
                    <version>1.6.0-18</version>
                  </requireJavaVersion>
@@ -29,9 +29,9 @@ Index: jenkins/pom.xml
            </execution>
 Index: jenkins/core/pom.xml
 ===================================================================
---- jenkins.orig/core/pom.xml	2012-04-26 14:29:34.000000000 +0100
-+++ jenkins/core/pom.xml	2012-04-26 14:35:16.893548264 +0100
-@@ -297,6 +297,16 @@
+--- jenkins.orig/core/pom.xml	2012-07-24 16:32:51.990008351 +0100
++++ jenkins/core/pom.xml	2012-07-24 16:33:04.738053812 +0100
+@@ -319,6 +319,16 @@
        <groupId>commons-jelly</groupId>
        <artifactId>commons-jelly-tags-fmt</artifactId>
        <version>1.0</version>
