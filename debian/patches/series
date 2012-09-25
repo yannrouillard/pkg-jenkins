@@ -16,3 +16,4 @@ dependency-upgrades/asm3-upgrade.patch
 dependency-upgrades/animal-sniffer-upgrade.patch
 build/use-stock-jmdns.patch
 ubuntu/ubuntu-font.patch
+security/CVE-2012-4438_CVE-2012-4439.patch

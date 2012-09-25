@@ -1,3 +1,13 @@
+jenkins (1.447.2+dfsg-2) unstable; urgency=low
+
+  * Fix multiple security issues in Jenkins core (Closes: #688298):
+    - d/p/security/CVE-2012-4438_CVE-2012-4439.patch: Cherry picked
+      fixes from 1.466.2 release to resolve remote code execution
+      and XSS security vulnerabilities.
+    - Fixes: CVE-2012-4438, CVE-2012-4439
+
+ -- James Page <james.page@ubuntu.com>  Tue, 25 Sep 2012 11:01:53 +0100
+
 jenkins (1.447.2+dfsg-1) unstable; urgency=low
 
   * New upstream release. 
