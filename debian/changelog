@@ -4,6 +4,8 @@ jenkins (1.447.2+dfsg-2) unstable; urgency=low
     - d/p/security/CVE-2012-4438_CVE-2012-4439.patch: Cherry picked
       fixes from 1.466.2 release to resolve remote code execution
       and XSS security vulnerabilities.
+    - d/rules: Tweaked handling of groovy -> java source file copy to
+      accomodate the file created by the above patch.
     - Fixes: CVE-2012-4438, CVE-2012-4439
 
  -- James Page <james.page@ubuntu.com>  Tue, 25 Sep 2012 11:01:53 +0100
