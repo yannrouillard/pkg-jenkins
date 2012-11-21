@@ -2,6 +2,8 @@ jenkins (1.466.2+dfsg-1) experimental; urgency=low
 
   * New upstream release.
   * d/rules: Updated handling of java files in groovy source folder.
+  * d/*.lintian-overrides: Added overrides for java libraries which
+    only install into /usr/share/maven-repo for Jenkins plugin builds.
 
  -- James Page <james.page@ubuntu.com>  Wed, 21 Nov 2012 09:04:43 +0000
 

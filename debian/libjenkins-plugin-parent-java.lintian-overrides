@@ -1,0 +1,3 @@
+# Simple provides the POM parent file to build
+# Jenkins plugins with.
+libjenkins-plugin-parent-java: javalib-but-no-public-jars

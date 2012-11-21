@@ -1,0 +1,3 @@
+# Only used when building Jenkins plugins so not
+# installed to /usr/share/java
+libjenkins-java: javalib-but-no-public-jars
