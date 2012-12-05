@@ -228,6 +228,9 @@ public final class FilePath implements Serializable {
         }
     }
 
+    /**
+     * Is the given path name an absolute path?
+     */
     private static boolean isAbsolute(String rel) {
         return rel.startsWith("/") || DRIVE_PATTERN.matcher(rel).matches();
     }
@@ -827,7 +830,7 @@ public final class FilePath implements Serializable {
             try {
                 return channel.call(new FileCallableWrapper<T>(callable,cl));
             } catch (TunneledInterruptedException e) {
-                throw (InterruptedException)new InterruptedException().initCause(e);
+                throw (InterruptedException)new InterruptedException(e.getMessage()).initCause(e);
             } catch (AbortException e) {
                 throw e;    // pass through so that the caller can catch it as AbortException
             } catch (IOException e) {
@@ -970,11 +973,11 @@ public final class FilePath implements Serializable {
 
     /**
      * The same as {@link FilePath#FilePath(FilePath,String)} but more OO.
-     * @param rel a relative or absolute path
+     * @param relOrAbsolute a relative or absolute path
      * @return a file on the same channel
      */
-    public FilePath child(String rel) {
-        return new FilePath(this,rel);
+    public FilePath child(String relOrAbsolute) {
+        return new FilePath(this,relOrAbsolute);
     }
 
     /**
@@ -1230,6 +1233,10 @@ public final class FilePath implements Serializable {
      * @param mask
      *      File permission mask. To simplify the permission copying,
      *      if the parameter is -1, this method becomes no-op.
+     *      <p>
+     *      please note mask is expected to be an octal if you use <a href="http://en.wikipedia.org/wiki/Chmod">chmod command line values</a>,
+     *      so preceded by a '0' in java notation, ie <code>chmod(0644)</code>
+     *
      * @since 1.303
      * @see #mode()
      */
@@ -1896,8 +1903,26 @@ public final class FilePath implements Serializable {
      * @see #validateFileMask(FilePath, String)
      */
     public String validateAntFileMask(final String fileMasks) throws IOException, InterruptedException {
+        return validateAntFileMask(fileMasks, Integer.MAX_VALUE);
+    }
+
+    /**
+     * Like {@link #validateAntFileMask(String)} but performing only a bounded number of operations.
+     * <p>Whereas the unbounded overload is appropriate for calling from cancelable, long-running tasks such as build steps,
+     * this overload should be used when an answer is needed quickly, such as for {@link #validateFileMask(String)}
+     * or anything else returning {@link FormValidation}.
+     * <p>If a positive match is found, {@code null} is returned immediately.
+     * A message is returned in case the file pattern can definitely be determined to not match anything in the directory within the alloted time.
+     * If the time runs out without finding a match but without ruling out the possibility that there might be one, {@link InterruptedException} is thrown,
+     * in which case the calling code should give the user the benefit of the doubt and use {@link hudson.util.FormValidation.Kind#OK} (with or without a message).
+     * @param bound a maximum number of negative operations (deliberately left vague) to perform before giving up on a precise answer; 10_000 is a reasonable pick
+     * @throws InterruptedException not only in case of a channel failure, but also if too many operations were performed without finding any matches
+     * @since 1.484
+     */
+    public String validateAntFileMask(final String fileMasks, final int bound) throws IOException, InterruptedException {
         return act(new FileCallable<String>() {
-            public String invoke(File dir, VirtualChannel channel) throws IOException {
+            private static final long serialVersionUID = 1;
+            public String invoke(File dir, VirtualChannel channel) throws IOException, InterruptedException {
                 if(fileMasks.startsWith("~"))
                     return Messages.FilePath_TildaDoesntWork();
 
@@ -1994,10 +2019,28 @@ public final class FilePath implements Serializable {
                 return null; // no error
             }
 
-            private boolean hasMatch(File dir, String pattern) {
-                FileSet fs = Util.createFileSet(dir,pattern);
-                DirectoryScanner ds = fs.getDirectoryScanner(new Project());
-
+            private boolean hasMatch(File dir, String pattern) throws InterruptedException {
+                class Cancel extends RuntimeException {}
+                DirectoryScanner ds = bound == Integer.MAX_VALUE ? new DirectoryScanner() : new DirectoryScanner() {
+                    int ticks;
+                    @Override public synchronized boolean isCaseSensitive() {
+                        if (!filesIncluded.isEmpty() || !dirsIncluded.isEmpty() || ticks++ > bound) {
+                            throw new Cancel();
+                        }
+                        return super.isCaseSensitive();
+                    }
+                };
+                ds.setBasedir(dir);
+                ds.setIncludes(new String[] {pattern});
+                try {
+                    ds.scan();
+                } catch (Cancel c) {
+                    if (ds.getIncludedFilesCount()!=0 || ds.getIncludedDirsCount()!=0) {
+                        return true;
+                    } else {
+                        throw new InterruptedException("no matches found within " + bound);
+                    }
+                }
                 return ds.getIncludedFilesCount()!=0 || ds.getIncludedDirsCount()!=0;
             }
 
@@ -2046,11 +2089,11 @@ public final class FilePath implements Serializable {
             if(!exists()) // no workspace. can't check
                 return FormValidation.ok();
 
-            String msg = validateAntFileMask(value);
+            String msg = validateAntFileMask(value, 10000);
             if(errorIfNotExist)     return FormValidation.error(msg);
             else                    return FormValidation.warning(msg);
         } catch (InterruptedException e) {
-            return FormValidation.ok();
+            return FormValidation.ok(Messages.FilePath_did_not_manage_to_validate_may_be_too_sl(value));
         }
     }
 
