@@ -102,6 +102,7 @@ import org.kohsuke.stapler.export.ExportedBean;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
+import org.kohsuke.stapler.QueryParameter;
 
 /**
  * Build queue.
@@ -570,6 +571,17 @@ public class Queue extends ResourceController implements Saveable {
         return r;
     }
 
+    /**
+     * Called from {@code queue.jelly} and {@code entries.jelly}.
+     */
+    public HttpResponse doCancelItem(@QueryParameter int id) throws IOException, ServletException {
+        Item item = getItem(id);
+        if (item != null) {
+            cancel(item);
+        } // else too late, ignore (JENKINS-14813)
+        return HttpResponses.forwardToPreviousPage();
+    }
+
     public synchronized boolean isEmpty() {
         return waitingList.isEmpty() && blockedProjects.isEmpty() && buildables.isEmpty() && pendings.isEmpty();
     }
@@ -689,6 +701,13 @@ public class Queue extends ResourceController implements Saveable {
             if(bi.getAssignedLabel()==l)
                 r++;
         return r;
+    }
+
+    /**
+     * Counts all the {@link BuildableItem}s currently in the queue.
+     */
+    public synchronized int countBuildableItems() {
+        return buildables.size()+pendings.size();
     }
 
     /**
@@ -1260,6 +1279,14 @@ public class Queue extends ResourceController implements Saveable {
          */
         public Future<Executable> getFuture() { return future; }
 
+        /**
+         * If this task needs to be run on a node with a particular label,
+         * return that {@link Label}. Otherwise null, indicating
+         * it can run on anywhere.
+         * 
+         * <p>
+         * This code takes {@link LabelAssignmentAction} into account, then fall back to {@link SubTask#getAssignedLabel()}
+         */
         public Label getAssignedLabel() {
             for (LabelAssignmentAction laa : getActions(LabelAssignmentAction.class)) {
                 Label l = laa.getAssignedLabel(task);
@@ -1347,9 +1374,8 @@ public class Queue extends ResourceController implements Saveable {
 			return null;
 		}
 
-        /**
-         * Called from queue.jelly.
-         */
+        /** @deprecated Use {@link #doCancelItem} instead. */
+        @Deprecated
         public HttpResponse doCancelQueue() throws IOException, ServletException {
         	Jenkins.getInstance().getQueue().cancel(this);
             return HttpResponses.forwardToPreviousPage();
@@ -1627,6 +1653,26 @@ public class Queue extends ResourceController implements Saveable {
 			public String toString(Object object) {
 				Run<?,?> run = (Run<?,?>) object;
 				return run.getParent().getFullName() + "#" + run.getNumber();
+			}
+        });
+
+        /**
+         * Reconnect every reference to {@link Queue} by the singleton.
+         */
+        XSTREAM.registerConverter(new AbstractSingleValueConverter() {
+			@Override
+			public boolean canConvert(Class klazz) {
+				return Queue.class.isAssignableFrom(klazz);
+			}
+
+			@Override
+			public Object fromString(String string) {
+                return Jenkins.getInstance().getQueue();
+			}
+
+			@Override
+			public String toString(Object item) {
+                return "queue";
 			}
         });
     }

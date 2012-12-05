@@ -68,6 +68,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import hudson.util.jna.Kernel32Utils;
+
 import static hudson.util.jna.GNUCLibrary.LIBC;
 
 /**
@@ -308,6 +310,9 @@ public class Util {
      */
     //Taken from http://svn.apache.org/viewvc/maven/shared/trunk/file-management/src/main/java/org/apache/maven/shared/model/fileset/util/FileSetManager.java?view=markup
     public static boolean isSymlink(File file) throws IOException {
+        if (Functions.isWindows()) {
+          return Kernel32Utils.isJunctionOrSymlink(file);
+        }
         String name = file.getName();
         if (name.equals(".") || name.equals(".."))
             return false;
@@ -678,7 +683,7 @@ public class Util {
 
             for (int i = 0; i < s.length(); i++) {
                 int c = s.charAt(i);
-                if (c<128 && c!=' ') {
+                if (c<128 && (c!=' ' && c!='&')) {
                     out.append((char) c);
                 } else {
                     // 1 char -> UTF8
@@ -703,8 +708,8 @@ public class Util {
     private static final boolean[] uriMap = new boolean[123];
     static {
         String raw =
-    "!  $ &'()*+,-. 0123456789   =  @ABCDEFGHIJKLMNOPQRSTUVWXYZ    _ abcdefghijklmnopqrstuvwxyz";
-  //  "# %         /          :;< >?                           [\]^ `                          {|}~
+    "!  $  '()*+,-. 0123456789   =  @ABCDEFGHIJKLMNOPQRSTUVWXYZ    _ abcdefghijklmnopqrstuvwxyz";
+  //  "# %&        /          :;< >?                           [\]^ `                          {|}~
   //  ^--so these are encoded
         int i;
         // Encode control chars and space
@@ -719,9 +724,11 @@ public class Util {
      * Encode a single path component for use in an HTTP URL.
      * Escapes all non-ASCII, general unsafe (space and "#%<>[\]^`{|}~)
      * and HTTP special characters (/;:?) as specified in RFC1738.
-     * (so alphanumeric and !@$&*()-_=+',. are not encoded)
+     * Also escapes & for convenience.
+     * (so alphanumeric and !@$*()-_=+',. are not encoded)
      * Note that slash(/) is encoded, so the given string should be a
      * single path component used in constructing a URL.
+     * Do not use this method for encoding query parameters.
      * Method name inspired by PHP's rawurlencode.
      */
     public static String rawEncode(String s) {
@@ -1152,6 +1159,31 @@ public class Util {
      */
     public static String intern(String s) {
         return s==null ? s : s.intern();
+    }
+
+    /**
+     * Return true if the systemId denotes an absolute URI .
+     *
+     * The same algorithm can be seen in {@link URI}, but
+     * implementing this by ourselves allow it to be more lenient about
+     * escaping of URI.
+     */
+    public static boolean isAbsoluteUri(String uri) {
+        int idx = uri.indexOf(':');
+        if (idx<0)  return false;   // no ':'. can't be absolute
+
+        // #, ?, and / must not be before ':'
+        return idx<_indexOf(uri, '#') && idx<_indexOf(uri,'?') && idx<_indexOf(uri,'/');
+    }
+
+    /**
+     * Works like {@link String#indexOf(int)} but 'not found' is returned as s.length(), not -1.
+     * This enables more straight-forward comparison.
+     */
+    private static int _indexOf(String s, char ch) {
+        int idx = s.indexOf(ch);
+        if (idx<0)  return s.length();
+        return idx;
     }
 
     /**

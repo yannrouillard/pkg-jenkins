@@ -30,6 +30,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Injector;
 import hudson.ExtensionComponent;
 import hudson.ExtensionFinder;
+import hudson.model.LoadStatistics;
 import hudson.model.Messages;
 import hudson.model.Node;
 import hudson.model.AbstractCIBase;
@@ -62,7 +63,6 @@ import hudson.model.Label;
 import hudson.model.ListView;
 import hudson.model.LoadBalancer;
 import hudson.model.ManagementLink;
-import hudson.model.ModifiableItemGroup;
 import hudson.model.NoFingerprintMatch;
 import hudson.model.OverallLoadStatistics;
 import hudson.model.Project;
@@ -131,6 +131,7 @@ import hudson.scm.RepositoryBrowser;
 import hudson.scm.SCM;
 import hudson.search.CollectionSearchIndex;
 import hudson.search.SearchIndexBuilder;
+import hudson.search.SearchItem;
 import hudson.security.ACL;
 import hudson.security.AccessControlled;
 import hudson.security.AuthorizationStrategy;
@@ -161,6 +162,7 @@ import hudson.tasks.BuildWrapper;
 import hudson.tasks.Builder;
 import hudson.tasks.Mailer;
 import hudson.tasks.Publisher;
+import hudson.triggers.SafeTimerTask;
 import hudson.triggers.Trigger;
 import hudson.triggers.TriggerDescriptor;
 import hudson.util.AdministrativeError;
@@ -183,6 +185,7 @@ import hudson.util.RemotingDiagnostics;
 import hudson.util.RemotingDiagnostics.HeapDump;
 import hudson.util.StreamTaskListener;
 import hudson.util.TextFile;
+import hudson.util.TimeUnit2;
 import hudson.util.VersionNumber;
 import hudson.util.XStream2;
 import hudson.views.DefaultMyViewsTabBar;
@@ -291,6 +294,7 @@ import static java.util.logging.Level.SEVERE;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import javax.annotation.CheckForNull;
 
 /**
  * Root object of the system.
@@ -298,7 +302,7 @@ import java.util.regex.Pattern;
  * @author Kohsuke Kawaguchi
  */
 @ExportedBean
-public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLevelItem>, StaplerProxy, StaplerFallback, ViewGroup, AccessControlled, DescriptorByNameOwner, ModelObjectWithContextMenu {
+public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGroup, StaplerProxy, StaplerFallback, ViewGroup, AccessControlled, DescriptorByNameOwner, ModelObjectWithContextMenu {
     private transient final Queue queue;
 
     /**
@@ -569,14 +573,38 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
 
     /**
      * Load statistics of the entire system.
+     *
+     * This includes every executor and every job in the system.
      */
     @Exported
     public transient final OverallLoadStatistics overallLoad = new OverallLoadStatistics();
 
     /**
-     * {@link NodeProvisioner} that reacts to {@link OverallLoadStatistics}.
+     * Load statistics of the free roaming jobs and slaves.
+     * 
+     * This includes all executors on {@link Mode#NORMAL} nodes and jobs that do not have any assigned nodes.
+     *
+     * @since 1.467
      */
-    public transient final NodeProvisioner overallNodeProvisioner = new NodeProvisioner(null,overallLoad);
+    @Exported
+    public transient final LoadStatistics unlabeledLoad = new UnlabeledLoadStatistics();
+
+    /**
+     * {@link NodeProvisioner} that reacts to {@link #unlabeledLoad}.
+     * @since 1.467
+     */
+    public transient final NodeProvisioner unlabeledNodeProvisioner = new NodeProvisioner(null,unlabeledLoad);
+
+    /**
+     * @deprecated as of 1.467
+     *      Use {@link #unlabeledNodeProvisioner}.
+     *      This was broken because it was tracking all the executors in the system, but it was only tracking
+     *      free-roaming jobs in the queue. So {@link Cloud} fails to launch nodes when you have some exclusive
+     *      slaves and free-roaming jobs in the queue.
+     */
+    @Restricted(NoExternalUse.class)
+    public transient final NodeProvisioner overallNodeProvisioner = unlabeledNodeProvisioner;
+
 
     public transient final ServletContext servletContext;
 
@@ -788,6 +816,13 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
             }
             dnsMultiCast = new DNSMultiCast(this);
 
+            Trigger.timer.scheduleAtFixedRate(new SafeTimerTask() {
+                @Override
+                protected void doRun() throws Exception {
+                    trimLabels();
+                }
+            }, TimeUnit2.MINUTES.toMillis(5), TimeUnit2.MINUTES.toMillis(5));
+
             updateComputerList();
 
             {// master is online now
@@ -928,6 +963,13 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
 
     public View.People getPeople() {
         return new View.People(this);
+    }
+
+    /**
+     * @since 1.484
+     */
+    public View.AsynchPeople getAsynchPeople() {
+        return new View.AsynchPeople(this);
     }
 
     /**
@@ -1325,12 +1367,15 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
     }
 
     /**
-     * Gets the list of all the projects.
-     *
-     * <p>
-     * Since {@link Project} can only show up under {@link Jenkins},
-     * no need to search recursively.
+     * Gets a list of simple top-level projects.
+     * @deprecated This method will ignore Maven and matrix projects, as well as projects inside containers such as folders.
+     * You may prefer to call {@link #getAllItems(Class)} on {@link AbstractProject},
+     * perhaps also using {@link Util#createSubList} to consider only {@link TopLevelItem}s.
+     * (That will also consider the caller's permissions.)
+     * If you really want to get just {@link Project}s at top level, ignoring permissions,
+     * you can filter the values from {@link #getItemMap} using {@link Util#createSubList}.
      */
+    @Deprecated
     public List<Project> getProjects() {
         return Util.createSubList(items.values(),Project.class);
     }
@@ -1367,7 +1412,7 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
      * Gets the read-only list of all {@link View}s.
      */
     @Exported
-    public synchronized Collection<View> getViews() {
+    public Collection<View> getViews() {
         return viewGroupMixIn.getViews();
     }
 
@@ -1633,6 +1678,9 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
 
     /**
      * Resets all labels and remove invalid ones.
+     *
+     * This should be called when the assumptions behind label cache computation changes,
+     * but we also call this periodically to self-heal any data out-of-sync issue.
      */
     private void trimLabels() {
         for (Iterator<Label> itr = labels.values().iterator(); itr.hasNext();) {
@@ -1721,6 +1769,10 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
             .add("configure", "config","configure")
             .add("manage")
             .add("log")
+            .add(new CollectionSearchIndex<TopLevelItem>() {
+                protected SearchItem get(String key) { return getItem(key); }
+                protected Collection<TopLevelItem> all() { return getItems(); }
+            })
             .add(getPrimaryView().makeSearchIndex())
             .add(new CollectionSearchIndex() {// for computers
                 protected Computer get(String key) { return getComputer(key); }
@@ -2015,14 +2067,14 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
         for (ExtensionFinder ef : finders) {
             fragments.add(ef.refresh());
         }
-        ExtensionComponentSet delta = ExtensionComponentSet.union(fragments);
+        ExtensionComponentSet delta = ExtensionComponentSet.union(fragments).filtered();
 
         // if we find a new ExtensionFinder, we need it to list up all the extension points as well
         List<ExtensionComponent<ExtensionFinder>> newFinders = Lists.newArrayList(delta.find(ExtensionFinder.class));
         while (!newFinders.isEmpty()) {
             ExtensionFinder f = newFinders.remove(newFinders.size()-1).getInstance();
 
-            ExtensionComponentSet ecs = ExtensionComponentSet.allOf(f);
+            ExtensionComponentSet ecs = ExtensionComponentSet.allOf(f).filtered();
             newFinders.addAll(ecs.find(ExtensionFinder.class));
             delta = ExtensionComponentSet.union(delta, ecs);
         }
@@ -2213,7 +2265,7 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
      *      null if either such {@link Item} doesn't exist under the given full name,
      *      or it exists but it's no an instance of the given type.
      */
-    public <T extends Item> T getItemByFullName(String fullName, Class<T> type) {
+    public @CheckForNull <T extends Item> T getItemByFullName(String fullName, Class<T> type) {
         StringTokenizer tokens = new StringTokenizer(fullName,"/");
         ItemGroup parent = this;
 
@@ -2238,38 +2290,24 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
         }
     }
 
-    public Item getItemByFullName(String fullName) {
+    public @CheckForNull Item getItemByFullName(String fullName) {
         return getItemByFullName(fullName,Item.class);
     }
 
     /**
      * Gets the user of the given name.
      *
-     * @return
-     *      This method returns a non-null object for any user name, without validation.
+     * @return the user of the given name, if that person exists or the invoker {@link #hasPermission} on {@link #ADMINISTER}; else null
+     * @see User#get(String,boolean)
      */
-    public User getUser(String name) {
+    public @CheckForNull User getUser(String name) {
         return User.get(name,hasPermission(ADMINISTER));
     }
 
-    /**
-     * Creates a new job.
-     *
-     * @throws IllegalArgumentException
-     *      if the project of the given name already exists.
-     */
     public synchronized TopLevelItem createProject( TopLevelItemDescriptor type, String name ) throws IOException {
         return createProject(type, name, true);
     }
 
-    /**
-     * Creates a new job.
-     * @param type Descriptor for job type
-     * @param name Name for job
-     * @param notify Whether to fire onCreated method for all ItemListeners
-     * @throws IllegalArgumentException
-     *      if a project of the give name already exists.
-     */
     public synchronized TopLevelItem createProject( TopLevelItemDescriptor type, String name, boolean notify ) throws IOException {
         return itemGroupMixIn.createProject(type,name,notify);
     }
@@ -2374,6 +2412,7 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
         return fixNull(label).trim();
     }
 
+    @Override
     public void setLabelString(String label) throws IOException {
         this.label = label;
         save();
@@ -2647,27 +2686,25 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
     }
 
     /**
-     * Accepts submission from the configuration page.
+     * Accepts submission from the node configuration page.
      */
-    public synchronized void doConfigExecutorsSubmit( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
+    public synchronized void doConfigExecutorsSubmit( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException, FormException {
         checkPermission(ADMINISTER);
 
         BulkChange bc = new BulkChange(this);
         try {
             JSONObject json = req.getSubmittedForm();
 
-            setNumExecutors(Integer.parseInt(req.getParameter("numExecutors")));
-            if(req.hasParameter("master.mode"))
-                mode = Mode.valueOf(req.getParameter("master.mode"));
-            else
-                mode = Mode.NORMAL;
+            MasterBuildConfiguration mbc = MasterBuildConfiguration.all().get(MasterBuildConfiguration.class);
+            if (mbc!=null)
+                mbc.configure(req,json);
 
-            setNodes(req.bindJSONToList(Slave.class,json.get("slaves")));
+            getNodeProperties().rebuild(req, json.optJSONObject("nodeProperties"), NodeProperty.all());
         } finally {
             bc.commit();
         }
 
-        rsp.sendRedirect(req.getContextPath() + '/');  // go to the top page
+        rsp.sendRedirect(req.getContextPath()+'/'+toComputer().getUrl());  // back to the computer page
     }
 
     /**
@@ -2760,24 +2797,13 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
     }
 
     /**
-     * Creates a new job from its configuration XML. The type of the job created will be determined by
-     * what's in this XML.
      * @since 1.319
      */
     public TopLevelItem createProjectFromXML(String name, InputStream xml) throws IOException {
         return itemGroupMixIn.createProjectFromXML(name, xml);
     }
 
-    /**
-     * Copys a job.
-     *
-     * @param src
-     *      A {@link TopLevelItem} to be copied.
-     * @param name
-     *      Name of the newly created project.
-     * @return
-     *      Newly created {@link TopLevelItem}.
-     */
+
     @SuppressWarnings({"unchecked"})
     public <T extends TopLevelItem> T copy(T src, String name) throws IOException {
         return itemGroupMixIn.copy(src, name);
@@ -2980,7 +3006,14 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
     }
 
     public ContextMenu doContextMenu(StaplerRequest request, StaplerResponse response) throws IOException, JellyException {
-        return new ContextMenu().from(this,request,response);
+        ContextMenu menu = new ContextMenu().from(this, request, response);
+        for (MenuItem i : menu.items) {
+            if (i.url.equals("/manage")) {
+                // add "Manage Jenkins" subitems
+                i.subMenu = new ContextMenu().from(this, request, response, "manage");
+            }
+        }
+        return menu;
     }
 
     /**
@@ -3624,9 +3657,8 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
         }
 
         @Override
-        public void doConfigSubmit(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
-            // the master node isn't in the Hudson.getNodes(), so this method makes no sense.
-            throw new UnsupportedOperationException();
+        public void doConfigSubmit(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException, FormException {
+            Jenkins.getInstance().doConfigExecutorsSubmit(req, rsp);
         }
 
         @Override
@@ -3657,13 +3689,6 @@ public class Jenkins extends AbstractCIBase implements ModifiableItemGroup<TopLe
             // this computer never returns null from channel, so
             // this method shall never be invoked.
             rsp.sendError(SC_NOT_FOUND);
-        }
-
-        /**
-         * Redirect the master configuration to /configure.
-         */
-        public void doConfigure(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
-            rsp.sendRedirect2(req.getContextPath()+"/configure");
         }
 
         protected Future<?> _connect(boolean forceReconnect) {
