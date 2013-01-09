@@ -9,7 +9,7 @@ Forwarded: not-needed
 
 --- a/core/src/main/java/hudson/DNSMultiCast.java
 +++ b/core/src/main/java/hudson/DNSMultiCast.java
-@@ -67,12 +67,12 @@ public class DNSMultiCast implements Clo
+@@ -66,12 +66,12 @@ public class DNSMultiCast implements Clo
  
      public void close() {
          if (jmdns!=null) {

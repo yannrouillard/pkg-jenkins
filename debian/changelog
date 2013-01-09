@@ -1,6 +1,8 @@
-jenkins (1.480.1-1) UNRELEASED; urgency=low
+jenkins (1.480.2-1~exp1) UNRELEASED; urgency=low
 
-  * New upstream release. 
+  * New upstream release:
+    - d/control: Added new BD on libjbcrypt-java.
+    - d/control: Versioned BD jenkins-winstone >= 0.9.10-jenkins-40.
 
  -- James Page <james.page@ubuntu.com>  Wed, 05 Dec 2012 21:56:17 +0000
 

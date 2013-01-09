@@ -14,3 +14,4 @@ dependency-upgrades/jnr-posix-upgrade.patch
 build/use-stock-jmdns.patch
 ubuntu/ubuntu-font.patch
 build/use-stock-asm3.patch
+build/use-debian-jbcrypt.patch

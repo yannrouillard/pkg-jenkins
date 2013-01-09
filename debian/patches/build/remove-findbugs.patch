@@ -38,7 +38,7 @@ Forwarded: not-needed
          Logger.getLogger("hudson").addHandler(handler);
 --- a/core/src/main/java/jenkins/model/Jenkins.java
 +++ b/core/src/main/java/jenkins/model/Jenkins.java
-@@ -727,7 +727,6 @@ public class Jenkins extends AbstractCIB
+@@ -730,7 +730,6 @@ public class Jenkins extends AbstractCIB
       * @param pluginManager
       *      If non-null, use existing plugin manager.  create a new one.
       */
@@ -46,7 +46,7 @@ Forwarded: not-needed
      protected Jenkins(File root, ServletContext context, PluginManager pluginManager) throws IOException, InterruptedException, ReactorException {
          long start = System.currentTimeMillis();
          
-@@ -2989,7 +2988,6 @@ public class Jenkins extends AbstractCIB
+@@ -3018,7 +3017,6 @@ public class Jenkins extends AbstractCIB
      /**
       * For debugging. Expose URL to perform GC.
       */
@@ -100,3 +100,13 @@ Forwarded: not-needed
              public Object doCall(Object[] args) throws ChannelClosedException {
                  if (args.length == 1 && args[0] instanceof ChannelClosedException) {
                      throw (ChannelClosedException)args[0];
+--- a/core/src/main/java/jenkins/util/ProgressiveRendering.java
++++ b/core/src/main/java/jenkins/util/ProgressiveRendering.java
+@@ -24,7 +24,6 @@
+ 
+ package jenkins.util;
+ 
+-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+ import hudson.model.Computer;
+ import java.util.concurrent.ExecutorService;
+ import java.util.logging.Level;

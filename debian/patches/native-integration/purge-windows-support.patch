@@ -14,7 +14,7 @@ Forwarded: not-needed
  import hudson.Util;
  import hudson.AbortException;
  import hudson.remoting.Launcher;
-@@ -365,7 +364,6 @@ public class SlaveComputer extends Compu
+@@ -370,7 +369,6 @@ public class SlaveComputer extends Compu
          channel.pinClassLoader(getClass().getClassLoader());
  
          channel.call(new SlaveInitializer());
