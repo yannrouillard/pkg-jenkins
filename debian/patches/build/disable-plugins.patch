@@ -2,11 +2,9 @@ Description: Disables packagaging of plugins with core Jenkins
 Author: James Page <james.page@ubuntu.com>
 Forwarded: not-needed
 
-Index: jenkins/war/pom.xml
-===================================================================
---- jenkins.orig/war/pom.xml	2012-07-24 16:32:51.758007525 +0100
-+++ jenkins/war/pom.xml	2012-07-24 16:33:05.618056952 +0100
-@@ -149,6 +149,11 @@
+--- a/war/pom.xml
++++ b/war/pom.xml
+@@ -154,6 +154,11 @@ THE SOFTWARE.
        <scope>system</scope>
        <systemPath>/usr/local/yjp/lib/yjp.jar</systemPath>
      </dependency-->
@@ -18,7 +16,7 @@ Index: jenkins/war/pom.xml
    </dependencies>
  
    <build>
-@@ -236,48 +241,6 @@
+@@ -241,66 +246,6 @@ THE SOFTWARE.
                    <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
                    <destFileName>winstone.jar</destFileName>
                  </artifactItem>
@@ -37,7 +35,7 @@ Index: jenkins/war/pom.xml
 -                <artifactItem>
 -                  <groupId>org.jenkins-ci.plugins</groupId>
 -                  <artifactId>subversion</artifactId>
--                  <version>1.34</version>
+-                  <version>1.39</version>
 -                  <type>hpi</type>
 -                </artifactItem>
 -                <artifactItem>
@@ -62,6 +60,24 @@ Index: jenkins/war/pom.xml
 -                  <groupId>org.jenkins-ci.plugins</groupId>
 -                  <artifactId>translation</artifactId>
 -                  <version>1.8</version>
+-                  <type>hpi</type>
+-                </artifactItem>
+-                <artifactItem>
+-                  <groupId>org.jenkins-ci.plugins</groupId>
+-                  <artifactId>external-monitor-job</artifactId>
+-                  <version>1.1</version>
+-                  <type>hpi</type>
+-                </artifactItem>
+-                <artifactItem>
+-                  <groupId>org.jenkins-ci.plugins</groupId>
+-                  <artifactId>ldap</artifactId>
+-                  <version>1.1</version>
+-                  <type>hpi</type>
+-                </artifactItem>
+-                <artifactItem>
+-                  <groupId>org.jenkins-ci.plugins</groupId>
+-                  <artifactId>pam-auth</artifactId>
+-                  <version>1.0</version>
 -                  <type>hpi</type>
 -                </artifactItem>
                </artifactItems>

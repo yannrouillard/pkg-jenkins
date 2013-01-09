@@ -3,11 +3,9 @@ Description: Purges windows process integration from Jenkins
 Author: James Page <james.page@ubuntu.com>
 Forwarded: not-needed
 
-Index: jenkins/core/src/main/java/hudson/util/ProcessTree.java
-===================================================================
---- jenkins.orig/core/src/main/java/hudson/util/ProcessTree.java	2012-07-24 16:32:51.282005826 +0100
-+++ jenkins/core/src/main/java/hudson/util/ProcessTree.java	2012-07-24 16:33:07.630064127 +0100
-@@ -37,8 +37,6 @@
+--- a/core/src/main/java/hudson/util/ProcessTree.java
++++ b/core/src/main/java/hudson/util/ProcessTree.java
+@@ -37,8 +37,6 @@ import hudson.util.ProcessTree.OSProcess
  import hudson.util.ProcessTreeRemoting.IOSProcess;
  import hudson.util.ProcessTreeRemoting.IProcessTree;
  import org.apache.commons.io.FileUtils;
@@ -16,7 +14,7 @@ Index: jenkins/core/src/main/java/hudson/util/ProcessTree.java
  
  import java.io.BufferedReader;
  import java.io.ByteArrayOutputStream;
-@@ -331,9 +329,6 @@
+@@ -331,9 +329,6 @@ public abstract class ProcessTree implem
              return DEFAULT;
  
          try {
@@ -26,7 +24,7 @@ Index: jenkins/core/src/main/java/hudson/util/ProcessTree.java
              String os = Util.fixNull(System.getProperty("os.name"));
              if(os.equals("Linux"))
                  return new Linux();
-@@ -390,81 +385,6 @@
+@@ -390,81 +385,6 @@ public abstract class ProcessTree implem
          }
      };
  
@@ -108,7 +106,7 @@ Index: jenkins/core/src/main/java/hudson/util/ProcessTree.java
      static abstract class Unix extends Local {
          @Override
          public OSProcess get(Process proc) {
-@@ -1227,4 +1147,4 @@
+@@ -1227,4 +1147,4 @@ public abstract class ProcessTree implem
       */
      public static boolean enabled = !Boolean.getBoolean(ProcessTreeKiller.class.getName()+".disable")
                                   && !Boolean.getBoolean(ProcessTree.class.getName()+".disable");

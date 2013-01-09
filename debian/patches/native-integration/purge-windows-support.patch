@@ -4,11 +4,9 @@ Description: Purges native windows integration for slave from Jenkins.
 Author: James Page <james.page@ubuntu.com>
 Forwarded: not-needed
 
-Index: jenkins/core/src/main/java/hudson/slaves/SlaveComputer.java
-===================================================================
---- jenkins.orig/core/src/main/java/hudson/slaves/SlaveComputer.java	2012-07-24 16:32:51.254005727 +0100
-+++ jenkins/core/src/main/java/hudson/slaves/SlaveComputer.java	2012-07-24 16:33:07.914065141 +0100
-@@ -35,7 +35,6 @@
+--- a/core/src/main/java/hudson/slaves/SlaveComputer.java
++++ b/core/src/main/java/hudson/slaves/SlaveComputer.java
+@@ -35,7 +35,6 @@ import hudson.util.NullStream;
  import hudson.util.RingBufferLogHandler;
  import hudson.util.Futures;
  import hudson.FilePath;
@@ -16,7 +14,7 @@ Index: jenkins/core/src/main/java/hudson/slaves/SlaveComputer.java
  import hudson.Util;
  import hudson.AbortException;
  import hudson.remoting.Launcher;
-@@ -365,7 +364,6 @@
+@@ -365,7 +364,6 @@ public class SlaveComputer extends Compu
          channel.pinClassLoader(getClass().getClassLoader());
  
          channel.call(new SlaveInitializer());

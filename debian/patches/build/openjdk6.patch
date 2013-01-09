@@ -4,11 +4,9 @@ Description: Misc patches to get Jenkins to compile using OpenJDK 6. This
 Author: James Page <james.page@ubuntu.com>
 Forwarded: https://bugs.launchpad.net/ubuntu/+source/openjdk-6/+bug/716959
 
-Index: jenkins/core/src/main/java/hudson/model/AbstractBuild.java
-===================================================================
---- jenkins.orig/core/src/main/java/hudson/model/AbstractBuild.java	2012-07-24 16:32:51.874007937 +0100
-+++ jenkins/core/src/main/java/hudson/model/AbstractBuild.java	2012-07-24 16:33:05.018054811 +0100
-@@ -1267,6 +1267,15 @@
+--- a/core/src/main/java/hudson/model/AbstractBuild.java
++++ b/core/src/main/java/hudson/model/AbstractBuild.java
+@@ -1274,6 +1274,15 @@ public abstract class AbstractBuild<P ex
      }
  
      private static final Logger LOGGER = Logger.getLogger(AbstractBuild.class.getName());
@@ -24,11 +22,9 @@ Index: jenkins/core/src/main/java/hudson/model/AbstractBuild.java
  }
  
  
-Index: jenkins/core/src/main/java/hudson/DescriptorExtensionList.java
-===================================================================
---- jenkins.orig/core/src/main/java/hudson/DescriptorExtensionList.java	2012-07-24 16:32:51.874007937 +0100
-+++ jenkins/core/src/main/java/hudson/DescriptorExtensionList.java	2012-07-24 16:33:05.018054811 +0100
-@@ -81,8 +81,9 @@
+--- a/core/src/main/java/hudson/DescriptorExtensionList.java
++++ b/core/src/main/java/hudson/DescriptorExtensionList.java
+@@ -81,8 +81,9 @@ public class DescriptorExtensionList<T e
       * @deprecated as of 1.416
       *      Use {@link #create(Jenkins, Class)}
       */

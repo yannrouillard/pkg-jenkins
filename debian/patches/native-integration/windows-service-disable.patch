@@ -2,11 +2,9 @@ Description: Removes depenedency on windows specific components for Linux build
 Author: James Page <james.page@ubuntu.com>
 Forwarded: not-needed
 
-Index: jenkins/core/pom.xml
-===================================================================
---- jenkins.orig/core/pom.xml	2012-07-24 16:33:05.898057949 +0100
-+++ jenkins/core/pom.xml	2012-07-24 16:33:06.810061201 +0100
-@@ -720,32 +720,6 @@
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -733,32 +733,6 @@ THE SOFTWARE.
            </execution>
          </executions>
        </plugin>

@@ -3,11 +3,9 @@ Description: Filter non-Linux based native integrations from
 Author: James Page <james.page@ubuntu.com>
 Forwarded: not-needed
 
-Index: jenkins/core/pom.xml
-===================================================================
---- jenkins.orig/core/pom.xml	2012-07-24 16:33:06.810061201 +0100
-+++ jenkins/core/pom.xml	2012-07-24 16:33:07.086062188 +0100
-@@ -663,6 +663,17 @@
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -676,6 +676,17 @@ THE SOFTWARE.
          <configuration>
            <fork>${staplerFork}</fork><!-- the source code is big enough now that otherwise it fails with OutOfMemoryError -->
            <maxmem>128m</maxmem>

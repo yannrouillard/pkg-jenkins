@@ -7,11 +7,9 @@ Description: Upstream use a remapped version of asm3 to ensure
 Author: James Page <james.page@ubuntu.com>
 Forwarded: not-needed
 
-Index: jenkins/core/src/main/java/hudson/util/SubClassGenerator.java
-===================================================================
---- jenkins.orig/core/src/main/java/hudson/util/SubClassGenerator.java	2012-07-24 16:27:16.000000000 +0100
-+++ jenkins/core/src/main/java/hudson/util/SubClassGenerator.java	2012-07-24 17:12:02.125151475 +0100
-@@ -25,13 +25,13 @@
+--- a/core/src/main/java/hudson/util/SubClassGenerator.java
++++ b/core/src/main/java/hudson/util/SubClassGenerator.java
+@@ -25,13 +25,13 @@ package hudson.util;
  
  import hudson.PluginManager.UberClassLoader;
  import jenkins.model.Jenkins;
@@ -29,11 +27,9 @@ Index: jenkins/core/src/main/java/hudson/util/SubClassGenerator.java
  
  /**
   * Generates a new class that just defines constructors into the super types.
-Index: jenkins/core/pom.xml
-===================================================================
---- jenkins.orig/core/pom.xml	2012-07-24 16:33:21.826114780 +0100
-+++ jenkins/core/pom.xml	2012-07-24 17:16:17.865891211 +0100
-@@ -577,6 +577,13 @@
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -583,6 +583,13 @@ THE SOFTWARE.
      </dependency>
  
      <dependency>

@@ -7,11 +7,9 @@ Description: Jenkins upstream ships with a forked version of
 Author: James Page <james.page@ubuntu.com>
 Forwarded: not-needed
 
-Index: jenkins/core/src/main/java/hudson/DNSMultiCast.java
-===================================================================
---- jenkins.orig/core/src/main/java/hudson/DNSMultiCast.java	2012-07-24 16:32:51.194005512 +0100
-+++ jenkins/core/src/main/java/hudson/DNSMultiCast.java	2012-07-24 16:33:08.474067138 +0100
-@@ -67,12 +67,12 @@
+--- a/core/src/main/java/hudson/DNSMultiCast.java
++++ b/core/src/main/java/hudson/DNSMultiCast.java
+@@ -67,12 +67,12 @@ public class DNSMultiCast implements Clo
  
      public void close() {
          if (jmdns!=null) {

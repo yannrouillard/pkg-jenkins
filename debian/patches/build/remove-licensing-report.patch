@@ -3,11 +3,9 @@ Description: Upstream generates a licensing report for Jenkins deps.
 Author: James Page <james.page@ubuntu.com>
 Forwarded: not-needed
 
-Index: jenkins/core/src/main/resources/hudson/AboutJenkins/index.jelly
-===================================================================
---- jenkins.orig/core/src/main/resources/hudson/AboutJenkins/index.jelly	2012-07-24 16:32:51.818007739 +0100
-+++ jenkins/core/src/main/resources/hudson/AboutJenkins/index.jelly	2012-07-24 16:33:05.318055881 +0100
-@@ -31,13 +31,6 @@
+--- a/core/src/main/resources/hudson/AboutJenkins/index.jelly
++++ b/core/src/main/resources/hudson/AboutJenkins/index.jelly
+@@ -31,13 +31,6 @@ THE SOFTWARE.
        <p>
          ${%blurb}
        </p>
@@ -21,10 +19,8 @@ Index: jenkins/core/src/main/resources/hudson/AboutJenkins/index.jelly
      </l:main-panel>
    </l:layout>
  </j:jelly>
-Index: jenkins/core/src/main/resources/hudson/AboutJenkins/index.properties
-===================================================================
---- jenkins.orig/core/src/main/resources/hudson/AboutJenkins/index.properties	2012-07-24 16:32:51.818007739 +0100
-+++ jenkins/core/src/main/resources/hudson/AboutJenkins/index.properties	2012-07-24 16:33:05.318055881 +0100
+--- a/core/src/main/resources/hudson/AboutJenkins/index.properties
++++ b/core/src/main/resources/hudson/AboutJenkins/index.properties
 @@ -20,7 +20,7 @@
  # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  # THE SOFTWARE.

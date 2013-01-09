@@ -8,11 +8,9 @@ Description: Jenkins 1.409.x upstream uses an older version of stapler and
 Author: James Page <james.page@ubuntu.com>
 Forwarded: not-needed
 
-Index: jenkins/core/pom.xml
-===================================================================
---- jenkins.orig/core/pom.xml	2012-07-24 16:33:04.738053812 +0100
-+++ jenkins/core/pom.xml	2012-07-24 16:33:05.898057949 +0100
-@@ -638,6 +638,24 @@
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -651,6 +651,24 @@ THE SOFTWARE.
          </executions>
        </plugin>
        <plugin>

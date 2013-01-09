@@ -6,11 +6,9 @@ Description: The Debian build process does not run findbugs as
 Author: James Page <james.page@ubuntu.com>
 Forwarded: not-needed
 
-Index: jenkins/core/src/main/java/hudson/logging/LogRecorderManager.java
-===================================================================
---- jenkins.orig/core/src/main/java/hudson/logging/LogRecorderManager.java	2012-07-24 17:48:11.807867241 +0100
-+++ jenkins/core/src/main/java/hudson/logging/LogRecorderManager.java	2012-07-24 17:48:22.495901489 +0100
-@@ -112,7 +112,6 @@
+--- a/core/src/main/java/hudson/logging/LogRecorderManager.java
++++ b/core/src/main/java/hudson/logging/LogRecorderManager.java
+@@ -112,7 +112,6 @@ public class LogRecorderManager extends
      /**
       * Configure the logging level.
       */
@@ -18,11 +16,9 @@ Index: jenkins/core/src/main/java/hudson/logging/LogRecorderManager.java
      public HttpResponse doConfigLogger(@QueryParameter String name, @QueryParameter String level) {
          Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
          Level lv;
-Index: jenkins/core/src/main/java/hudson/util/PluginServletFilter.java
-===================================================================
---- jenkins.orig/core/src/main/java/hudson/util/PluginServletFilter.java	2012-07-24 17:48:11.807867241 +0100
-+++ jenkins/core/src/main/java/hudson/util/PluginServletFilter.java	2012-07-24 17:48:22.495901489 +0100
-@@ -58,7 +58,6 @@
+--- a/core/src/main/java/hudson/util/PluginServletFilter.java
++++ b/core/src/main/java/hudson/util/PluginServletFilter.java
+@@ -58,7 +58,6 @@ public class PluginServletFilter impleme
      public PluginServletFilter() {
      }
  
@@ -30,11 +26,9 @@ Index: jenkins/core/src/main/java/hudson/util/PluginServletFilter.java
      public void init(FilterConfig filterConfig) throws ServletException {
      	PluginServletFilter.filterConfig = filterConfig;
      	synchronized (LIST)  {
-Index: jenkins/core/src/main/java/hudson/WebAppMain.java
-===================================================================
---- jenkins.orig/core/src/main/java/hudson/WebAppMain.java	2012-07-24 17:48:11.807867241 +0100
-+++ jenkins/core/src/main/java/hudson/WebAppMain.java	2012-07-24 17:48:22.495901489 +0100
-@@ -251,7 +251,6 @@
+--- a/core/src/main/java/hudson/WebAppMain.java
++++ b/core/src/main/java/hudson/WebAppMain.java
+@@ -251,7 +251,6 @@ public final class WebAppMain implements
  	/**
       * Installs log handler to monitor all Hudson logs.
       */
@@ -42,11 +36,9 @@ Index: jenkins/core/src/main/java/hudson/WebAppMain.java
      private void installLogger() {
          Jenkins.logRecords = handler.getView();
          Logger.getLogger("hudson").addHandler(handler);
-Index: jenkins/core/src/main/java/jenkins/model/Jenkins.java
-===================================================================
---- jenkins.orig/core/src/main/java/jenkins/model/Jenkins.java	2012-07-24 17:48:11.807867241 +0100
-+++ jenkins/core/src/main/java/jenkins/model/Jenkins.java	2012-07-24 17:48:22.499901502 +0100
-@@ -699,7 +699,6 @@
+--- a/core/src/main/java/jenkins/model/Jenkins.java
++++ b/core/src/main/java/jenkins/model/Jenkins.java
+@@ -727,7 +727,6 @@ public class Jenkins extends AbstractCIB
       * @param pluginManager
       *      If non-null, use existing plugin manager.  create a new one.
       */
@@ -54,7 +46,7 @@ Index: jenkins/core/src/main/java/jenkins/model/Jenkins.java
      protected Jenkins(File root, ServletContext context, PluginManager pluginManager) throws IOException, InterruptedException, ReactorException {
          long start = System.currentTimeMillis();
          
-@@ -2963,7 +2962,6 @@
+@@ -2989,7 +2988,6 @@ public class Jenkins extends AbstractCIB
      /**
       * For debugging. Expose URL to perform GC.
       */
@@ -62,11 +54,9 @@ Index: jenkins/core/src/main/java/jenkins/model/Jenkins.java
      public void doGc(StaplerResponse rsp) throws IOException {
          checkPermission(Jenkins.ADMINISTER);
          System.gc();
-Index: jenkins/maven-plugin/src/main/java/hudson/maven/MavenUtil.java
-===================================================================
---- jenkins.orig/maven-plugin/src/main/java/hudson/maven/MavenUtil.java	2012-07-24 17:48:11.803867228 +0100
-+++ jenkins/maven-plugin/src/main/java/hudson/maven/MavenUtil.java	2012-07-24 17:48:22.499901502 +0100
-@@ -53,7 +53,6 @@
+--- a/maven-plugin/src/main/java/hudson/maven/MavenUtil.java
++++ b/maven-plugin/src/main/java/hudson/maven/MavenUtil.java
+@@ -53,7 +53,6 @@ import org.apache.maven.artifact.version
  import org.apache.maven.project.MavenProject;
  import org.apache.maven.project.ProjectBuildingException;
  
@@ -74,7 +64,7 @@ Index: jenkins/maven-plugin/src/main/java/hudson/maven/MavenUtil.java
  
  /**
   * @author Kohsuke Kawaguchi
-@@ -140,7 +139,6 @@
+@@ -140,7 +139,6 @@ public class MavenUtil {
       * Creates a fresh {@link MavenEmbedder} instance.
       *
       */
@@ -82,11 +72,9 @@ Index: jenkins/maven-plugin/src/main/java/hudson/maven/MavenUtil.java
      public static MavenEmbedder createEmbedder(MavenEmbedderRequest mavenEmbedderRequest) throws MavenEmbedderException, IOException {
          
          
-Index: jenkins/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java
-===================================================================
---- jenkins.orig/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java	2012-07-24 17:48:11.803867228 +0100
-+++ jenkins/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java	2012-07-24 17:48:22.499901502 +0100
-@@ -170,7 +170,6 @@
+--- a/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java
++++ b/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java
+@@ -170,7 +170,6 @@ public class SurefireArchiver extends Ma
          return true;
      }
      
@@ -94,11 +82,9 @@ Index: jenkins/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchive
      private void markBuildAsSuccess(Throwable mojoError, MavenBuildInformation buildInfo) {
          if(mojoError == null // in the success case we don't get any exception in Maven 3.0.2+; Maven < 3.0.2 returns no exception anyway
             || mojoError instanceof MojoFailureException) {
-Index: jenkins/core/src/main/java/hudson/cli/GroovyshCommand.java
-===================================================================
---- jenkins.orig/core/src/main/java/hudson/cli/GroovyshCommand.java	2012-07-24 16:27:16.102613000 +0100
-+++ jenkins/core/src/main/java/hudson/cli/GroovyshCommand.java	2012-07-24 17:49:02.640030167 +0100
-@@ -87,7 +87,6 @@
+--- a/core/src/main/java/hudson/cli/GroovyshCommand.java
++++ b/core/src/main/java/hudson/cli/GroovyshCommand.java
+@@ -87,7 +87,6 @@ public class GroovyshCommand extends CLI
              private static final long serialVersionUID = 1L;
  
              @SuppressWarnings("unused")
@@ -106,7 +92,7 @@ Index: jenkins/core/src/main/java/hudson/cli/GroovyshCommand.java
              public Object doCall(Object[] args) {
                  assert(args.length == 1);
                  assert(args[0] instanceof Shell);
-@@ -110,7 +109,6 @@
+@@ -110,7 +109,6 @@ public class GroovyshCommand extends CLI
              private static final long serialVersionUID = 1L;
  
              @SuppressWarnings("unused")
