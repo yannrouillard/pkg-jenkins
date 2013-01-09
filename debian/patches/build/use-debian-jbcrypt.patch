@@ -1,0 +1,11 @@
+--- a/core/src/main/java/hudson/security/HudsonPrivateSecurityRealm.java
++++ b/core/src/main/java/hudson/security/HudsonPrivateSecurityRealm.java
+@@ -59,7 +59,7 @@ import org.kohsuke.stapler.HttpResponses
+ import org.kohsuke.stapler.Stapler;
+ import org.kohsuke.stapler.StaplerRequest;
+ import org.kohsuke.stapler.StaplerResponse;
+-import org.mindrot.jbcrypt.BCrypt;
++import org.mindrot.BCrypt;
+ import org.springframework.dao.DataAccessException;
+ 
+ import javax.servlet.Filter;
