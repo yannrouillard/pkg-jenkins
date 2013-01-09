@@ -1,4 +1,4 @@
-jenkins (1.480.2-1~exp1) UNRELEASED; urgency=low
+jenkins (1.480.2+dfsg-1~exp1) UNRELEASED; urgency=low
 
   * New upstream release:
     - d/control: Added new BD on libjbcrypt-java.
