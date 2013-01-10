@@ -1,9 +1,11 @@
 jenkins (1.480.2+dfsg-1~exp1) experimental; urgency=low
 
-  * New upstream release, fixing a critical security vulnerability:
+  * New upstream release (Closes: #696816, #697617):
     - d/control: Added new BD on libjbcrypt-java.
     - d/control: Versioned BD jenkins-winstone >= 0.9.10-jenkins-40.
     - d/control: Versioned BD jenkins-trilead-ssh2 >= 214-jenkins-1.
+    - Fixes the following security vulnerabilities:
+      CVE-2012-6072, CVE-2012-6073, CVE-2012-6072, CVE-2013-0158.
   * Tidied lintian warnings.
   * Bumped Standards-Version: 3.9.4, no changes.
 
