@@ -1,3 +1,37 @@
+jenkins (1.480.2+dfsg-1~exp1) experimental; urgency=low
+
+  This new version of Jenkins will generate a new set of different
+  cryptographic keys to protect sensitive data, authenticate slaves,
+  and so on.
+
+  Because of this, administrators of Jenkins need to be aware of
+  the following implications of the upgrade:
+
+   API tokens of many users will likely change as a result, and
+   therefore if you have scripts and external programs that rely
+   on these tokens, some of them will fail. Please retrieve the
+   updated API tokens from the UI.
+
+   Slaves that are started via Java Web Start will fail to reconnect
+   if the *.jnlp file is locally stored. This is because the
+   authentication tokens change. An administrator would have to
+   login to the UI, retrieve the *.jnlp file and overwrite what's
+   already on the slave. A slave that was launched via Java Web Start
+   and then turned into a service through its menu falls into this
+   category.
+
+   Once the new version is started, the administrator needs to run
+   the Re-keying process to update the on-disk configuration files
+   to use the newer encryption key. Go to "Manage Jenkins" page and
+   follow the instruction at the top of the page. Please also read
+   https://wiki.jenkins-ci.org/display/SECURITY/Re-keying before
+   running this process.
+
+  See https://wiki.jenkins-ci.org/display/SECURITY/Jenkins+Security+Advisory+2013-01-04 
+  for more details of the security vulnerability.
+
+ -- James Page <james.page@ubuntu.com>  Wed, 09 Jan 2013 17:56:51 +0000
+
 jenkins (1.447.1+dfsg-1) unstable; urgency=low
 
   This new upstream release of Jenkins does not currently include

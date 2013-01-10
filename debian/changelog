@@ -1,10 +1,13 @@
-jenkins (1.480.2+dfsg-1~exp1) UNRELEASED; urgency=low
+jenkins (1.480.2+dfsg-1~exp1) experimental; urgency=low
 
-  * New upstream release:
+  * New upstream release, fixing a critical security vulnerability:
     - d/control: Added new BD on libjbcrypt-java.
     - d/control: Versioned BD jenkins-winstone >= 0.9.10-jenkins-40.
+    - d/control: Versioned BD jenkins-trilead-ssh2 >= 214-jenkins-1.
+  * Tidied lintian warnings.
+  * Bumped Standards-Version: 3.9.4, no changes.
 
- -- James Page <james.page@ubuntu.com>  Wed, 05 Dec 2012 21:56:17 +0000
+ -- James Page <james.page@ubuntu.com>  Thu, 10 Jan 2013 09:50:50 +0000
 
 jenkins (1.466.2+dfsg-1) experimental; urgency=low
 

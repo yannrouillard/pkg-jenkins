@@ -54,7 +54,7 @@ Build-Depends-Indep:
  libjenkins-htmlunit-java,
  libjenkins-json-java (>= 2.1-rev7),
  libjenkins-remoting-java (>= 2.16),
- libjenkins-trilead-ssh2-java,
+ libjenkins-trilead-ssh2-java (>= 214-jenkins-1),
  libjenkins-winstone-java (>= 0.9.10-jenkins-40),
  libjenkins-xstream-java,
  libjetty-java,
@@ -97,11 +97,10 @@ Build-Depends-Indep:
  libtxw2-java,
  libxpp3-java,
  ttf-dejavu-core
-Standards-Version: 3.9.3
+Standards-Version: 3.9.4
 Homepage: http://jenkins-ci.org/
-Vcs-Git: git://git.debian.org/git/pkg-java/jenkins.git
-Vcs-Browser: http://git.debian.org/?p=pkg-java/jenkins.git
-DM-Upload-Allowed: yes
+Vcs-Git: git://anonscm.debian.org/pkg-java/jenkins.git
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-java/jenkins.git
 
 Package: libjenkins-java
 Architecture: all

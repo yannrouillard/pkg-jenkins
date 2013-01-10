@@ -1,3 +1,10 @@
+Description: Alter package name for Debian
+ The debian JBCrypt package has a difference package name to
+ the one present in the central maven repository; this updates
+ jenkins to use the one in Debian.
+Author: James Page <james.page@ubuntu.com>
+Forwarded: not-needed
+
 --- a/core/src/main/java/hudson/security/HudsonPrivateSecurityRealm.java
 +++ b/core/src/main/java/hudson/security/HudsonPrivateSecurityRealm.java
 @@ -59,7 +59,7 @@ import org.kohsuke.stapler.HttpResponses
