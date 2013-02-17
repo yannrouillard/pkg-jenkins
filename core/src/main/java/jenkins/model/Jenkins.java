@@ -981,6 +981,7 @@ public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGro
 
     /**
      * Does this {@link View} has any associated user information recorded?
+     * @deprecated Potentially very expensive call; do not use from Jelly views.
      */
     public boolean hasPeople() {
         return View.People.isApplicable(items.values());
@@ -3536,6 +3537,8 @@ public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGro
             || rest.startsWith("/signup")
             || rest.startsWith("/jnlpJars/")
             || rest.startsWith("/tcpSlaveAgentListener")
+            // XXX SlaveComputer.doSlaveAgentJnlp; there should be an annotation to request unprotected access
+            || rest.matches("/computer/[^/]+/slave-agent[.]jnlp") && "true".equals(Stapler.getCurrentRequest().getParameter("encrypt"))
             || rest.startsWith("/cli")
             || rest.startsWith("/whoAmI")
             || rest.startsWith("/federatedLoginService/")

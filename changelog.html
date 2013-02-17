@@ -56,28 +56,45 @@ Upcoming changes</a>
 <div id="trunk" style="display:none"><!--=TRUNK-BEGIN=-->
 <ul class=image>
   <li class=bug>
-    Displaying <code>/people</code> can consume huge resources.
-    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-15206">issue 15206</a>)
+    Reduced size of memory leak in render-on-demand functionality used e.g. in configuration pages.
+    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-16341">issue 16341</a>)
+  <li class=rfe>
+      Avoid unnecessary downloads if automatically installed tools are up-to-date
+      (<a href="https://issues.jenkins-ci.org/browse/JENKINS-16215">issue 16215</a>)
   <li class=bug>
-    <code>FilePath.validateAntFileMask</code> too slow for <code>/configure</code>.
-    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-7214">issue 7214</a>)
+    Fixed <tt>NoClassDefFoundError: Base64</tt> with the <tt>-jnlpCredentials</tt> option.
+    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-9679">issue 9679</a>)
   <li class=bug>
-    Log recorders do not work reliably.
-    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-15226">issue 15226</a>)
+    Fixed RememberMe cookie signature generation.
+    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-16278">issue 16278</a>)
   <li class=bug>
-    Memory exhaustion parsing large test stdio from Surefire.
-    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-15382">issue 15382</a>)
-  <li class='rfe'>
-    Memory footprint improvement, especially under large HTTP request threads.
+    Possible race condition in RemoteClassLoader renders slave unusable.
+    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-6604">issue 6604</a>)
   <li class=bug>
-    JDK installation failed on some slaves with <code>InvalidClassException: hudson.tools.JDKInstaller$Platform$1; local class incompatible: …</code>
-    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-14667">issue 14667</a>)
+    Improving responsiveness of <b>People</b> page.
+    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-16342">issue 16342</a>, 
+    <a href="https://issues.jenkins-ci.org/browse/JENKINS-16397">issue 16397</a>)
   <li class=bug>
-    Check view permissions before showing config page
-    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-15277">issue 15277</a>)
+    JNLP slave index page failed to explain how to pass <code>-jnlpCredentials</code>.
+    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-16273">issue 16273</a>)
+  <li class='major bug'>
+    Rekeying operation (from SECURITY-49 fix in 1.498) failed on Windows.
+    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-16319">issue 16319</a>)
   <li class=bug>
-    Invalid JSON gets produced with duplicate keys (seen on change sets)
-    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-13336">issue 13336</a>)
+    Slow rendering of view pages in large installations due to eager check whether the “People” link would show anything.
+    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-16244">issue 16244</a>)
+  <li class=bug>
+    Using file parameters could cause build records to not load.
+    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-13536">issue 13536</a>)
+  <li class="major bug">
+    Build queue displayed as empty even when it is not. (Regression in 1.483.)
+    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-15335">issue 15335</a>)
+  <li class=bug>
+    Fix combobox ui component
+    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-16069">issue 16069</a>)
+  <li class=bug>
+    Fixed the lock contention problem on <tt>Queue.getItems()</tt>
+    (<a href="https://issues.jenkins-ci.org/browse/JENKINS-16468">issue 16468</a>)
 </ul>
 </div><!--=TRUNK-END=-->
 
