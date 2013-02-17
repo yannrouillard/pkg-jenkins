@@ -6,7 +6,7 @@ Forwarded: not-needed
 
 --- a/core/src/main/java/hudson/slaves/SlaveComputer.java
 +++ b/core/src/main/java/hudson/slaves/SlaveComputer.java
-@@ -35,7 +35,6 @@ import hudson.util.NullStream;
+@@ -36,7 +36,6 @@ import hudson.util.NullStream;
  import hudson.util.RingBufferLogHandler;
  import hudson.util.Futures;
  import hudson.FilePath;
@@ -14,11 +14,11 @@ Forwarded: not-needed
  import hudson.Util;
  import hudson.AbortException;
  import hudson.remoting.Launcher;
-@@ -370,7 +369,6 @@ public class SlaveComputer extends Compu
+@@ -389,7 +388,6 @@ public class SlaveComputer extends Compu
          channel.pinClassLoader(getClass().getClassLoader());
  
          channel.call(new SlaveInitializer());
--        channel.call(new WindowsSlaveInstaller(remoteFs));
+-//        channel.call(new WindowsSlaveInstaller(remoteFs));
          for (ComputerListener cl : ComputerListener.all())
              cl.preOnline(this,channel,root,taskListener);
  

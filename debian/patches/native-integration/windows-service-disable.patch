@@ -4,7 +4,7 @@ Forwarded: not-needed
 
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -733,32 +733,6 @@ THE SOFTWARE.
+@@ -734,32 +734,6 @@ THE SOFTWARE.
            </execution>
          </executions>
        </plugin>

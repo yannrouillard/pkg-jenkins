@@ -1,3 +1,16 @@
+jenkins (1.480.3+dfsg-1~exp1) UNRELEASED; urgency=low
+
+  * New upstream release (Closes: #700761):
+    - d/control: Versioned BD jenkins-remoting >= 2.22.
+    - d/control: Versioned BD jenkins-winstone >= 0.9.10-jenkins-42.
+    - Refreshed patches.
+    - Fixes the following security vulnerabilities:
+      CVE-XXXX-YYYY, ...
+  * d/control: Versioned BD trilead-putty-extension (>= 1.2)
+    (Closes: #698834).
+
+ -- James Page <james.page@ubuntu.com>  Sun, 17 Feb 2013 17:11:13 +0000
+
 jenkins (1.480.2+dfsg-1~exp1) experimental; urgency=low
 
   * New upstream release (Closes: #696816, #697617):

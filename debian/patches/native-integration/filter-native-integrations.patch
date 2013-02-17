@@ -5,7 +5,7 @@ Forwarded: not-needed
 
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -676,6 +676,17 @@ THE SOFTWARE.
+@@ -677,6 +677,17 @@ THE SOFTWARE.
          <configuration>
            <fork>${staplerFork}</fork><!-- the source code is big enough now that otherwise it fails with OutOfMemoryError -->
            <maxmem>128m</maxmem>

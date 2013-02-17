@@ -13,9 +13,9 @@ Forwarded: not-needed
      <module>war</module>
 -    <module>test</module>
      <module>cli</module>
+     <module>plugins</module>
    </modules>
- 
-@@ -580,9 +577,6 @@ THE SOFTWARE.
+@@ -581,9 +578,6 @@ THE SOFTWARE.
                  <requireJavaVersion>
                    <version>1.6.0-18</version>
                  </requireJavaVersion>
@@ -27,7 +27,7 @@ Forwarded: not-needed
            </execution>
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -325,6 +325,16 @@ THE SOFTWARE.
+@@ -326,6 +326,16 @@ THE SOFTWARE.
        <groupId>commons-jelly</groupId>
        <artifactId>commons-jelly-tags-fmt</artifactId>
        <version>1.0</version>

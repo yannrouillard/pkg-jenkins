@@ -12,7 +12,7 @@ Forwarded: not-needed
  import hudson.Launcher.LocalLauncher;
  import hudson.Util;
  import hudson.model.Computer;
-@@ -92,21 +91,6 @@ public abstract class SU {
+@@ -94,21 +93,6 @@ public abstract class SU {
                  }
              }.start(listener,rootPassword);
  

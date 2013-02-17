@@ -6,7 +6,7 @@ Forwarded: https://bugs.launchpad.net/ubuntu/+source/openjdk-6/+bug/716959
 
 --- a/core/src/main/java/hudson/model/AbstractBuild.java
 +++ b/core/src/main/java/hudson/model/AbstractBuild.java
-@@ -1274,6 +1274,15 @@ public abstract class AbstractBuild<P ex
+@@ -1276,6 +1276,15 @@ public abstract class AbstractBuild<P ex
      }
  
      private static final Logger LOGGER = Logger.getLogger(AbstractBuild.class.getName());

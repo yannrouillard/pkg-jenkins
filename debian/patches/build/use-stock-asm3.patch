@@ -29,7 +29,7 @@ Forwarded: not-needed
   * Generates a new class that just defines constructors into the super types.
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -583,6 +583,13 @@ THE SOFTWARE.
+@@ -584,6 +584,13 @@ THE SOFTWARE.
      </dependency>
  
      <dependency>

@@ -46,7 +46,7 @@ Forwarded: not-needed
      protected Jenkins(File root, ServletContext context, PluginManager pluginManager) throws IOException, InterruptedException, ReactorException {
          long start = System.currentTimeMillis();
          
-@@ -3018,7 +3017,6 @@ public class Jenkins extends AbstractCIB
+@@ -3019,7 +3018,6 @@ public class Jenkins extends AbstractCIB
      /**
       * For debugging. Expose URL to perform GC.
       */
