@@ -82,3 +82,9 @@ org.jenkins-ci.modules sshd * * * *
 # New stuff for 1.466.1
 org.kohsuke.stapler stapler-adjunct-zeroclipboard * * * *
 org.kohsuke windows-package-checker * * * *
+# TODO: These need to be packaged - but later!
+org.jenkins-ci.modules slave-installer * * * *
+org.jenkins-ci.modules windows-slave-installer * * * *
+org.jenkins-ci.modules upstart-slave-installer * * * *
+org.jenkins-ci.modules launchd-slave-installer * * * *
+

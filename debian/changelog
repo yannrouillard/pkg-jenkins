@@ -3,11 +3,17 @@ jenkins (1.480.3+dfsg-1~exp1) UNRELEASED; urgency=low
   * New upstream release (Closes: #700761):
     - d/control: Versioned BD jenkins-remoting >= 2.22.
     - d/control: Versioned BD jenkins-winstone >= 0.9.10-jenkins-42.
+    - d/control: Versioned BD stapler >= 1.198.
+    - d/maven.ignoreRules: Ignore new slave-launcher modules until
+      packaged.
     - Refreshed patches.
     - Fixes the following security vulnerabilities:
-      CVE-XXXX-YYYY, ...
+      CVE-2013-0327, CVE-2013-0328, CVE-2013-0329, CVE-2013-0330,
+      CVE-2013-0331
   * d/control: Versioned BD trilead-putty-extension (>= 1.2)
     (Closes: #698834).
+  * d/control: Add net-tools and procps dependencies to jenkins
+    (Closes: #698835).
 
  -- James Page <james.page@ubuntu.com>  Sun, 17 Feb 2013 17:11:13 +0000
 
