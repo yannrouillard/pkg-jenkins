@@ -1,4 +1,4 @@
-jenkins (1.480.3+dfsg-1~exp1) UNRELEASED; urgency=low
+jenkins (1.480.3+dfsg-1~exp1) experimental; urgency=low
 
   * New upstream release (Closes: #700761, #679616):
     - d/control: Versioned BD jenkins-remoting >= 2.22.
