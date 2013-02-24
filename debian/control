@@ -195,9 +195,7 @@ Depends:
  adduser,
  default-jre-headless | java6-runtime-headless,
  jenkins-common,
- net-tools,
- procps,
- psmisc,
+ ${jenkins-daemon-deps},
  ${misc:Depends}
 Conflicts: jenkins-tomcat, tomcat6
 Description: Continuous Integration and Job Scheduling Server
@@ -226,6 +224,7 @@ Architecture: all
 Depends:
  adduser,
  default-jre-headless | java6-runtime-headless,
+ ${jenkins-daemon-deps},
  ${misc:Depends}
 Recommends: jenkins-cli, ssh-server | openssh-server
 Description: Jenkins slave node helper

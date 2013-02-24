@@ -1,6 +1,6 @@
 jenkins (1.480.3+dfsg-1~exp1) UNRELEASED; urgency=low
 
-  * New upstream release (Closes: #700761):
+  * New upstream release (Closes: #700761, #679616):
     - d/control: Versioned BD jenkins-remoting >= 2.22.
     - d/control: Versioned BD jenkins-winstone >= 0.9.10-jenkins-42.
     - d/control: Versioned BD stapler >= 1.198.

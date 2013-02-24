@@ -10,6 +10,12 @@ DEB_MAVEN_BUILD_TARGET := install
 DEB_MAVEN_ARGS := -e -Dbuild.version="$(DEB_UPSTREAM_VERSION)"
 DEB_MAVEN_INSTALL_TO_USJ := false
 
+# Debian package version use daemon to control jenkins processes
+# Ubuntu does not need this - managed by upstart
+ifeq ($(shell dpkg-vendor --derives-from ubuntu || echo debian ),debian)
+DEB_DH_GENCONTROL_ARGS:= -- -Tdebian/debian_control_vars
+endif
+
 # Sort out MANIFEST.MF entries in jenkins cli .jar files
 # and create handy links for script wrapper
 binary-post-install/jenkins-cli::
