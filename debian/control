@@ -162,7 +162,7 @@ Description: Jenkins Plugin Parent Maven POM
 Package: jenkins-common
 Architecture: all
 Depends:
- libjenkins-remoting-java,
+ libjenkins-remoting-java (>= 2.22),
  libjffi-java,
  libjna-java,
  libjnr-posix-java,
@@ -197,7 +197,7 @@ Depends:
  jenkins-common,
  net-tools,
  procps,
- ${jenkins-daemon-deps},
+ psmisc,
  ${misc:Depends}
 Conflicts: jenkins-tomcat, tomcat6
 Description: Continuous Integration and Job Scheduling Server
@@ -226,7 +226,6 @@ Architecture: all
 Depends:
  adduser,
  default-jre-headless | java6-runtime-headless,
- ${jenkins-daemon-deps},
  ${misc:Depends}
 Recommends: jenkins-cli, ssh-server | openssh-server
 Description: Jenkins slave node helper
@@ -261,7 +260,7 @@ Depends:
  default-jre-headless | java6-runtime-headless,
  libcommons-io-java,
  libcommons-lang-java,
- libjenkins-remoting-java,
+ libjenkins-remoting-java (>= 2.22),
  libjenkins-xstream-java,
  libjffi-java,
  libjnr-posix-java,

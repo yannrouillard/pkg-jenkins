@@ -10,23 +10,6 @@ DEB_MAVEN_BUILD_TARGET := install
 DEB_MAVEN_ARGS := -e -Dbuild.version="$(DEB_UPSTREAM_VERSION)"
 DEB_MAVEN_INSTALL_TO_USJ := false
 
-# Debian package version use daemon to control jenkins processes
-# Ubuntu does not need this - managed by upstart
-ifeq ($(shell dpkg-vendor --derives-from ubuntu || echo debian ),debian)
-DEB_DH_GENCONTROL_ARGS:= -- -Tdebian/debian_control_vars
-endif
-
-# Generate POM file for plugins
-debian/plugin-debian.pom: debian/plugin-debian.pom.in
-	sed -e "s|__VERSION__|$(DEB_UPSTREAM_VERSION)|g" $< > debian/plugin-debian.pom
-
-# Install the POM for plugin-parent manually as not part
-# of main build - manually installed as not managed by 
-# m-d-h as breaks build elements for re-use.
-binary-post-install/libjenkins-plugin-parent-java:: debian/plugin-debian.pom
-	dh_install -plibjenkins-plugin-parent-java debian/plugin-debian.pom \
-		usr/share/maven-repo/org/jenkins-ci/plugins/plugin/debian
-
 # Sort out MANIFEST.MF entries in jenkins cli .jar files
 # and create handy links for script wrapper
 binary-post-install/jenkins-cli::
@@ -40,23 +23,9 @@ binary-post-install/jenkins-external-job-monitor::
 	dh_link -pjenkins-external-job-monitor usr/share/jenkins/external-job-monitor/java/jenkins-core-$(DEB_UPSTREAM_VERSION).jar \
 	    usr/share/jenkins/external-job-monitor/java/jenkins-core.jar
 
-# Switch in upstart configuration if building on Ubuntu
-# and generate control with/without daemon.
-build/jenkins::
-	if dpkg-vendor --derives-from ubuntu ; then \
-        cp debian/jenkins.upstart.in debian/jenkins.upstart ; \
-    fi
-
-build/jenkins-slave::
-	if dpkg-vendor --derives-from ubuntu ; then \
-        cp debian/jenkins-slave.upstart.in debian/jenkins-slave.upstart ; \
-    fi
-
 # Tidy up any upstart configuration files lying around
 clean::
 	[ ! -f dummy.keystore ] || rm dummy.keystore
-	rm -rf debian/*.upstart
-	rm -rf debian/plugin-debian.pom
 
 get-orig-source:
 	uscan --download-version $(DEB_UPSTREAM_VERSION) --force-download --rename

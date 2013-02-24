@@ -14,6 +14,10 @@ jenkins (1.480.3+dfsg-1~exp1) UNRELEASED; urgency=low
     (Closes: #698834).
   * d/control: Add net-tools and procps dependencies to jenkins
     (Closes: #698835).
+  * d/rules,control, *.upstart.in: Rejig upstart/init configurations now
+    that debhelper does the right thing across Debian/Ubuntu.
+  * d/rules,plugin_parent.pom.in: Drop as good plugin parent pom now
+    provided upstream.
 
  -- James Page <james.page@ubuntu.com>  Sun, 17 Feb 2013 17:11:13 +0000
 

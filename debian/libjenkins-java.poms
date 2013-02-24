@@ -27,4 +27,4 @@ pom.xml --has-package-version --no-parent
 core/pom.xml --has-package-version --ignore-pom
 war/pom.xml --has-package-version --ignore-pom
 cli/pom.xml --has-package-version --ignore-pom
-plugins/pom.xml --has-package-version --ignore-pom --no-parent
+plugins/pom.xml --has-package-version --ignore-pom --no-parent --package=libjenkins-plugin-parent-java
