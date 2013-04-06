@@ -1,3 +1,14 @@
+jenkins (1.480.3+dfsg-1~exp2) UNRELEASED; urgency=low
+
+  * Revert to using package specific plugin POM file over upstream
+    provided version:
+    - d/p/ignore-plugin-pom.patch: Exclude upstream provided plugin
+      POM file from build process, fixing FTBFS.
+    - d/rules,plugin-parent.pom.in: Use packaging specific plugin POM
+      file to ensure compatibility with Jenkins modules.
+
+ -- James Page <james.page@ubuntu.com>  Sat, 06 Apr 2013 21:37:29 +0100
+
 jenkins (1.480.3+dfsg-1~exp1) experimental; urgency=low
 
   * New upstream release (Closes: #700761, #679616):

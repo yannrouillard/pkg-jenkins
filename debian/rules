@@ -16,6 +16,17 @@ ifeq ($(shell dpkg-vendor --derives-from ubuntu || echo debian ),debian)
 DEB_DH_GENCONTROL_ARGS:= -- -Tdebian/debian_control_vars
 endif
 
+# Generate POM file for plugins
+debian/plugin-debian.pom: debian/plugin-debian.pom.in
+	sed -e "s|__VERSION__|$(DEB_UPSTREAM_VERSION)|g" $< > debian/plugin-debian.pom
+
+# Install the POM for plugin-parent manually as not part
+# of main build - manually installed as not managed by 
+# m-d-h as breaks build elements for re-use.
+binary-post-install/libjenkins-plugin-parent-java:: debian/plugin-debian.pom
+	dh_install -plibjenkins-plugin-parent-java debian/plugin-debian.pom \
+		usr/share/maven-repo/org/jenkins-ci/plugins/plugin/debian
+
 # Sort out MANIFEST.MF entries in jenkins cli .jar files
 # and create handy links for script wrapper
 binary-post-install/jenkins-cli::
