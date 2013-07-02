@@ -47,6 +47,12 @@ HTTP_PORT=8080
 # port for AJP connector (disabled by default)
 AJP_PORT=-1
 
+# Listen address for HTTP connector
+HTTP_HOST=127.0.0.1
+
+# Listen address for AJP connector
+AJP_HOST=127.0.0.1
+
 # arguments to pass to jenkins.
 # --javahome=$JAVA_HOME
 # --httpPort=$HTTP_PORT (default 8080; disable with -1)
@@ -55,4 +61,6 @@ AJP_PORT=-1
 # --argumentsRealm.passwd.$ADMIN_USER=[password]
 # --argumentsRealm.$ADMIN_USER=admin
 # --webroot=~/.jenkins/war
-JENKINS_ARGS="--webroot=$JENKINS_RUN/war --httpPort=$HTTP_PORT --ajp13Port=$AJP_PORT --preferredClassLoader=java.net.URLClassLoader"
+JENKINS_ARGS="--webroot=$JENKINS_RUN/war --httpPort=$HTTP_PORT --ajp13Port=$AJP_PORT"
+JENKINS_ARGS="$JENKINS_ARGS --httpListenAddress=$HTTP_HOST --ajpListenAddress=$AJP_HOST"
+JENKINS_ARGS="$JENKINS_ARGS --preferredClassLoader=java.net.URLClassLoader"

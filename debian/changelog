@@ -3,6 +3,10 @@ jenkins (1.480.3+dfsg-1) unstable; urgency=low
   * Upload to unstable.
   * d/control: Fixup versioned inter-dependencies between jenkins
     packages (Closes: #704845).
+  * d/jenkins.default: Provide variables for configuring listen address
+    for http and ajp connections (Closes: #684586), listen on 127.0.0.1
+    by default to allow installs to be secured before wider access
+    (Closes: #675233).
 
  -- James Page <james.page@ubuntu.com>  Tue, 02 Jul 2013 11:38:50 +0100
 
