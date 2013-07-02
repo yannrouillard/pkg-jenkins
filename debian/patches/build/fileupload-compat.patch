@@ -16,12 +16,16 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  import org.apache.commons.io.FilenameUtils;
  import org.apache.commons.io.IOUtils;
  import org.apache.commons.lang.StringUtils;
-@@ -277,5 +278,8 @@ public class FileParameterValue extends
+@@ -277,5 +278,12 @@ public class FileParameterValue extends
          public OutputStream getOutputStream() throws IOException {
              return new FileOutputStream(file);
          }
 +
 +        public void setHeaders(FileItemHeaders headers) {
++        }
++
++        public FileItemHeaders getHeaders() {
++            return null;
 +        }
      }
  }
