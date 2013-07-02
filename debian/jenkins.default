@@ -62,5 +62,5 @@ AJP_HOST=127.0.0.1
 # --argumentsRealm.$ADMIN_USER=admin
 # --webroot=~/.jenkins/war
 JENKINS_ARGS="--webroot=$JENKINS_RUN/war --httpPort=$HTTP_PORT --ajp13Port=$AJP_PORT"
-JENKINS_ARGS="$JENKINS_ARGS --httpListenAddress=$HTTP_HOST --ajpListenAddress=$AJP_HOST"
+JENKINS_ARGS="$JENKINS_ARGS --httpListenAddress=$HTTP_HOST --ajp13ListenAddress=$AJP_HOST"
 JENKINS_ARGS="$JENKINS_ARGS --preferredClassLoader=java.net.URLClassLoader"
