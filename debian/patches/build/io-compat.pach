@@ -1,0 +1,28 @@
+Description: Compatibility patch with commons-io >= 2.4
+Author: James Page <james.page@ubuntu.com>
+Forwarded: no
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/core/src/main/java/hudson/util/IOUtils.java
++++ b/core/src/main/java/hudson/util/IOUtils.java
+@@ -76,16 +76,18 @@ public class IOUtils extends org.apache.
+      *
+      * @since 1.349
+      */
+-    public static InputStream skip(InputStream in, long size) throws IOException {
++    public static long skip(InputStream in, long size) throws IOException {
+         DataInputStream di = new DataInputStream(in);
++        long skipped = 0;
+ 
+         while (size>0) {
+             int chunk = (int)Math.min(SKIP_BUFFER.length,size);
+             di.readFully(SKIP_BUFFER,0,chunk);
+             size -= chunk;
++            skipped += chunk;
+         }
+ 
+-        return in;
++        return skipped;
+     }
+ 
+     /**
