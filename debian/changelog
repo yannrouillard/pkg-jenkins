@@ -1,4 +1,10 @@
-jenkins (1.480.3+dfsg-1~exp2) UNRELEASED; urgency=low
+jenkins (1.480.3+dfsg-1) unstable; urgency=low
+
+  * Upload to unstable.
+
+ -- James Page <james.page@ubuntu.com>  Tue, 02 Jul 2013 11:38:50 +0100
+
+jenkins (1.480.3+dfsg-1~exp2) experimental; urgency=low
 
   * Revert to using package specific plugin POM file over upstream
     provided version:
