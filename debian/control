@@ -131,7 +131,7 @@ Package: libjenkins-plugin-parent-java
 Architecture: all
 Depends:
  junit4,
- libjenkins-java,
+ libjenkins-java (= ${binary:Version}),
  libmaven-hpi-plugin-java,
  libmaven-javadoc-plugin-java,
  libmaven-stapler-plugin-java,
@@ -194,7 +194,7 @@ Architecture: all
 Depends:
  adduser,
  default-jre-headless | java6-runtime-headless,
- jenkins-common,
+ jenkins-common (= ${binary:Version}),
  ${jenkins-daemon-deps},
  ${misc:Depends}
 Conflicts: jenkins-tomcat, tomcat6
@@ -315,7 +315,7 @@ Description: Jenkins CI Command Line Interface
 
 Package: jenkins-tomcat
 Architecture: all
-Depends: jenkins-common, tomcat6, ${misc:Depends}
+Depends: jenkins-common (= ${binary:Version}), tomcat6, ${misc:Depends}
 Conflicts: jenkins
 Provides: jenkins
 Description: Jenkins CI on Tomcat 6
