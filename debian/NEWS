@@ -1,3 +1,13 @@
+jenkins (1.480.3+dfsg-1) unstable; urgency=low
+
+  Jenkins will by default listen on 127.0.0.1 to ensure that Jenkins
+  installations can be secured prior to wider access.
+
+  See https://wiki.jenkins-ci.org/display/JENKINS/Securing+Jenkins for
+  more details on how to secure Jenkins.
+
+ -- James Page <james.page@ubuntu.com>  Tue, 02 Jul 2013 14:30:20 +0100
+
 jenkins (1.480.2+dfsg-1~exp1) experimental; urgency=low
 
   This new version of Jenkins will generate a new set of different

@@ -1,4 +1,4 @@
-jenkins (1.480.3+dfsg-1) unstable; urgency=low
+jenkins (1.480.3+dfsg-1) UNRELEASED; urgency=low
 
   * Upload to unstable.
   * d/control: Fixup versioned inter-dependencies between jenkins
