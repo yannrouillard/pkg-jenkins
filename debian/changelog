@@ -1,6 +1,6 @@
 jenkins (1.480.3+dfsg-1) UNRELEASED; urgency=low
 
-  * Upload to unstable.
+  * Upload to unstable (Closes: #713394)
   * d/control: Fixup versioned inter-dependencies between jenkins
     packages (Closes: #704845).
   * d/jenkins.default: Provide variables for configuring listen address
