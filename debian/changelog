@@ -1,4 +1,4 @@
-jenkins (1.480.3+dfsg-1) UNRELEASED; urgency=low
+jenkins (1.480.3+dfsg-1) unstable; urgency=low
 
   * Upload to unstable (Closes: #713394, #713423)
   * d/control: Fixup versioned inter-dependencies between jenkins
@@ -14,7 +14,7 @@ jenkins (1.480.3+dfsg-1) UNRELEASED; urgency=low
     - d/control: Add versioned dependencies for the above patches.
   * d/*.init: Drop use of /lib/init/vars.sh.
 
- -- James Page <james.page@ubuntu.com>  Tue, 02 Jul 2013 11:38:50 +0100
+ -- James Page <james.page@ubuntu.com>  Thu, 04 Jul 2013 10:17:28 +0100
 
 jenkins (1.480.3+dfsg-1~exp2) experimental; urgency=low
 
