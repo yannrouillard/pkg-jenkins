@@ -24,6 +24,6 @@
 #     temporarily for certain artifacts such as Javadoc jars.
 #
 pom.xml --has-package-version --no-parent
-core/pom.xml --has-package-version --ignore-pom
-war/pom.xml --has-package-version --ignore-pom
-cli/pom.xml --has-package-version --ignore-pom
+core/pom.xml --has-package-version
+war/pom.xml --has-package-version
+cli/pom.xml --has-package-version

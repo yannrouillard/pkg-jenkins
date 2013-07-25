@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+export DH_VERBOSE=1
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/maven.mk
 
@@ -39,6 +41,10 @@ binary-post-install/jenkins-cli::
 binary-post-install/jenkins-external-job-monitor::
 	dh_link -pjenkins-external-job-monitor usr/share/jenkins/external-job-monitor/java/jenkins-core-$(DEB_UPSTREAM_VERSION).jar \
 	    usr/share/jenkins/external-job-monitor/java/jenkins-core.jar
+
+# Install POM files directly
+binary-post-install/libjenkins-java::
+	mh_installpoms -plibjenkins-java
 
 # Tidy up any upstart configuration files lying around
 clean::
