@@ -16,7 +16,7 @@ jenkins (1.480.3+dfsg-1) unstable; urgency=low
   * d/rules: Use mh_installpoms to install all pom files as this ensures
     that ignore rules are actually used.
 
- -- James Page <james.page@ubuntu.com>  Thu, 04 Jul 2013 10:17:28 +0100
+ -- James Page <james.page@ubuntu.com>  Thu, 25 Jul 2013 11:44:01 +0100
 
 jenkins (1.480.3+dfsg-1~exp2) experimental; urgency=low
 
