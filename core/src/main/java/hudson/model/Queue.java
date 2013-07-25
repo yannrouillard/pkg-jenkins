@@ -85,6 +85,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.Timer;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -93,7 +94,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.management.timer.Timer;
 import javax.servlet.ServletException;
 
 import jenkins.model.Jenkins;
@@ -654,12 +654,12 @@ public class Queue extends ResourceController implements Saveable {
      * Like {@link #getItems()}, but returns an approximation that might not be completely up-to-date.
      *
      * <p>
-     * At the expense of accuracy, this method does not lock {@link Queue} and therefore is faster
+     * At the expense of accuracy, this method does not usually lock {@link Queue} and therefore is faster
      * in a highly concurrent situation.
      *
      * <p>
      * The list obtained is an accurate snapshot of the queue at some point in the past. The snapshot
-     * is updated and normally no less than one second old, but this is a soft commitment that might
+     * is updated and normally no more than one second old, but this is a soft commitment that might
      * get violated when the lock on {@link Queue} is highly contended.
      *
      * <p>
@@ -1749,8 +1749,11 @@ public class Queue extends ResourceController implements Saveable {
         MaintainTask(Queue queue) {
             this.queue = new WeakReference<Queue>(queue);
 
-            long interval = 5 * Timer.ONE_SECOND;
-            Trigger.timer.schedule(this, interval, interval);
+            long interval = 5000;
+            Timer timer = Trigger.timer;
+            if (timer != null) {
+                timer.schedule(this, interval, interval);
+            }
         }
 
         protected void doRun() {
