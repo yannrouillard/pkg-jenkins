@@ -1,4 +1,4 @@
-jenkins (1.480.3+dfsg-1ubuntu1) UNRELEASED; urgency=low
+jenkins (1.480.3+dfsg-2) UNRELEASED; urgency=low
 
   * d/patches: Switch to using patch-queue for managing patches.
 
