@@ -32,10 +32,7 @@ import hudson.ExtensionPoint;
 import hudson.Functions;
 import hudson.Indenter;
 import hudson.Util;
-import hudson.XmlFile;
 import hudson.model.Descriptor.FormException;
-import hudson.model.Node.Mode;
-import hudson.model.labels.LabelAtom;
 import hudson.model.labels.LabelAtomPropertyDescriptor;
 import hudson.scm.ChangeLogSet;
 import hudson.scm.ChangeLogSet.Entry;
@@ -49,11 +46,10 @@ import hudson.security.PermissionScope;
 import hudson.tasks.UserAvatarResolver;
 import hudson.util.AlternativeUiTextProvider;
 import hudson.util.AlternativeUiTextProvider.Message;
-import hudson.util.AtomicFileWriter;
 import hudson.util.DescribableList;
 import hudson.util.DescriptorList;
+import hudson.util.FormApply;
 import hudson.util.IOException2;
-import hudson.util.IOUtils;
 import hudson.util.RunList;
 import hudson.util.XStream2;
 import hudson.views.ListViewColumn;
@@ -83,7 +79,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -289,15 +284,14 @@ public abstract class View extends AbstractModelObject implements AccessControll
         // see JENKINS-9431
         //
         // until we have that, putting this logic here.
-        synchronized (this) {
+        synchronized (PropertyList.class) {
             if (properties == null) {
                 properties = new PropertyList(this);
             } else {
                 properties.setOwner(this);
             }
+            return properties;
         }
-
-        return properties;
     }
 
     /**
@@ -664,7 +658,7 @@ public abstract class View extends AbstractModelObject implements AccessControll
         @Exported
         public final List<UserInfo> users;
 
-        public final Object parent;
+        public final ModelObject parent;
 
         public People(Jenkins parent) {
             this.parent = parent;
@@ -939,7 +933,7 @@ public abstract class View extends AbstractModelObject implements AccessControll
 
         save();
 
-        rsp.sendRedirect2("../"+name);
+        FormApply.success("../"+name).generateResponse(req,rsp,this);
     }
 
     /**
@@ -1022,8 +1016,7 @@ public abstract class View extends AbstractModelObject implements AccessControll
                     // pity we don't have a handy way to clone Jenkins.XSTREAM to temp add the omit Field
                     XStream2 xStream2 = new XStream2();
                     xStream2.omitField(View.class, "owner");
-                    rsp.getOutputStream().write("<?xml version='1.0' encoding='UTF-8'?>\n".getBytes("UTF-8"));
-                    xStream2.toXML(this,  rsp.getOutputStream());
+                    xStream2.toXMLUTF8(this,  rsp.getOutputStream());
                 }
             };
         }
