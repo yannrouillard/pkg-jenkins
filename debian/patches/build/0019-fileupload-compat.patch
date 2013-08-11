@@ -1,0 +1,33 @@
+From: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Date: Sun, 11 Aug 2013 10:41:39 +0100
+Subject: fileupload-compat
+
+---
+ core/src/main/java/hudson/model/FileParameterValue.java | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/core/src/main/java/hudson/model/FileParameterValue.java b/core/src/main/java/hudson/model/FileParameterValue.java
+index dd322ab..18d9075 100644
+--- a/core/src/main/java/hudson/model/FileParameterValue.java
++++ b/core/src/main/java/hudson/model/FileParameterValue.java
+@@ -40,6 +40,7 @@ import javax.servlet.ServletException;
+ 
+ import org.apache.commons.fileupload.FileItem;
+ import org.apache.commons.fileupload.disk.DiskFileItem;
++import org.apache.commons.fileupload.FileItemHeaders;
+ import org.apache.commons.io.FilenameUtils;
+ import org.apache.commons.io.IOUtils;
+ import org.apache.commons.lang.StringUtils;
+@@ -277,5 +278,12 @@ public class FileParameterValue extends ParameterValue {
+         public OutputStream getOutputStream() throws IOException {
+             return new FileOutputStream(file);
+         }
++
++        public void setHeaders(FileItemHeaders headers) {
++        }
++
++        public FileItemHeaders getHeaders() {
++            return null;
++        }
+     }
+ }

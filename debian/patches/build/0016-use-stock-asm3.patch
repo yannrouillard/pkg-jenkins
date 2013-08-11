@@ -1,0 +1,49 @@
+From: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Date: Sun, 11 Aug 2013 10:41:39 +0100
+Subject: use-stock-asm3
+
+---
+ core/pom.xml                                          | 7 +++++++
+ core/src/main/java/hudson/util/SubClassGenerator.java | 8 ++++----
+ 2 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/core/pom.xml b/core/pom.xml
+index d474892..8596c28 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -584,6 +584,13 @@ THE SOFTWARE.
+     </dependency>
+ 
+     <dependency>
++      <!-- with this, stapler can load parameter names from the debug info -->
++      <groupId>asm</groupId>
++      <artifactId>asm-commons</artifactId>
++      <version>2.2.3</version>
++    </dependency>
++
++    <dependency>
+       <groupId>org.kohsuke</groupId>
+       <artifactId>access-modifier-annotation</artifactId>
+       <version>1.0</version>
+diff --git a/core/src/main/java/hudson/util/SubClassGenerator.java b/core/src/main/java/hudson/util/SubClassGenerator.java
+index d40a9e9..4486a37 100644
+--- a/core/src/main/java/hudson/util/SubClassGenerator.java
++++ b/core/src/main/java/hudson/util/SubClassGenerator.java
+@@ -25,13 +25,13 @@ package hudson.util;
+ 
+ import hudson.PluginManager.UberClassLoader;
+ import jenkins.model.Jenkins;
+-import org.kohsuke.asm3.ClassWriter;
+-import org.kohsuke.asm3.MethodVisitor;
+-import org.kohsuke.asm3.Type;
++import org.objectweb.asm.ClassWriter;
++import org.objectweb.asm.MethodVisitor;
++import org.objectweb.asm.Type;
+ 
+ import java.lang.reflect.Constructor;
+ 
+-import static org.kohsuke.asm3.Opcodes.*;
++import static org.objectweb.asm.Opcodes.*;
+ 
+ /**
+  * Generates a new class that just defines constructors into the super types.

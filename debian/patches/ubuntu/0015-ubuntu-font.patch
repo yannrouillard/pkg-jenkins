@@ -1,0 +1,30 @@
+From: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Date: Sun, 11 Aug 2013 10:41:39 +0100
+Subject: ubuntu-font
+
+---
+ war/src/main/webapp/css/style.css | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/war/src/main/webapp/css/style.css b/war/src/main/webapp/css/style.css
+index 8504f88..0f6afca 100644
+--- a/war/src/main/webapp/css/style.css
++++ b/war/src/main/webapp/css/style.css
+@@ -29,7 +29,7 @@ body {
+ 
+ body, table, form, input, td, th, p, textarea, select
+ {
+-  font-family: Verdana, Helvetica, sans serif;
++  font-family: Ubuntu, Verdana, Helvetica, sans serif;
+   font-size: 11px;
+ }
+ 
+@@ -357,7 +357,7 @@ th.pane {
+   padding: 4px 0;
+   margin-left: 0;
+   border-bottom: 1px solid #090;
+-  font: bold 12px Verdana, sans-serif;
++  font: bold 12px Ubuntu, Verdana, sans-serif;
+ }
+ 
+ #foldertab li {

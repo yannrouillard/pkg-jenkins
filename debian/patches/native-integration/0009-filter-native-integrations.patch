@@ -1,0 +1,30 @@
+From: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Date: Sun, 11 Aug 2013 10:41:39 +0100
+Subject: filter-native-integrations
+
+---
+ core/pom.xml | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/core/pom.xml b/core/pom.xml
+index d6934ea..4a76cf4 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -677,6 +677,17 @@ THE SOFTWARE.
+         <configuration>
+           <fork>${staplerFork}</fork><!-- the source code is big enough now that otherwise it fails with OutOfMemoryError -->
+           <maxmem>128m</maxmem>
++          <excludes>
++             <exclude>**/os/solaris/*</exclude>
++             <exclude>**/os/windows/*</exclude>
++             <exclude>**/DCOMSandbox.java</exclude>
++             <exclude>**/DotNet.java</exclude>
++             <exclude>**/WindowsSlaveInstaller.java</exclude>
++             <exclude>**/WindowsInstallerLink.java</exclude>
++          </excludes>
++          <testExcludes>
++             <exclude>**/DCOMSandbox.java</exclude>
++          </testExcludes>
+         </configuration>
+       </plugin>
+       <plugin>

@@ -1,0 +1,45 @@
+From: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Date: Sun, 11 Aug 2013 10:41:39 +0100
+Subject: windows-service-disable
+
+---
+ core/pom.xml | 26 --------------------------
+ 1 file changed, 26 deletions(-)
+
+diff --git a/core/pom.xml b/core/pom.xml
+index 18d777f..d6934ea 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -734,32 +734,6 @@ THE SOFTWARE.
+           </execution>
+         </executions>
+       </plugin>
+-      <plugin>
+-        <artifactId>maven-dependency-plugin</artifactId>
+-        <executions>
+-          <execution>
+-            <id>winsw</id>
+-            <phase>generate-resources</phase>
+-            <goals>
+-              <!-- we use copy as this is a dependency from outside the reactor -->
+-              <goal>copy</goal>
+-            </goals>
+-            <configuration>
+-              <artifactItems>
+-                <artifactItem>
+-                  <groupId>com.sun.winsw</groupId>
+-                  <artifactId>winsw</artifactId>
+-                  <version>1.10</version>
+-                  <classifier>bin</classifier>
+-                  <type>exe</type>
+-                  <outputDirectory>${project.build.outputDirectory}/windows-service</outputDirectory>
+-                  <destFileName>jenkins.exe</destFileName>
+-                </artifactItem>
+-              </artifactItems>
+-            </configuration>
+-          </execution>
+-        </executions>
+-      </plugin>
+       <plugin><!-- set main class -->
+         <artifactId>maven-jar-plugin</artifactId>
+         <!-- version specified in grandparent pom -->

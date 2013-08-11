@@ -1,0 +1,135 @@
+From: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Date: Sun, 11 Aug 2013 10:41:39 +0100
+Subject: remove-findbugs
+
+---
+ core/src/main/java/hudson/WebAppMain.java                               | 1 -
+ core/src/main/java/hudson/cli/GroovyshCommand.java                      | 2 --
+ core/src/main/java/hudson/logging/LogRecorderManager.java               | 1 -
+ core/src/main/java/hudson/util/PluginServletFilter.java                 | 1 -
+ core/src/main/java/jenkins/model/Jenkins.java                           | 2 --
+ core/src/main/java/jenkins/util/ProgressiveRendering.java               | 1 -
+ maven-plugin/src/main/java/hudson/maven/MavenUtil.java                  | 2 --
+ maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java | 1 -
+ 8 files changed, 11 deletions(-)
+
+diff --git a/core/src/main/java/hudson/WebAppMain.java b/core/src/main/java/hudson/WebAppMain.java
+index 07e679d..d7e38a5 100644
+--- a/core/src/main/java/hudson/WebAppMain.java
++++ b/core/src/main/java/hudson/WebAppMain.java
+@@ -251,7 +251,6 @@ public final class WebAppMain implements ServletContextListener {
+ 	/**
+      * Installs log handler to monitor all Hudson logs.
+      */
+-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("LG_LOST_LOGGER_DUE_TO_WEAK_REFERENCE")
+     private void installLogger() {
+         Jenkins.logRecords = handler.getView();
+         Logger.getLogger("hudson").addHandler(handler);
+diff --git a/core/src/main/java/hudson/cli/GroovyshCommand.java b/core/src/main/java/hudson/cli/GroovyshCommand.java
+index 22a20ec..8d13d3b 100644
+--- a/core/src/main/java/hudson/cli/GroovyshCommand.java
++++ b/core/src/main/java/hudson/cli/GroovyshCommand.java
+@@ -87,7 +87,6 @@ public class GroovyshCommand extends CLICommand {
+             private static final long serialVersionUID = 1L;
+ 
+             @SuppressWarnings("unused")
+-            @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS",justification="Closure invokes this via reflection")
+             public Object doCall(Object[] args) {
+                 assert(args.length == 1);
+                 assert(args[0] instanceof Shell);
+@@ -110,7 +109,6 @@ public class GroovyshCommand extends CLICommand {
+             private static final long serialVersionUID = 1L;
+ 
+             @SuppressWarnings("unused")
+-            @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS",justification="Closure invokes this via reflection")
+             public Object doCall(Object[] args) throws ChannelClosedException {
+                 if (args.length == 1 && args[0] instanceof ChannelClosedException) {
+                     throw (ChannelClosedException)args[0];
+diff --git a/core/src/main/java/hudson/logging/LogRecorderManager.java b/core/src/main/java/hudson/logging/LogRecorderManager.java
+index 3ceff0a..9e1f22c 100644
+--- a/core/src/main/java/hudson/logging/LogRecorderManager.java
++++ b/core/src/main/java/hudson/logging/LogRecorderManager.java
+@@ -112,7 +112,6 @@ public class LogRecorderManager extends AbstractModelObject {
+     /**
+      * Configure the logging level.
+      */
+-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("LG_LOST_LOGGER_DUE_TO_WEAK_REFERENCE")
+     public HttpResponse doConfigLogger(@QueryParameter String name, @QueryParameter String level) {
+         Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
+         Level lv;
+diff --git a/core/src/main/java/hudson/util/PluginServletFilter.java b/core/src/main/java/hudson/util/PluginServletFilter.java
+index 0decb8f..946cb43 100644
+--- a/core/src/main/java/hudson/util/PluginServletFilter.java
++++ b/core/src/main/java/hudson/util/PluginServletFilter.java
+@@ -58,7 +58,6 @@ public class PluginServletFilter implements Filter, ExtensionPoint {
+     public PluginServletFilter() {
+     }
+ 
+-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
+     public void init(FilterConfig filterConfig) throws ServletException {
+     	PluginServletFilter.filterConfig = filterConfig;
+     	synchronized (LIST)  {
+diff --git a/core/src/main/java/jenkins/model/Jenkins.java b/core/src/main/java/jenkins/model/Jenkins.java
+index 97da277..eab0e9c 100755
+--- a/core/src/main/java/jenkins/model/Jenkins.java
++++ b/core/src/main/java/jenkins/model/Jenkins.java
+@@ -730,7 +730,6 @@ public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGro
+      * @param pluginManager
+      *      If non-null, use existing plugin manager.  create a new one.
+      */
+-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("SC_START_IN_CTOR") // bug in FindBugs. It flags UDPBroadcastThread.start() call but that's for another class
+     protected Jenkins(File root, ServletContext context, PluginManager pluginManager) throws IOException, InterruptedException, ReactorException {
+         long start = System.currentTimeMillis();
+         
+@@ -3019,7 +3018,6 @@ public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGro
+     /**
+      * For debugging. Expose URL to perform GC.
+      */
+-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("DM_GC")
+     public void doGc(StaplerResponse rsp) throws IOException {
+         checkPermission(Jenkins.ADMINISTER);
+         System.gc();
+diff --git a/core/src/main/java/jenkins/util/ProgressiveRendering.java b/core/src/main/java/jenkins/util/ProgressiveRendering.java
+index c13932e..6be3a13 100644
+--- a/core/src/main/java/jenkins/util/ProgressiveRendering.java
++++ b/core/src/main/java/jenkins/util/ProgressiveRendering.java
+@@ -24,7 +24,6 @@
+ 
+ package jenkins.util;
+ 
+-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+ import hudson.model.Computer;
+ import java.util.concurrent.ExecutorService;
+ import java.util.logging.Level;
+diff --git a/maven-plugin/src/main/java/hudson/maven/MavenUtil.java b/maven-plugin/src/main/java/hudson/maven/MavenUtil.java
+index 65d2a26..f2f40c6 100755
+--- a/maven-plugin/src/main/java/hudson/maven/MavenUtil.java
++++ b/maven-plugin/src/main/java/hudson/maven/MavenUtil.java
+@@ -53,7 +53,6 @@ import org.apache.maven.artifact.versioning.ComparableVersion;
+ import org.apache.maven.project.MavenProject;
+ import org.apache.maven.project.ProjectBuildingException;
+ 
+-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+ 
+ /**
+  * @author Kohsuke Kawaguchi
+@@ -140,7 +139,6 @@ public class MavenUtil {
+      * Creates a fresh {@link MavenEmbedder} instance.
+      *
+      */
+-    @SuppressWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
+     public static MavenEmbedder createEmbedder(MavenEmbedderRequest mavenEmbedderRequest) throws MavenEmbedderException, IOException {
+         
+         
+diff --git a/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java b/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java
+index 987b311..85fb82e 100644
+--- a/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java
++++ b/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java
+@@ -170,7 +170,6 @@ public class SurefireArchiver extends MavenReporter {
+         return true;
+     }
+     
+-    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="It's okay to write to static fields here, as each Maven build is started in its own VM")
+     private void markBuildAsSuccess(Throwable mojoError, MavenBuildInformation buildInfo) {
+         if(mojoError == null // in the success case we don't get any exception in Maven 3.0.2+; Maven < 3.0.2 returns no exception anyway
+            || mojoError instanceof MojoFailureException) {

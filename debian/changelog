@@ -1,3 +1,9 @@
+jenkins (1.480.3+dfsg-1ubuntu1) UNRELEASED; urgency=low
+
+  * d/patches: Switch to using patch-queue for managing patches.
+
+ -- James Page <james.page@ubuntu.com>  Sun, 11 Aug 2013 10:44:19 +0100
+
 jenkins (1.480.3+dfsg-1) unstable; urgency=low
 
   * Upload to unstable (Closes: #713394, #713423)

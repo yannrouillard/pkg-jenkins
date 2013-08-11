@@ -1,0 +1,30 @@
+From: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Date: Sun, 11 Aug 2013 10:41:39 +0100
+Subject: use-stock-jmdns
+
+---
+ core/src/main/java/hudson/DNSMultiCast.java | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/core/src/main/java/hudson/DNSMultiCast.java b/core/src/main/java/hudson/DNSMultiCast.java
+index 2f187bd..a2cfcdc 100644
+--- a/core/src/main/java/hudson/DNSMultiCast.java
++++ b/core/src/main/java/hudson/DNSMultiCast.java
+@@ -66,12 +66,12 @@ public class DNSMultiCast implements Closeable {
+ 
+     public void close() {
+         if (jmdns!=null) {
+-//            try {
+-                jmdns.abort();
++            try {
++                jmdns.close();
+                 jmdns = null;
+-//            } catch (final IOException e) {
+-//                LOGGER.log(Level.WARNING,"Failed to close down JmDNS instance!",e);
+-//            }
++            } catch (final IOException e) {
++                LOGGER.log(Level.WARNING,"Failed to close down JmDNS instance!",e);
++            }
+         }
+     }
+ 

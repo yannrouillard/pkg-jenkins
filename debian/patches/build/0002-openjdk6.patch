@@ -1,0 +1,45 @@
+From: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Date: Sun, 11 Aug 2013 10:41:38 +0100
+Subject: openjdk6
+
+---
+ core/src/main/java/hudson/DescriptorExtensionList.java | 5 +++--
+ core/src/main/java/hudson/model/AbstractBuild.java     | 9 +++++++++
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/core/src/main/java/hudson/DescriptorExtensionList.java b/core/src/main/java/hudson/DescriptorExtensionList.java
+index 0778c46..8bc6f20 100644
+--- a/core/src/main/java/hudson/DescriptorExtensionList.java
++++ b/core/src/main/java/hudson/DescriptorExtensionList.java
+@@ -81,8 +81,9 @@ public class DescriptorExtensionList<T extends Describable<T>, D extends Descrip
+      * @deprecated as of 1.416
+      *      Use {@link #create(Jenkins, Class)}
+      */
+-    public static <T extends Describable<T>,D extends Descriptor<T>>
+-    DescriptorExtensionList<T,D> createDescriptorList(Hudson hudson, Class<T> describableType) {
++    @SuppressWarnings({"unchecked", "rawtypes"})
++    public static /*<T extends Describable<T>,D extends Descriptor<T>>*/
++    DescriptorExtensionList/*<T,D>*/ createDescriptorList(Hudson hudson, Class/*<T>*/ describableType) {
+         return createDescriptorList((Jenkins)hudson,describableType);
+     }
+ 
+diff --git a/core/src/main/java/hudson/model/AbstractBuild.java b/core/src/main/java/hudson/model/AbstractBuild.java
+index 26e536d..ffe3898 100644
+--- a/core/src/main/java/hudson/model/AbstractBuild.java
++++ b/core/src/main/java/hudson/model/AbstractBuild.java
+@@ -1276,6 +1276,15 @@ public abstract class AbstractBuild<P extends AbstractProject<P,R>,R extends Abs
+     }
+ 
+     private static final Logger LOGGER = Logger.getLogger(AbstractBuild.class.getName());
++
++    /**
++     * The project this build is for.
++     */
++    public P getParent() {
++        return (P)super.getParent();
++    }
++
++
+ }
+ 
+ 

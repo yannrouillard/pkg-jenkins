@@ -1,0 +1,42 @@
+From: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Date: Sun, 11 Aug 2013 10:41:38 +0100
+Subject: remove-licensing-report
+
+---
+ core/src/main/resources/hudson/AboutJenkins/index.jelly      | 7 -------
+ core/src/main/resources/hudson/AboutJenkins/index.properties | 4 ++--
+ 2 files changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/core/src/main/resources/hudson/AboutJenkins/index.jelly b/core/src/main/resources/hudson/AboutJenkins/index.jelly
+index ac9a036..21e3d00 100644
+--- a/core/src/main/resources/hudson/AboutJenkins/index.jelly
++++ b/core/src/main/resources/hudson/AboutJenkins/index.jelly
+@@ -31,13 +31,6 @@ THE SOFTWARE.
+       <p>
+         ${%blurb}
+       </p>
+-
+-      <p>
+-        ${%dependencies}
+-      </p>
+-      <t:thirdPartyLicenses>
+-        <st:include page="/META-INF/licenses.xml" optional="true" />
+-      </t:thirdPartyLicenses>
+     </l:main-panel>
+   </l:layout>
+ </j:jelly>
+diff --git a/core/src/main/resources/hudson/AboutJenkins/index.properties b/core/src/main/resources/hudson/AboutJenkins/index.properties
+index 08f9d8a..8b1e58d 100644
+--- a/core/src/main/resources/hudson/AboutJenkins/index.properties
++++ b/core/src/main/resources/hudson/AboutJenkins/index.properties
+@@ -20,7 +20,7 @@
+ # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ # THE SOFTWARE.
+ 
+-about=About Jenkins {0}
++about=About Jenkins {0} (Debian/Ubuntu distribution)
+ blurb=<a href="http://jenkins-ci.org/">Jenkins</a> is a community-developed open-source continuous integration server.
+ 
+-dependencies=Jenkins depends on the following 3rd party libraries.
+\ No newline at end of file
++dependencies=Jenkins depends on the following 3rd party libraries.

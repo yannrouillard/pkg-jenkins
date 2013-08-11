@@ -1,0 +1,20 @@
+From: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Date: Sun, 11 Aug 2013 10:41:39 +0100
+Subject: ignore-plugin-pom.xml
+
+---
+ pom.xml | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/pom.xml b/pom.xml
+index 2800795..3ddd688 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -50,7 +50,6 @@ THE SOFTWARE.
+     <module>core</module>
+     <module>war</module>
+     <module>cli</module>
+-    <module>plugins</module>
+   </modules>
+ 
+   <scm>

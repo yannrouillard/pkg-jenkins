@@ -1,0 +1,21 @@
+From: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Date: Sun, 11 Aug 2013 10:41:39 +0100
+Subject: use-debian-jbcrypt
+
+---
+ core/src/main/java/hudson/security/HudsonPrivateSecurityRealm.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/src/main/java/hudson/security/HudsonPrivateSecurityRealm.java b/core/src/main/java/hudson/security/HudsonPrivateSecurityRealm.java
+index 7c3a242..3f9127c 100644
+--- a/core/src/main/java/hudson/security/HudsonPrivateSecurityRealm.java
++++ b/core/src/main/java/hudson/security/HudsonPrivateSecurityRealm.java
+@@ -59,7 +59,7 @@ import org.kohsuke.stapler.HttpResponses;
+ import org.kohsuke.stapler.Stapler;
+ import org.kohsuke.stapler.StaplerRequest;
+ import org.kohsuke.stapler.StaplerResponse;
+-import org.mindrot.jbcrypt.BCrypt;
++import org.mindrot.BCrypt;
+ import org.springframework.dao.DataAccessException;
+ 
+ import javax.servlet.Filter;

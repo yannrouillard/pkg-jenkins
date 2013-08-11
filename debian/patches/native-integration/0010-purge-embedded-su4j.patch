@@ -1,0 +1,42 @@
+From: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Date: Sun, 11 Aug 2013 10:41:39 +0100
+Subject: purge-embedded-su4j
+
+---
+ core/src/main/java/hudson/os/SU.java | 16 ----------------
+ 1 file changed, 16 deletions(-)
+
+diff --git a/core/src/main/java/hudson/os/SU.java b/core/src/main/java/hudson/os/SU.java
+index b254f54..929e7eb 100644
+--- a/core/src/main/java/hudson/os/SU.java
++++ b/core/src/main/java/hudson/os/SU.java
+@@ -23,7 +23,6 @@
+  */
+ package hudson.os;
+ 
+-import com.sun.solaris.EmbeddedSu;
+ import hudson.Launcher.LocalLauncher;
+ import hudson.Util;
+ import hudson.model.Computer;
+@@ -94,21 +93,6 @@ public abstract class SU {
+                 }
+             }.start(listener,rootPassword);
+ 
+-        if(os.equals("SunOS"))
+-            return new UnixSu() {
+-                protected String sudoExe() {
+-                    return "/usr/bin/pfexec";
+-                }
+-
+-                protected Process sudoWithPass(ArgumentListBuilder args) throws IOException {
+-                    listener.getLogger().println("Running with embedded_su");
+-                    ProcessBuilder pb = new ProcessBuilder(args.prepend(sudoExe()).toCommandArray());
+-                    return EmbeddedSu.startWithSu(rootUsername, rootPassword, pb);
+-                }
+-            // in solaris, pfexec never asks for a password, so username==null means
+-            // we won't be using password. this helps disambiguate empty password
+-            }.start(listener,rootUsername==null?null:rootPassword);
+-
+         // TODO: Mac?
+ 
+         // unsupported platform, take a chance

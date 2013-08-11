@@ -1,0 +1,37 @@
+From: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Date: Sun, 11 Aug 2013 10:41:38 +0100
+Subject: apt-stapler-processing
+
+---
+ core/pom.xml | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/core/pom.xml b/core/pom.xml
+index f7bef0b..18d777f 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -652,6 +652,24 @@ THE SOFTWARE.
+         </executions>
+       </plugin>
+       <plugin>
++        <groupId>org.apache.maven.plugins</groupId>
++        <artifactId>maven-compiler-plugin</artifactId>
++        <version>2.3.2</version>
++        <configuration>
++          <excludes>
++             <exclude>**/os/solaris/*</exclude>
++             <exclude>**/os/windows/*</exclude>
++             <exclude>**/DCOMSandbox.java</exclude>
++             <exclude>**/DotNet.java</exclude>
++             <exclude>**/WindowsSlaveInstaller.java</exclude>
++             <exclude>**/WindowsInstallerLink.java</exclude>
++          </excludes>
++          <testExcludes>
++             <exclude>**/DCOMSandbox.java</exclude>
++          </testExcludes>
++        </configuration>
++      </plugin>
++      <plugin>
+         <groupId>org.kohsuke.stapler</groupId>
+         <artifactId>maven-stapler-plugin</artifactId>
+         <version>1.16</version>
