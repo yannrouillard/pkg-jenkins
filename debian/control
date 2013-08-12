@@ -17,7 +17,7 @@ Build-Depends-Indep:
  glassfish-mail,
  groovy,
  jenkins-crypto-util,
- jenkins-executable-war (>= 1.25),
+ jenkins-executable-war (>= 1.28),
  jenkins-instance-identity,
  jenkins-memory-monitor,
  jenkins-ssh-cli-auth,

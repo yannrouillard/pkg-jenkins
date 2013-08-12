@@ -1,0 +1,28 @@
+From: James Page <james.page@ubuntu.com>
+Date: Mon, 12 Aug 2013 09:17:53 +0100
+Subject: Drop use of gitsite extension
+
+This is not required for the package build
+---
+ pom.xml | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index 9e36e37..8eaecdd 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -670,14 +670,6 @@ THE SOFTWARE.
+         </dependencies>
+       </plugin>
+     </plugins>
+-
+-    <extensions>
+-      <extension>
+-        <groupId>org.kohsuke</groupId>
+-        <artifactId>wagon-gitsite</artifactId>
+-        <version>0.3.5</version>
+-      </extension>
+-    </extensions>
+   </build>
+ 
+   <profiles>
