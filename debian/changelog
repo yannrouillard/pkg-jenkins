@@ -4,7 +4,9 @@ jenkins (1.509.2-1) UNRELEASED; urgency=low
     - d/control: Update versioned BD's:
       * jenkins-executable-war >= 1.28.
       * jenkins-instance-identity >= 1.3.
-  * d/patches: Switch to using patch-queue for managing patches.
+      * libjenkins-remoting-java >= 2.23.
+      * libjenkins-winstone-java >= 0.9.10-jenkins-44.
+  * d/patches: Switch to using git patch-queue for managing patches.
 
  -- James Page <james.page@ubuntu.com>  Sun, 11 Aug 2013 10:44:19 +0100
 
