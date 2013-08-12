@@ -18,4 +18,3 @@ build/0017-ignore-plugin-pom.xml.patch
 build/0018-fileupload-compat.patch
 build/0019-io-compat.pach.patch
 0020-Drop-use-of-gitsite-extension.patch
-0021-Disable-animal-sniffer-compatibility-checking.patch
