@@ -93,7 +93,7 @@ Build-Depends-Indep:
  libspring-web-java,
  libstapler-adjunct-codemirror-java,
  libstapler-adjunct-timeline-java,
- libstapler-java (>= 1.198),
+ libstapler-java (>= 1.207),
  libtrilead-putty-extension-java (>= 1.2),
  libtxw2-java,
  libxpp3-java,
