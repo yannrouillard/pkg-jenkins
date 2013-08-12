@@ -20,11 +20,12 @@ antlr antlr jar s/2\..*/2.x/ * *
 commons-collections commons-collections jar s/3\..*/3.x/ * *
 commons-httpclient commons-httpclient jar s/3\..*/3.x/ * *
 junit s/junit-dep/junit/ * s/.*/4.x/ * *
+junit junit * s/.*/4.x/ * *
 # Map onto exact version during build process
 org.jenkins-ci.main * * s/1\..*/1.480.3/ * *
 # Handle plugin package
-org.kohsuke access-modifier-annotation jar s/.*/1.0/ * *
-org.kohsuke access-modifier-checker *  s/.*/1.0/ * *
+org.kohsuke access-modifier-annotation jar s/.*/1.4/ * *
+org.kohsuke access-modifier-checker *  s/.*/1.4/ * *
 # 3.x is needed due to later versions of some deps in Debian
 # Patch to be submitted back upstream.
 asm * * s/2\..*/3.x/ * *
@@ -67,5 +68,3 @@ s/org.jvnet.hudson/org.jenkins-ci/ annotation-indexer * s/.*/debian/ * *
 s/org.kohsuke/org.jvnet.libpam4j/ libpam4j * s/.*/debian/ * *
 # Updates for 1.480.3
 org.springframework s/spring-webmvc/spring-web/ * s/.*/3.x/ * *
-# Updates for 1.509.2
-org.codehaus.mojo animal-sniffer-maven-plugin * s/.*/1.7/ * *
