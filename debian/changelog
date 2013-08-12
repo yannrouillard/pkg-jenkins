@@ -1,4 +1,4 @@
-jenkins (1.509.2-1) UNRELEASED; urgency=low
+jenkins (1.509.2+dfsg-1) UNRELEASED; urgency=low
 
   * New upstream release:
     - d/control: Update versioned BD's:
