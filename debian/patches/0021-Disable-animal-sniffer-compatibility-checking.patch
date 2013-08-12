@@ -4,11 +4,11 @@ Subject: Disable animal-sniffer compatibility checking
 
 Limited value in distro package build and causing compilation failures.
 ---
- pom.xml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ pom.xml | 22 +---------------------
+ 1 file changed, 1 insertion(+), 21 deletions(-)
 
 diff --git a/pom.xml b/pom.xml
-index 8eaecdd..2ba4629 100644
+index 8eaecdd..23ee311 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -550,7 +550,7 @@ THE SOFTWARE.
@@ -20,3 +20,30 @@ index 8eaecdd..2ba4629 100644
            <pushChanges>false</pushChanges>
            <localCheckout>true</localCheckout>
            <tagNameFormat>jenkins-@{project.version}</tagNameFormat>
+@@ -572,26 +572,6 @@ THE SOFTWARE.
+         </executions>
+       </plugin>
+       <plugin>
+-        <!-- make sure our code doesn't have 1.6 dependencies except where we know it -->
+-        <groupId>org.codehaus.mojo</groupId>
+-        <artifactId>animal-sniffer-maven-plugin</artifactId>
+-        <executions>
+-          <execution>
+-            <goals>
+-              <goal>check</goal>
+-            </goals>
+-          </execution>
+-        </executions>
+-        <configuration>
+-          <signature>
+-            <groupId>org.codehaus.mojo.signature</groupId>
+-            <artifactId>java15</artifactId>
+-            <version>1.0</version>
+-          </signature>
+-        </configuration>
+-      </plugin>
+-
+-      <plugin>
+         <artifactId>maven-compiler-plugin</artifactId>
+         <configuration><!-- we specify this in the parent POM, so this is redundant, but otherwise IntelliJ is unhappy -->
+           <source>1.5</source>
