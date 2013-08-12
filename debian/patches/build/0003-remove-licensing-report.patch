@@ -3,15 +3,15 @@ Date: Sun, 11 Aug 2013 10:41:38 +0100
 Subject: remove-licensing-report
 
 ---
- core/src/main/resources/hudson/AboutJenkins/index.jelly      | 7 -------
- core/src/main/resources/hudson/AboutJenkins/index.properties | 4 ++--
- 2 files changed, 2 insertions(+), 9 deletions(-)
+ core/src/main/resources/hudson/AboutJenkins/index.jelly   | 15 ---------------
+ .../main/resources/hudson/AboutJenkins/index.properties   |  4 ++--
+ 2 files changed, 2 insertions(+), 17 deletions(-)
 
 diff --git a/core/src/main/resources/hudson/AboutJenkins/index.jelly b/core/src/main/resources/hudson/AboutJenkins/index.jelly
-index ac9a036..21e3d00 100644
+index 267ef11..21e3d00 100644
 --- a/core/src/main/resources/hudson/AboutJenkins/index.jelly
 +++ b/core/src/main/resources/hudson/AboutJenkins/index.jelly
-@@ -31,13 +31,6 @@ THE SOFTWARE.
+@@ -31,21 +31,6 @@ THE SOFTWARE.
        <p>
          ${%blurb}
        </p>
@@ -19,9 +19,17 @@ index ac9a036..21e3d00 100644
 -      <p>
 -        ${%dependencies}
 -      </p>
--      <t:thirdPartyLicenses>
--        <st:include page="/META-INF/licenses.xml" optional="true" />
--      </t:thirdPartyLicenses>
+-      <j:set var="uri" value="${it.licensesURL}"/>
+-      <j:choose>
+-          <j:when test="${uri != null}">
+-              <t:thirdPartyLicenses>
+-                  <j:include uri="${uri}"/>
+-              </t:thirdPartyLicenses>
+-          </j:when>
+-          <j:otherwise>
+-              <p>${%No information recorded}</p>
+-          </j:otherwise>
+-      </j:choose>
      </l:main-panel>
    </l:layout>
  </j:jelly>

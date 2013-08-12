@@ -7,10 +7,10 @@ Subject: apt-stapler-processing
  1 file changed, 18 insertions(+)
 
 diff --git a/core/pom.xml b/core/pom.xml
-index f7bef0b..18d777f 100644
+index 55078a5..b6465c2 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -652,6 +652,24 @@ THE SOFTWARE.
+@@ -678,6 +678,24 @@ THE SOFTWARE.
          </executions>
        </plugin>
        <plugin>
@@ -34,4 +34,4 @@ index f7bef0b..18d777f 100644
 +      <plugin>
          <groupId>org.kohsuke.stapler</groupId>
          <artifactId>maven-stapler-plugin</artifactId>
-         <version>1.16</version>
+         <!-- version specified in grandparent pom -->

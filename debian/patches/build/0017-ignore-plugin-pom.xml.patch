@@ -7,7 +7,7 @@ Subject: ignore-plugin-pom.xml
  1 file changed, 1 deletion(-)
 
 diff --git a/pom.xml b/pom.xml
-index 2800795..3ddd688 100644
+index 8b43d42..9e36e37 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -50,7 +50,6 @@ THE SOFTWARE.

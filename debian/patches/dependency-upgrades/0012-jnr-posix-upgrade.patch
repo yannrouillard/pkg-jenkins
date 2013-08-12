@@ -9,7 +9,7 @@ Subject: jnr-posix-upgrade
  3 files changed, 12 insertions(+), 8 deletions(-)
 
 diff --git a/core/pom.xml b/core/pom.xml
-index 4a76cf4..d474892 100644
+index 5b48543..a668216 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -118,6 +118,11 @@ THE SOFTWARE.

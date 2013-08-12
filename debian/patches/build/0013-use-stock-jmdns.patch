@@ -7,10 +7,10 @@ Subject: use-stock-jmdns
  1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/core/src/main/java/hudson/DNSMultiCast.java b/core/src/main/java/hudson/DNSMultiCast.java
-index 2f187bd..a2cfcdc 100644
+index 8d029b6..e2a82f0 100644
 --- a/core/src/main/java/hudson/DNSMultiCast.java
 +++ b/core/src/main/java/hudson/DNSMultiCast.java
-@@ -66,12 +66,12 @@ public class DNSMultiCast implements Closeable {
+@@ -75,12 +75,12 @@ public class DNSMultiCast implements Closeable {
  
      public void close() {
          if (jmdns!=null) {

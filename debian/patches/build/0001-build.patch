@@ -8,7 +8,7 @@ Subject: build
  2 files changed, 10 insertions(+), 6 deletions(-)
 
 diff --git a/core/pom.xml b/core/pom.xml
-index aeb3ded..f7bef0b 100644
+index c72677e..55078a5 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
 @@ -326,6 +326,16 @@ THE SOFTWARE.
@@ -29,7 +29,7 @@ index aeb3ded..f7bef0b 100644
      <dependency>
        <groupId>commons-jelly</groupId>
 diff --git a/pom.xml b/pom.xml
-index f1823c0..2800795 100644
+index 9e32fca..8b43d42 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -48,10 +48,7 @@ THE SOFTWARE.
@@ -43,7 +43,7 @@ index f1823c0..2800795 100644
      <module>cli</module>
      <module>plugins</module>
    </modules>
-@@ -581,9 +578,6 @@ THE SOFTWARE.
+@@ -621,9 +618,6 @@ THE SOFTWARE.
                  <requireJavaVersion>
                    <version>1.6.0-18</version>
                  </requireJavaVersion>

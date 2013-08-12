@@ -7,10 +7,10 @@ Subject: windows-service-disable
  1 file changed, 26 deletions(-)
 
 diff --git a/core/pom.xml b/core/pom.xml
-index 18d777f..d6934ea 100644
+index b6465c2..69241b5 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -734,32 +734,6 @@ THE SOFTWARE.
+@@ -759,32 +759,6 @@ THE SOFTWARE.
            </execution>
          </executions>
        </plugin>

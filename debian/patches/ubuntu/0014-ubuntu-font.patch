@@ -7,7 +7,7 @@ Subject: ubuntu-font
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/war/src/main/webapp/css/style.css b/war/src/main/webapp/css/style.css
-index 8504f88..0f6afca 100644
+index eff6d3e..0b33301 100644
 --- a/war/src/main/webapp/css/style.css
 +++ b/war/src/main/webapp/css/style.css
 @@ -29,7 +29,7 @@ body {

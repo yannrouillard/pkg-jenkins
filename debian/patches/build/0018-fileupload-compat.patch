@@ -7,7 +7,7 @@ Subject: fileupload-compat
  1 file changed, 8 insertions(+)
 
 diff --git a/core/src/main/java/hudson/model/FileParameterValue.java b/core/src/main/java/hudson/model/FileParameterValue.java
-index dd322ab..18d9075 100644
+index 2251ea5..afcfcaf 100644
 --- a/core/src/main/java/hudson/model/FileParameterValue.java
 +++ b/core/src/main/java/hudson/model/FileParameterValue.java
 @@ -40,6 +40,7 @@ import javax.servlet.ServletException;
@@ -18,7 +18,7 @@ index dd322ab..18d9075 100644
  import org.apache.commons.io.FilenameUtils;
  import org.apache.commons.io.IOUtils;
  import org.apache.commons.lang.StringUtils;
-@@ -277,5 +278,12 @@ public class FileParameterValue extends ParameterValue {
+@@ -284,5 +285,12 @@ public class FileParameterValue extends ParameterValue {
          public OutputStream getOutputStream() throws IOException {
              return new FileOutputStream(file);
          }

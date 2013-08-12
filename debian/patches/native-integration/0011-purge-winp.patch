@@ -3,11 +3,11 @@ Date: Sun, 11 Aug 2013 10:41:39 +0100
 Subject: purge-winp
 
 ---
- core/src/main/java/hudson/util/ProcessTree.java | 82 +------------------------
- 1 file changed, 1 insertion(+), 81 deletions(-)
+ core/src/main/java/hudson/util/ProcessTree.java | 81 -------------------------
+ 1 file changed, 81 deletions(-)
 
 diff --git a/core/src/main/java/hudson/util/ProcessTree.java b/core/src/main/java/hudson/util/ProcessTree.java
-index 020978c..da06757 100644
+index 392e73c..da06757 100644
 --- a/core/src/main/java/hudson/util/ProcessTree.java
 +++ b/core/src/main/java/hudson/util/ProcessTree.java
 @@ -37,8 +37,6 @@ import hudson.util.ProcessTree.OSProcess;
@@ -29,7 +29,7 @@ index 020978c..da06757 100644
              String os = Util.fixNull(System.getProperty("os.name"));
              if(os.equals("Linux"))
                  return new Linux();
-@@ -390,81 +385,6 @@ public abstract class ProcessTree implements Iterable<OSProcess>, IProcessTree,
+@@ -390,82 +385,6 @@ public abstract class ProcessTree implements Iterable<OSProcess>, IProcessTree,
          }
      };
  
@@ -38,6 +38,7 @@ index 020978c..da06757 100644
 -        Windows() {
 -            for (final WinProcess p : WinProcess.all()) {
 -                int pid = p.getPid();
+-                if(pid == 0 || pid == 4) continue; // skip the System Idle and System processes
 -                super.processes.put(pid,new OSProcess(pid) {
 -                    private EnvVars env;
 -                    private List<String> args;
@@ -111,10 +112,3 @@ index 020978c..da06757 100644
      static abstract class Unix extends Local {
          @Override
          public OSProcess get(Process proc) {
-@@ -1227,4 +1147,4 @@ public abstract class ProcessTree implements Iterable<OSProcess>, IProcessTree,
-      */
-     public static boolean enabled = !Boolean.getBoolean(ProcessTreeKiller.class.getName()+".disable")
-                                  && !Boolean.getBoolean(ProcessTree.class.getName()+".disable");
--}
-\ No newline at end of file
-+}

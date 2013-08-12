@@ -8,7 +8,7 @@ Subject: openjdk6
  2 files changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/core/src/main/java/hudson/DescriptorExtensionList.java b/core/src/main/java/hudson/DescriptorExtensionList.java
-index 0778c46..8bc6f20 100644
+index 08c814e..9ee9b8c 100644
 --- a/core/src/main/java/hudson/DescriptorExtensionList.java
 +++ b/core/src/main/java/hudson/DescriptorExtensionList.java
 @@ -81,8 +81,9 @@ public class DescriptorExtensionList<T extends Describable<T>, D extends Descrip
@@ -20,14 +20,14 @@ index 0778c46..8bc6f20 100644
 +    @SuppressWarnings({"unchecked", "rawtypes"})
 +    public static /*<T extends Describable<T>,D extends Descriptor<T>>*/
 +    DescriptorExtensionList/*<T,D>*/ createDescriptorList(Hudson hudson, Class/*<T>*/ describableType) {
-         return createDescriptorList((Jenkins)hudson,describableType);
+         return (DescriptorExtensionList)createDescriptorList((Jenkins)hudson,describableType);
      }
  
 diff --git a/core/src/main/java/hudson/model/AbstractBuild.java b/core/src/main/java/hudson/model/AbstractBuild.java
-index 26e536d..ffe3898 100644
+index 3c3be27..54607f9 100644
 --- a/core/src/main/java/hudson/model/AbstractBuild.java
 +++ b/core/src/main/java/hudson/model/AbstractBuild.java
-@@ -1276,6 +1276,15 @@ public abstract class AbstractBuild<P extends AbstractProject<P,R>,R extends Abs
+@@ -1362,6 +1362,15 @@ public abstract class AbstractBuild<P extends AbstractProject<P,R>,R extends Abs
      }
  
      private static final Logger LOGGER = Logger.getLogger(AbstractBuild.class.getName());
