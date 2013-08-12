@@ -1,2 +1,5 @@
 # trilead-ssh2 upstream version is actually 214-jenkins-1 so this is a false positive
 jenkins source: build-depends-on-1-revision build-depends-indep: libjenkins-trilead-ssh2-java (>= 214-jenkins-1)
+# jenkins-json upstream version looks like a package version; false positive
+jenkins source: build-depends-on-1-revision build-depends-indep: libjenkins-json-java (>= 2.4-jenkins-1)
+
