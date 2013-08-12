@@ -11,6 +11,7 @@ jenkins (1.509.2+dfsg-1) UNRELEASED; urgency=low
       * libstapler-adjunct-timeline-java >= 1.4.
       * libstapler-adjunct-codemirror-java >= 1.2.
       * libmaven-hpi-plugin-java >= 1.93.
+    - d/maven.rules: Map to older version of animal-sniffer-maven-plugin.
   * d/patches: Switch to using git patch-queue for managing patches.
 
  -- James Page <james.page@ubuntu.com>  Sun, 11 Aug 2013 10:44:19 +0100

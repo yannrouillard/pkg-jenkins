@@ -55,8 +55,6 @@ s/org.jvnet.hudson/org.jenkins-ci/ task-reactor * s/.*/debian/ * *
 javax.servlet jstl * s/1\.1\..*/1.1/ * *
 # Remap for rename jna->jnr in Debian
 org.jruby.ext.posix s/jna-posix/jnr-posix/ * s/.*/debian/ * *
-# Remap for later version of animal sniffer
-s/org.jvnet/org.codehaus.mojo/ s/animal-sniffer-annotation/animal-sniffer-annotations/ jar s/.*/debian/ * *
 # Update to servlet2.5
 javax.servlet servlet-api * s/.*/2.5/ * *
 # Updates for 1.424.6
@@ -69,3 +67,5 @@ s/org.jvnet.hudson/org.jenkins-ci/ annotation-indexer * s/.*/debian/ * *
 s/org.kohsuke/org.jvnet.libpam4j/ libpam4j * s/.*/debian/ * *
 # Updates for 1.480.3
 org.springframework s/spring-webmvc/spring-web/ * s/.*/3.x/ * *
+# Updates for 1.509.2
+org.codehaus.mojo animal-sniffer-maven-plugin * s/.*/1.7/ * *
