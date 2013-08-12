@@ -13,6 +13,7 @@ jenkins (1.509.2+dfsg-1) UNRELEASED; urgency=low
       * libmaven-hpi-plugin-java >= 1.93.
       * libjenkins-xstream-java >= 1.4.4-jenkins-3.
     - d/maven.rules: Map to older version of animal-sniffer-maven-plugin.
+    - Add patch for compatibility with guava >= 0.14.
   * d/patches: Switch to using git patch-queue for managing patches.
 
  -- James Page <james.page@ubuntu.com>  Sun, 11 Aug 2013 10:44:19 +0100

@@ -1,0 +1,22 @@
+From: James Page <james.page@ubuntu.com>
+Date: Mon, 12 Aug 2013 14:52:31 +0100
+Subject: Compatibility patch for guava >= 0.14
+
+Iterations.skip -> Iterators.advance
+---
+ core/src/main/java/hudson/util/RunList.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/src/main/java/hudson/util/RunList.java b/core/src/main/java/hudson/util/RunList.java
+index 25f7dea..cb35d2c 100644
+--- a/core/src/main/java/hudson/util/RunList.java
++++ b/core/src/main/java/hudson/util/RunList.java
+@@ -138,7 +138,7 @@ public class RunList<R extends Run> extends AbstractList<R> {
+     public List<R> subList(int fromIndex, int toIndex) {
+         List<R> r = new ArrayList<R>();
+         Iterator<R> itr = iterator();
+-        Iterators.skip(itr,fromIndex);
++        Iterators.advance(itr,fromIndex);
+         for (int i=toIndex-fromIndex; i>0; i--) {
+             r.add(itr.next());
+         }
