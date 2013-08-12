@@ -57,7 +57,7 @@ Build-Depends-Indep:
  libjenkins-remoting-java (>= 2.23),
  libjenkins-trilead-ssh2-java (>= 214-jenkins-1),
  libjenkins-winstone-java (>= 0.9.10-jenkins-44),
- libjenkins-xstream-java,
+ libjenkins-xstream-java (>= 1.4.4-jenkins-3),
  libjetty-java,
  libjffi-java,
  libjfreechart-java,
