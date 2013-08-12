@@ -14,7 +14,7 @@ jenkins (1.509.2+dfsg-1) UNRELEASED; urgency=low
       * libjenkins-xstream-java >= 1.4.4-jenkins-3.
     - d/maven.rules: Map to older version of animal-sniffer-maven-plugin.
     - Add patch for compatibility with guava >= 0.14.
-    - Add patch to exclude asm4 dependency via jna-posix.
+    - Add patch to exclude asm4 dependency via jnr-posix.
     - Fixes the following security vulnerabilities (Closes: #706725):
       CVE-2013-2034, CVE-2013-2033, CVE-2013-2034, CVE-2013-1808
   * d/patches: Switch to using git patch-queue for managing patches.
