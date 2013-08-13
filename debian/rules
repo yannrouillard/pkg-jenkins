@@ -11,6 +11,8 @@ DEB_UPSTREAM_VERSION=$(shell dpkg-parsechangelog | sed -rne 's,^Version: ([^+]+)
 DEB_MAVEN_BUILD_TARGET := install
 DEB_MAVEN_ARGS := -e -Dbuild.version="$(DEB_UPSTREAM_VERSION)"
 DEB_MAVEN_INSTALL_TO_USJ := false
+# Enable xz compression
+DEB_DH_BUILDDEB_ARGS ?= -u-Zxz
 
 # Debian package version use daemon to control jenkins processes
 # Ubuntu does not need this - managed by upstart
