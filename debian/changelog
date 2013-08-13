@@ -1,4 +1,4 @@
-jenkins (1.509.2+dfsg-1) UNRELEASED; urgency=low
+jenkins (1.509.2+dfsg-1) unstable; urgency=low
 
   * New upstream release (Closes: #706725):
     - d/control: Update versioned BD's:
@@ -22,14 +22,14 @@ jenkins (1.509.2+dfsg-1) UNRELEASED; urgency=low
     (Closes: #701163):
     - d/control: Add dependency between jenkins-external-job-monitor ->
       libjenkins-java.
-    - d/rules: Drop installation of jenkins-core.jar in
-      jenkins-external-job-monitor
+    - d/rules: 
+      Drop installation of jenkins-core in jenkins-external-job-monitor.
     - d/jenkins-external-job-monitor.{links,install}: Link to jenkins-core
       in /usr/share/java instead of included version.
   * Wait longer for jenkins to stop during restarts (Closes: #704848):
     - d/jenkins.init: Re-sync init script from upstream codebase.
 
- -- James Page <james.page@ubuntu.com>  Sun, 11 Aug 2013 10:44:19 +0100
+ -- James Page <james.page@ubuntu.com>  Tue, 13 Aug 2013 12:35:19 +0100
 
 jenkins (1.480.3+dfsg-1) unstable; urgency=low
 
