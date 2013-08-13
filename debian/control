@@ -163,7 +163,7 @@ Description: Jenkins Plugin Parent Maven POM
 Package: jenkins-common
 Architecture: all
 Depends:
- libjenkins-remoting-java (>= 2.22),
+ libjenkins-remoting-java (>= 2.23),
  libjffi-java,
  libjna-java,
  libjnr-posix-java,
@@ -256,14 +256,8 @@ Description: Jenkins slave node helper
 Package: jenkins-external-job-monitor
 Architecture: all
 Depends:
- ant,
  default-jre-headless | java6-runtime-headless,
- libcommons-io-java (>= 2.4),
- libcommons-lang-java,
- libjenkins-remoting-java (>= 2.22),
- libjenkins-xstream-java,
- libjffi-java,
- libjnr-posix-java,
+ libjenkins-java (= ${binary:Version}),
  ${misc:Depends}
 Description: Jenkins CI external job monitoring
  Jenkins monitors executions of repeated jobs, such as building a software

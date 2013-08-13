@@ -11,8 +11,6 @@ DEB_UPSTREAM_VERSION=$(shell dpkg-parsechangelog | sed -rne 's,^Version: ([^+]+)
 DEB_MAVEN_BUILD_TARGET := install
 DEB_MAVEN_ARGS := -e -Dbuild.version="$(DEB_UPSTREAM_VERSION)"
 DEB_MAVEN_INSTALL_TO_USJ := false
-# Enable xz compression
-DEB_DH_BUILDDEB_ARGS ?= -u-Zxz
 
 # Debian package version use daemon to control jenkins processes
 # Ubuntu does not need this - managed by upstart
@@ -38,11 +36,6 @@ binary-post-install/jenkins-cli::
 		usr/share/jenkins/cli/java/cli.jar
 	jh_classpath -pjenkins-cli
 	jh_manifest -pjenkins-cli
-
-# Create handy links for script wrapper
-binary-post-install/jenkins-external-job-monitor::
-	dh_link -pjenkins-external-job-monitor usr/share/jenkins/external-job-monitor/java/jenkins-core-$(DEB_UPSTREAM_VERSION).jar \
-	    usr/share/jenkins/external-job-monitor/java/jenkins-core.jar
 
 # Install POM files directly
 binary-post-install/libjenkins-java::

@@ -6,3 +6,4 @@
 /usr/share/java/jenkins-xstream.jar /usr/share/jenkins/external-job-monitor/java/xstream-debian.jar
 /usr/share/java/commons-io.jar /usr/share/jenkins/external-job-monitor/java/commons-io-debian.jar
 /usr/share/java/jenkins-remoting.jar /usr/share/jenkins/external-job-monitor/java/remoting-debian.jar
+/usr/share/java/jenkins-core.jar /usr/share/jenkins/external-job-monitor/java/jenkins-core.jar
