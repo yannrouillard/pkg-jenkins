@@ -132,6 +132,7 @@ Package: libjenkins-plugin-parent-java
 Architecture: all
 Depends:
  junit4,
+ libaccess-modifier-checker-java (>= 1.4),
  libjenkins-java (= ${binary:Version}),
  libmaven-hpi-plugin-java (>= 1.93),
  libmaven-javadoc-plugin-java,
