@@ -1,10 +1,10 @@
-jenkins (1.509.2+dfsg-2) UNRELEASED; urgency=low
+jenkins (1.509.2+dfsg-2) unstable; urgency=low
 
   * d/plugin-parent.pom.in,control: Bump access-modifier-check version
     to 1.4 inline with the version in Debian unstable.
     (Closes: #720822, #720803)
 
- -- James Page <james.page@ubuntu.com>  Tue, 24 Sep 2013 13:37:52 +0100
+ -- James Page <james.page@ubuntu.com>  Tue, 24 Sep 2013 14:12:23 +0100
 
 jenkins (1.509.2+dfsg-1) unstable; urgency=low
 
