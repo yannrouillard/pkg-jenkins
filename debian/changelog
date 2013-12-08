@@ -1,11 +1,3 @@
-jenkins (1.509.2+dfsg-3) UNRELEASED; urgency=low
-
-  * Team upload.
-  * Update watch file version regex to support formats other than x.y.z.
-    - Thanks to Matthew Haughton. (Closes: #731204)
-
- -- tony mancill <tmancill@debian.org>  Wed, 04 Dec 2013 20:37:37 -0800
-
 jenkins (1.509.2+dfsg-2) unstable; urgency=low
 
   * d/plugin-parent.pom.in,control: Bump access-modifier-check version
