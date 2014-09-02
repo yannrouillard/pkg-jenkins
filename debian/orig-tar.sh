@@ -13,6 +13,7 @@ rm $3
 XZ_OPT=--best tar -cJf $TAR \
      --exclude '*.jar' \
      --exclude '*.class' \
+     --exclude '*.swf' \
      --exclude 'CVS' \
      --exclude '.svn' \
      --exclude "jenkins-$VERSION/debian" \
