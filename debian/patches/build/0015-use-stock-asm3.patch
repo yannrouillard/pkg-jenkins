@@ -7,11 +7,9 @@ Subject: use-stock-asm3
  core/src/main/java/hudson/util/SubClassGenerator.java | 8 ++++----
  2 files changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/core/pom.xml b/core/pom.xml
-index a668216..dc325b4 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -585,6 +585,13 @@ THE SOFTWARE.
+@@ -589,6 +589,13 @@
      </dependency>
  
      <dependency>
@@ -25,11 +23,9 @@ index a668216..dc325b4 100644
        <groupId>org.kohsuke</groupId>
        <artifactId>access-modifier-annotation</artifactId>
        <version>1.4</version>
-diff --git a/core/src/main/java/hudson/util/SubClassGenerator.java b/core/src/main/java/hudson/util/SubClassGenerator.java
-index d40a9e9..4486a37 100644
 --- a/core/src/main/java/hudson/util/SubClassGenerator.java
 +++ b/core/src/main/java/hudson/util/SubClassGenerator.java
-@@ -25,13 +25,13 @@ package hudson.util;
+@@ -25,13 +25,13 @@
  
  import hudson.PluginManager.UberClassLoader;
  import jenkins.model.Jenkins;

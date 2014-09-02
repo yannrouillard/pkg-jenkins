@@ -6,11 +6,9 @@ Subject: disable-plugins
  war/pom.xml | 83 ++++---------------------------------------------------------
  1 file changed, 5 insertions(+), 78 deletions(-)
 
-diff --git a/war/pom.xml b/war/pom.xml
-index 8a6b2eb..49ad021 100644
 --- a/war/pom.xml
 +++ b/war/pom.xml
-@@ -174,6 +174,11 @@ THE SOFTWARE.
+@@ -174,6 +174,11 @@
        <scope>system</scope>
        <systemPath>/usr/local/yjp/lib/yjp.jar</systemPath>
      </dependency-->
@@ -22,7 +20,7 @@ index 8a6b2eb..49ad021 100644
    </dependencies>
  
    <build>
-@@ -261,84 +266,6 @@ THE SOFTWARE.
+@@ -261,84 +266,6 @@
                    <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
                    <destFileName>winstone.jar</destFileName>
                  </artifactItem>
@@ -47,7 +45,7 @@ index 8a6b2eb..49ad021 100644
 -                <artifactItem>
 -                  <groupId>org.jenkins-ci.plugins</groupId>
 -                  <artifactId>ssh-credentials</artifactId>
--                  <version>0.2</version>
+-                  <version>0.3</version>
 -                  <type>hpi</type>
 -                </artifactItem>
 -                <artifactItem>

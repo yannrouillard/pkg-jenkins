@@ -7,11 +7,9 @@ This is not required for the package build
  pom.xml | 8 --------
  1 file changed, 8 deletions(-)
 
-diff --git a/pom.xml b/pom.xml
-index 9e36e37..8eaecdd 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -670,14 +670,6 @@ THE SOFTWARE.
+@@ -667,14 +667,6 @@
          </dependencies>
        </plugin>
      </plugins>

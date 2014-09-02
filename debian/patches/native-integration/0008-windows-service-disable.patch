@@ -6,11 +6,9 @@ Subject: windows-service-disable
  core/pom.xml | 26 --------------------------
  1 file changed, 26 deletions(-)
 
-diff --git a/core/pom.xml b/core/pom.xml
-index b6465c2..69241b5 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -759,32 +759,6 @@ THE SOFTWARE.
+@@ -763,32 +763,6 @@
            </execution>
          </executions>
        </plugin>

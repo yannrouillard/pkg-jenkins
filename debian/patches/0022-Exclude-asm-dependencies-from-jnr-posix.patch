@@ -7,11 +7,9 @@ This pulls in asm4 which creates class loading issues.
  core/pom.xml | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
-diff --git a/core/pom.xml b/core/pom.xml
-index dc325b4..75e4a54 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -116,6 +116,16 @@ THE SOFTWARE.
+@@ -116,6 +116,16 @@
        <groupId>org.jruby.ext.posix</groupId>
        <artifactId>jna-posix</artifactId>
        <version>1.0.3</version>
@@ -27,4 +25,4 @@ index dc325b4..75e4a54 100644
 +      </exclusions>
      </dependency>
      <dependency>
-       <groupId>org.jruby.extras</groupId>
+       <groupId>com.github.jnr</groupId>

@@ -7,11 +7,9 @@ Subject: build
  pom.xml      |  6 ------
  2 files changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/core/pom.xml b/core/pom.xml
-index c72677e..55078a5 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -326,6 +326,16 @@ THE SOFTWARE.
+@@ -330,6 +330,16 @@
        <groupId>commons-jelly</groupId>
        <artifactId>commons-jelly-tags-fmt</artifactId>
        <version>1.0</version>
@@ -28,11 +26,9 @@ index c72677e..55078a5 100644
      </dependency>
      <dependency>
        <groupId>commons-jelly</groupId>
-diff --git a/pom.xml b/pom.xml
-index 9e32fca..8b43d42 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -48,10 +48,7 @@ THE SOFTWARE.
+@@ -48,10 +48,7 @@
  
    <modules>
      <module>core</module>
@@ -43,7 +39,7 @@ index 9e32fca..8b43d42 100644
      <module>cli</module>
      <module>plugins</module>
    </modules>
-@@ -621,9 +618,6 @@ THE SOFTWARE.
+@@ -618,9 +615,6 @@
                  <requireJavaVersion>
                    <version>1.6.0-18</version>
                  </requireJavaVersion>

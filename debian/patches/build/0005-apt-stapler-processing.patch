@@ -6,11 +6,9 @@ Subject: apt-stapler-processing
  core/pom.xml | 18 ++++++++++++++++++
  1 file changed, 18 insertions(+)
 
-diff --git a/core/pom.xml b/core/pom.xml
-index 55078a5..b6465c2 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -678,6 +678,24 @@ THE SOFTWARE.
+@@ -682,6 +682,24 @@
          </executions>
        </plugin>
        <plugin>

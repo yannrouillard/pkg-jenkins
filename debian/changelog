@@ -1,10 +1,10 @@
-jenkins (1.509.2+dfsg-3) UNRELEASED; urgency=medium
+jenkins (1.509.4-1) UNRELEASED; urgency=medium
 
   * Team upload.
+  * New upstream release
+    - Refreshed the patches
   * Fixed a build failure caused by the relocation of the Maven artifacts
     in groovy 1.8.6-4 (Closes: #759946)
-  * Fixed a compilation error related to stapler
-    (@DataBoundConstructor must be applied to a public constructor)
   * Removed the sourceless and unused connection.swf file (Closes: #736792)
   * debian/watch: Fixed to match only the LTS releases (Closes: #731204)
   * Switch to debhelper level 9

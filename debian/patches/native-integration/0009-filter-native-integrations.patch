@@ -6,11 +6,9 @@ Subject: filter-native-integrations
  core/pom.xml | 11 +++++++++++
  1 file changed, 11 insertions(+)
 
-diff --git a/core/pom.xml b/core/pom.xml
-index 69241b5..5b48543 100644
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -702,6 +702,17 @@ THE SOFTWARE.
+@@ -706,6 +706,17 @@
          <configuration>
            <fork>${staplerFork}</fork><!-- the source code is big enough now that otherwise it fails with OutOfMemoryError -->
            <maxmem>128m</maxmem>
