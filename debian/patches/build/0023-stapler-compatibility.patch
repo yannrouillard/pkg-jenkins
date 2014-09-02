@@ -1,0 +1,16 @@
+Description: Fixes a compilation error related to stapler (@DataBoundConstructor must be applied to a public constructor)
+Author: Emmanuel Bourg <ebourg@apache.org>
+Forwarded: no
+diff --git a/core/src/main/java/hudson/tools/DownloadFromUrlInstaller.java b/core/src/main/java/hudson/tools/DownloadFromUrlInstaller.java
+index 49c362a..62cfdac 100644
+--- a/core/src/main/java/hudson/tools/DownloadFromUrlInstaller.java
++++ b/core/src/main/java/hudson/tools/DownloadFromUrlInstaller.java
+@@ -27,7 +27,7 @@ public abstract class DownloadFromUrlInstaller extends ToolInstaller {
+     public final String id;
+ 
+     @DataBoundConstructor
+-    protected DownloadFromUrlInstaller(String id) {
++    public DownloadFromUrlInstaller(String id) {
+         // this installer implementation is designed for platform independent binary,
+         // and as such we don't provide the label support
+         super(null);

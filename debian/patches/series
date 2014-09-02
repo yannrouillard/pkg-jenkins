@@ -20,3 +20,4 @@ build/0019-io-compat.pach.patch
 0020-Drop-use-of-gitsite-extension.patch
 0021-Compatibility-patch-for-guava-0.14.patch
 0022-Exclude-asm-dependencies-from-jnr-posix.patch
+build/0023-stapler-compatibility.patch
