@@ -26,6 +26,7 @@ package hudson.tasks.junit;
 import hudson.tasks.test.TestObject;
 import hudson.util.IOException2;
 import hudson.util.io.ParserConfigurator;
+import org.apache.commons.io.FileUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
