@@ -1,0 +1,91 @@
+--- a/core/src/main/java/hudson/model/AbstractProject.java
++++ b/core/src/main/java/hudson/model/AbstractProject.java
+@@ -91,7 +91,6 @@
+ import net.sf.json.JSONObject;
+ import org.acegisecurity.context.SecurityContext;
+ import org.acegisecurity.context.SecurityContextHolder;
+-import org.jenkinsci.bytecode.AdaptField;
+ import org.kohsuke.accmod.Restricted;
+ import org.kohsuke.accmod.restrictions.NoExternalUse;
+ import org.kohsuke.args4j.Argument;
+@@ -236,8 +235,7 @@
+     /**
+      * List of all {@link Trigger}s for this project.
+      */
+-    @AdaptField(was=List.class)
+-    protected volatile DescribableList<Trigger<?>,TriggerDescriptor> triggers = new DescribableList<Trigger<?>,TriggerDescriptor>(this);
++    protected volatile List<Trigger<?>> triggers = new DescribableList<Trigger<?>,TriggerDescriptor>(this);
+     private static final AtomicReferenceFieldUpdater<AbstractProject,DescribableList> triggersUpdater
+             = AtomicReferenceFieldUpdater.newUpdater(AbstractProject.class,DescribableList.class,"triggers");
+ 
+@@ -332,7 +330,7 @@
+         if (triggers == null) {
+             triggersUpdater.compareAndSet(this,null,new DescribableList<Trigger<?>,TriggerDescriptor>(this));
+         }
+-        return triggers;
++        return (DescribableList<Trigger<?>,TriggerDescriptor>) triggers;
+     }
+ 
+     @Override
+@@ -1966,7 +1964,7 @@
+ 
+         for (Trigger t : triggers())
+             t.stop();
+-        triggers.replaceBy(buildDescribable(req, Trigger.for_(this)));
++        ((DescribableList<Trigger<?>,TriggerDescriptor>) triggers).replaceBy(buildDescribable(req, Trigger.for_(this)));
+         for (Trigger t : triggers())
+             t.start(this,true);
+ 
+--- a/core/src/main/java/hudson/PluginManager.java
++++ b/core/src/main/java/hudson/PluginManager.java
+@@ -59,7 +59,6 @@
+ import org.apache.commons.io.FileUtils;
+ import org.apache.commons.io.FilenameUtils;
+ import org.apache.commons.logging.LogFactory;
+-import org.jenkinsci.bytecode.Transformer;
+ import org.jvnet.hudson.reactor.Executable;
+ import org.jvnet.hudson.reactor.Reactor;
+ import org.jvnet.hudson.reactor.ReactorException;
+@@ -152,8 +151,6 @@
+     // and load plugin-contributed classes.
+     public final ClassLoader uberClassLoader = new UberClassLoader();
+ 
+-    private final Transformer compatibilityTransformer = new Transformer();
+-
+     /**
+      * Once plugin is uploaded, this flag becomes true.
+      * This is used to report a message that Jenkins needs to be restarted
+@@ -182,17 +179,6 @@
+             rootDir.mkdirs();
+         
+         strategy = createPluginStrategy();
+-
+-        // load up rules for the core first
+-        try {
+-            compatibilityTransformer.loadRules(getClass().getClassLoader());
+-        } catch (IOException e) {
+-            LOGGER.log(Level.WARNING, "Failed to load compatibility rewrite rules",e);
+-        }
+-    }
+-
+-    public Transformer getCompatibilityTransformer() {
+-        return compatibilityTransformer;
+     }
+ 
+     public Api getApi() {
+--- a/core/src/main/java/hudson/ClassicPluginStrategy.java
++++ b/core/src/main/java/hudson/ClassicPluginStrategy.java
+@@ -626,11 +626,12 @@
+ 
+             return url;
+         }
+-
++/*
+         @Override
+         protected Class defineClassFromData(File container, byte[] classData, String classname) throws IOException {
+             return super.defineClassFromData(container, pluginManager.getCompatibilityTransformer().transform(classname,classData), classname);
+         }
++*/
+     }
+ 
+     public static boolean useAntClassLoader = Boolean.getBoolean(ClassicPluginStrategy.class.getName()+".useAntClassLoader");

@@ -89,3 +89,5 @@ org.jenkins-ci.modules upstart-slave-installer * * * *
 org.jenkins-ci.modules launchd-slave-installer * * * *
 # Drop animal-sniffer plugin usage
 org.codehaus.mojo animal-sniffer-maven-plugin * * * *
+# TODO: To be packaged
+org.jenkins-ci bytecode-compatibility-transformer * * * *

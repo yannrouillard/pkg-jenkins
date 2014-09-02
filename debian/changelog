@@ -3,6 +3,7 @@ jenkins (1.509.4-1) UNRELEASED; urgency=medium
   * Team upload.
   * New upstream release
     - Refreshed the patches
+    - Ignore the dependency on bytecode-compatibility-transformer
   * Fixed a build failure caused by the relocation of the Maven artifacts
     in groovy 1.8.6-4 (Closes: #759946)
   * Removed the sourceless and unused connection.swf file (Closes: #736792)
