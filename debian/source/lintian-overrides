@@ -3,3 +3,6 @@ jenkins source: build-depends-on-1-revision build-depends-indep: libjenkins-tril
 # jenkins-json upstream version looks like a package version; false positive
 jenkins source: build-depends-on-1-revision build-depends-indep: libjenkins-json-java (>= 2.4-jenkins-1)
 
+# Every minified *-min.js file has a corresponding *-debug.js file containing the original source
+jenkins source: source-contains-prebuilt-javascript-object
+jenkins source: source-is-missing *-min.js
