@@ -57,6 +57,7 @@ s/org.jvnet.hudson/org.jenkins-ci/ task-reactor * s/.*/debian/ * *
 javax.servlet jstl * s/1\.1\..*/1.1/ * *
 # Remap for rename jna->jnr in Debian
 org.jruby.ext.posix s/jna-posix/jnr-posix/ * s/.*/debian/ * *
+s/com.github.jnr/org.jruby.ext.posix/ jnr-posix * s/.*/debian/ * *
 # Update to servlet2.5
 javax.servlet servlet-api * s/.*/2.5/ * *
 # Updates for 1.424.6

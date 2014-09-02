@@ -39,26 +39,85 @@ Subject: jnr-posix-upgrade
  
  /**
   * POSIX API wrapper.
-@@ -59,7 +59,7 @@
+@@ -16,59 +16,28 @@
+  * @author Kohsuke Kawaguchi
+  */
+ public class PosixAPI {
+-
+-    private static POSIX posix;
+-    
+-    /**
+-     * Load the JNR implementation of the POSIX APIs for the current platform.
+-     * Runtime exceptions will be of type {@link PosixException}.
+-     * @return some implementation (even on Windows or unsupported Unix)
+-     * @since 1.518
+-     */
+-    public static synchronized POSIX jnr() {
+-        if (posix == null) {
+-            posix = POSIXFactory.getPOSIX(new DefaultPOSIXHandler() {
+-                @Override public void error(Errno error, String extraData) {
+-                    throw new PosixException("native error " + error.description() + " " + extraData, convert(error));
+-                }
+-                @Override public void error(Errno error, String methodName, String extraData) {
+-                    throw new PosixException("native error calling " + methodName + ": " + error.description() + " " + extraData, convert(error));
+-                }
+-                private org.jruby.ext.posix.POSIX.ERRORS convert(Errno error) {
+-                    try {
+-                        return org.jruby.ext.posix.POSIX.ERRORS.valueOf(error.name());
+-                    } catch (IllegalArgumentException x) {
+-                        return org.jruby.ext.posix.POSIX.ERRORS.EIO; // PosixException.message has real error anyway
+-                    }
+-                }
+-            }, true);
+-        }
++    public static POSIX jnr() {
+         return posix;
+     }
+ 
+     /**
+-     * @deprecated use {@link #jnr} and {@link POSIX#isNative}
++     * @deprecated as of 1.448
++     *      Use {@link #supportsNative()}.
       */
-     @Deprecated
+-    @Deprecated
+     public boolean isNative() {
+         return supportsNative();
+     }
+ 
+     /**
+-     * @deprecated use {@link #jnr} and {@link POSIX#isNative}
++     * Determine if the jna-posix library could not provide native support, and
++     * used a fallback java implementation which does not support many operations.
+      */
+-    @Deprecated
      public static boolean supportsNative() {
 -        return !(jnaPosix instanceof org.jruby.ext.posix.JavaPOSIX);
 +        return posix.isNative();
      }
- 
-     private static org.jruby.ext.posix.POSIX jnaPosix;
-@@ -67,8 +67,8 @@
-     @Deprecated
-     public static synchronized org.jruby.ext.posix.POSIX get() {
-         if (jnaPosix == null) {
+-
+-    private static org.jruby.ext.posix.POSIX jnaPosix;
+-    /** @deprecated Use {@link #jnr} instead. */
+-    @Deprecated
+-    public static synchronized org.jruby.ext.posix.POSIX get() {
+-        if (jnaPosix == null) {
 -            jnaPosix = org.jruby.ext.posix.POSIXFactory.getPOSIX(new org.jruby.ext.posix.POSIXHandler() {
 -        public void error(org.jruby.ext.posix.POSIX.ERRORS errors, String s) {
-+            jnaPosix = POSIXFactory.getPOSIX(new POSIXHandler() {
++    
++    private static final POSIX posix = POSIXFactory.getPOSIX(new POSIXHandler() {
 +        public void error(Errno errors, String s) {
              throw new PosixException(s,errors);
          }
  
+@@ -116,9 +85,6 @@
+             return System.err;
+         }
+     }, true);
+-        }
+-        return jnaPosix;
+-    }
+ 
+     private static final Logger LOGGER = Logger.getLogger(PosixAPI.class.getName());
+ }
 --- a/core/src/main/java/hudson/os/PosixException.java
 +++ b/core/src/main/java/hudson/os/PosixException.java
 @@ -1,6 +1,6 @@
@@ -88,4 +147,28 @@ Subject: jnr-posix-upgrade
 +    public Errno getErrorCode() {
          return errors;
      }
+ 
+--- a/core/src/main/java/hudson/util/jna/GNUCLibrary.java
++++ b/core/src/main/java/hudson/util/jna/GNUCLibrary.java
+@@ -31,7 +31,7 @@
+ import com.sun.jna.NativeLong;
+ import com.sun.jna.ptr.IntByReference;
+ import hudson.os.PosixAPI;
+-import jnr.posix.POSIX;
++import org.jruby.ext.posix.POSIX;
+ import org.jvnet.libpam.impl.CLibrary.passwd;
+ 
+ /**
+--- a/core/src/main/java/hudson/Util.java
++++ b/core/src/main/java/hudson/Util.java
+@@ -41,8 +41,8 @@
+ import org.apache.tools.ant.taskdefs.Chmod;
+ import org.apache.tools.ant.taskdefs.Copy;
+ import org.apache.tools.ant.types.FileSet;
+-import jnr.posix.FileStat;
+-import jnr.posix.POSIX;
++import org.jruby.ext.posix.FileStat;
++import org.jruby.ext.posix.POSIX;
+ import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
+ import org.kohsuke.stapler.Stapler;
  
