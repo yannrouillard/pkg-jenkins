@@ -59,6 +59,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.LogFactory;
+import org.jenkinsci.bytecode.Transformer;
 import org.jvnet.hudson.reactor.Executable;
 import org.jvnet.hudson.reactor.Reactor;
 import org.jvnet.hudson.reactor.ReactorException;
@@ -101,6 +102,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
+import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.xml.sax.Attributes;
@@ -150,6 +152,8 @@ public abstract class PluginManager extends AbstractModelObject implements OnMas
     // and load plugin-contributed classes.
     public final ClassLoader uberClassLoader = new UberClassLoader();
 
+    private final Transformer compatibilityTransformer = new Transformer();
+
     /**
      * Once plugin is uploaded, this flag becomes true.
      * This is used to report a message that Jenkins needs to be restarted
@@ -178,6 +182,17 @@ public abstract class PluginManager extends AbstractModelObject implements OnMas
             rootDir.mkdirs();
         
         strategy = createPluginStrategy();
+
+        // load up rules for the core first
+        try {
+            compatibilityTransformer.loadRules(getClass().getClassLoader());
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Failed to load compatibility rewrite rules",e);
+        }
+    }
+
+    public Transformer getCompatibilityTransformer() {
+        return compatibilityTransformer;
     }
 
     public Api getApi() {
@@ -299,6 +314,13 @@ public abstract class PluginManager extends AbstractModelObject implements OnMas
                                     }
                                 }
                             });
+
+                            // Let's see for a while until we open this functionality up to plugins
+//                            g.followedBy().attains(PLUGINS_LISTED).add("Load compatibility rules", new Executable() {
+//                                public void run(Reactor reactor) throws Exception {
+//                                    compatibilityTransformer.loadRules(uberClassLoader);
+//                                }
+//                            });
 
                             session.addAll(g.discoverTasks(session));
 
@@ -729,10 +751,18 @@ public abstract class PluginManager extends AbstractModelObject implements OnMas
             if(!fileName.endsWith(".jpi") && !fileName.endsWith(".hpi")){ 
                 throw new Failure(hudson.model.Messages.Hudson_NotAPlugin(fileName));
             }
-            final String baseName = FilenameUtils.getBaseName(fileName);
-            new File(rootDir, baseName + ".hpi").delete(); // don't keep confusing legacy *.hpi
-            fileItem.write(new File(rootDir, baseName + ".jpi")); // rename all new plugins to *.jpi
+
+            // first copy into a temporary file name
+            File t = File.createTempFile("uploaded", "jp_",rootDir);
+            fileItem.write(t); // rename all new plugins to *.jpi
             fileItem.delete();
+
+            final String baseName = identifyPluginShortName(t);
+
+            // and move the temp file into a proper name
+            new File(rootDir, baseName + ".hpi").delete(); // don't keep confusing legacy *.hpi
+            new File(rootDir, baseName + ".jpi").delete(); // rename can fail if the file already exists
+            t.renameTo(new File(rootDir, baseName + ".jpi"));
 
             PluginWrapper existing = getPlugin(baseName);
             if (existing!=null && existing.isBundled){
@@ -747,6 +777,21 @@ public abstract class PluginManager extends AbstractModelObject implements OnMas
         } catch (Exception e) {// grrr. fileItem.write throws this
             throw new ServletException(e);
         }
+    }
+
+    protected String identifyPluginShortName(File t) {
+        try {
+            JarFile j = new JarFile(t);
+            try {
+                String name = j.getManifest().getMainAttributes().getValue("Short-Name");
+                if (name!=null) return name;
+            } finally {
+                j.close();
+            }
+        } catch (IOException e) {
+            LOGGER.log(WARNING, "Failed to identify the short name from "+t,e);
+        }
+        return FilenameUtils.getBaseName(t.getName());    // fall back to the base name of what's uploaded
     }
 
     public Descriptor<ProxyConfiguration> getProxyDescriptor() {

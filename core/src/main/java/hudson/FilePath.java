@@ -92,11 +92,12 @@ import java.util.regex.Pattern;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.zip.GZIPOutputStream;
-import java.util.zip.GZIPInputStream;
+import com.jcraft.jzlib.GZIPInputStream;
+import com.jcraft.jzlib.GZIPOutputStream;
 
 import com.sun.jna.Native;
 import hudson.os.PosixException;
+import java.io.BufferedInputStream;
 import java.util.Enumeration;
 import java.util.logging.Logger;
 import org.apache.tools.ant.taskdefs.Chmod;
@@ -619,7 +620,7 @@ public final class FilePath implements Serializable {
             public InputStream extract(InputStream _in) throws IOException {
                 HeadBufferingStream in = new HeadBufferingStream(_in,SIDE_BUFFER_SIZE);
                 try {
-                    return new GZIPInputStream(in,8192);
+                    return new GZIPInputStream(in, 8192, true);
                 } catch (IOException e) {
                     // various people reported "java.io.IOException: Not in GZIP format" here, so diagnose this problem better
                     in.fillSide();
@@ -627,7 +628,12 @@ public final class FilePath implements Serializable {
                 }
             }
             public OutputStream compress(OutputStream out) throws IOException {
-                return new GZIPOutputStream(new BufferedOutputStream(out));
+                return new GZIPOutputStream(new BufferedOutputStream(out),
+                        // TODO JENKINS-19473 workaround; replace when jzlib fixed
+                        new com.jcraft.jzlib.Deflater(6, 15+16, 9),   // use 9 for memLevel
+                        512,
+                        true
+                );
             }
         };
 
@@ -1658,12 +1664,13 @@ public final class FilePath implements Serializable {
 
     /**
      * Computes the MD5 digest of the file in hex string.
+     * @see Util#getDigestOf(File)
      */
     public String digest() throws IOException, InterruptedException {
         return act(new FileCallable<String>() {
             private static final long serialVersionUID = 1L;
             public String invoke(File f, VirtualChannel channel) throws IOException {
-                return Util.getDigestOf(new FileInputStream(f));
+                return Util.getDigestOf(f);
             }
         });
     }

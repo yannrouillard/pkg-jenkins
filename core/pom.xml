@@ -29,7 +29,7 @@ THE SOFTWARE.
   <parent>
     <groupId>org.jenkins-ci.main</groupId>
     <artifactId>pom</artifactId>
-    <version>1.509.2</version>
+    <version>1.509.4</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -42,7 +42,7 @@ THE SOFTWARE.
 
   <properties>
     <staplerFork>true</staplerFork>
-    <stapler.version>1.207</stapler.version>
+    <stapler.version>1.218</stapler.version>
     <spring.version>2.5.6.SEC03</spring.version>
   </properties>
 
@@ -112,10 +112,15 @@ THE SOFTWARE.
       </exclusions>
     </dependency>
 
-    <dependency>
+    <dependency> <!-- for compatibility only; all new code should use JNR -->
       <groupId>org.jruby.ext.posix</groupId>
       <artifactId>jna-posix</artifactId>
       <version>1.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.jnr</groupId>
+      <artifactId>jnr-posix</artifactId>
+      <version>3.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.kohsuke</groupId>
@@ -187,13 +192,7 @@ THE SOFTWARE.
     <dependency>
       <groupId>com.infradna.tool</groupId>
       <artifactId>bridge-method-annotation</artifactId>
-      <version>1.4</version>
-      <exclusions> <!-- https://github.com/infradna/bridge-method-injector/issues/1 -->
-        <exclusion>
-          <artifactId>annotation-indexer</artifactId>
-          <groupId>org.jvnet.hudson</groupId>
-        </exclusion>
-      </exclusions>
+      <version>1.8</version>
     </dependency>
 
     <dependency><!-- until we get this version through Stapler -->
@@ -216,6 +215,11 @@ THE SOFTWARE.
       <version>1.4</version>
     </dependency>
     <dependency>
+      <groupId>org.jenkins-ci</groupId>
+      <artifactId>bytecode-compatibility-transformer</artifactId>
+      <version>1.3</version>
+    </dependency>
+    <dependency>
       <groupId>org.jvnet.hudson</groupId>
       <artifactId>task-reactor</artifactId>
       <version>1.2</version>
@@ -233,7 +237,7 @@ THE SOFTWARE.
     <dependency>
       <groupId>org.jvnet.hudson</groupId>
       <artifactId>xstream</artifactId>
-      <version>1.4.4-jenkins-3</version>
+      <version>1.4.4-jenkins-4</version>
     </dependency>
     <dependency>
       <groupId>jfree</groupId>
@@ -658,7 +662,7 @@ THE SOFTWARE.
       <plugin>
         <groupId>com.infradna.tool</groupId>
         <artifactId>bridge-method-injector</artifactId>
-        <!-- version specified in grandparent pom -->
+        <version>1.8</version>
         <executions>
           <execution>
             <goals>
@@ -771,7 +775,7 @@ THE SOFTWARE.
         </configuration>
       </plugin>
       <plugin><!-- run unit test in src/test/java -->
-        <groupId>org.kohsuke.gmaven</groupId>
+        <groupId>org.codehaus.gmaven</groupId>
         <artifactId>gmaven-plugin</artifactId>
         <!-- version specified in grandparent pom -->
         <executions>
@@ -779,16 +783,6 @@ THE SOFTWARE.
             <goals>
               <goal>testCompile</goal>
             </goals>
-            <configuration>
-              <sources>
-                <fileset>
-                  <directory>${project.basedir}/src/test/java</directory>
-                  <includes>
-                    <include>**/*.groovy</include>
-                  </includes>
-                </fileset>
-              </sources>
-            </configuration>
           </execution>
         </executions>
         <dependencies>
@@ -898,7 +892,7 @@ THE SOFTWARE.
       <build>
         <plugins>
           <plugin>
-            <groupId>org.kohsuke.gmaven</groupId>
+            <groupId>org.codehaus.gmaven</groupId>
             <artifactId>gmaven-plugin</artifactId>
             <!-- version specified in grandparent pom -->
             <executions>

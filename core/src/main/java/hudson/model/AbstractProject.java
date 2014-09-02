@@ -91,10 +91,12 @@ import jenkins.util.TimeDuration;
 import net.sf.json.JSONObject;
 import org.acegisecurity.context.SecurityContext;
 import org.acegisecurity.context.SecurityContextHolder;
+import org.jenkinsci.bytecode.AdaptField;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.stapler.Ancestor;
 import org.kohsuke.stapler.ForwardToView;
 import org.kohsuke.stapler.HttpRedirect;
 import org.kohsuke.stapler.HttpResponse;
@@ -117,12 +119,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -232,7 +236,10 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
     /**
      * List of all {@link Trigger}s for this project.
      */
-    protected List<Trigger<?>> triggers = new Vector<Trigger<?>>();
+    @AdaptField(was=List.class)
+    protected volatile DescribableList<Trigger<?>,TriggerDescriptor> triggers = new DescribableList<Trigger<?>,TriggerDescriptor>(this);
+    private static final AtomicReferenceFieldUpdater<AbstractProject,DescribableList> triggersUpdater
+            = AtomicReferenceFieldUpdater.newUpdater(AbstractProject.class,DescribableList.class,"triggers");
 
     /**
      * {@link Action}s contributed from subsidiary objects associated with
@@ -301,6 +308,7 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
             }
         }
         this.builds = builds;
+        triggers().setOwner(this);
         for (Trigger t : triggers())
             t.start(this, Items.updatingByXml.get());
         if(scm==null)
@@ -319,9 +327,10 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
         });
     }
 
-    private synchronized List<Trigger<?>> triggers() {
+    @WithBridgeMethods(List.class)
+    protected DescribableList<Trigger<?>,TriggerDescriptor> triggers() {
         if (triggers == null) {
-            triggers = new Vector<Trigger<?>>();
+            triggersUpdater.compareAndSet(this,null,new DescribableList<Trigger<?>,TriggerDescriptor>(this));
         }
         return triggers;
     }
@@ -1632,8 +1641,8 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
     }
 
     @SuppressWarnings("unchecked")
-    public synchronized Map<TriggerDescriptor,Trigger> getTriggers() {
-        return (Map)Descriptor.toMap(triggers());
+    public Map<TriggerDescriptor,Trigger<?>> getTriggers() {
+        return triggers().toMap();
     }
 
     /**
@@ -1800,6 +1809,12 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
         rsp.sendRedirect(".");
     }
 
+    /** @deprecated use {@link #doBuild(StaplerRequest, StaplerResponse, TimeDuration)} */
+    @Deprecated
+    public void doBuild(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+        doBuild(req, rsp, TimeDuration.fromString(req.getParameter("delay")));
+    }
+
     /**
      * Computes the build cause, using RemoteCause or UserCause as appropriate.
      */
@@ -1818,7 +1833,7 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
     /**
      * Computes the delay by taking the default value and the override in the request parameter into the account.
      *
-     * @deprecated as of 1.488
+     * @deprecated as of 1.489
      *      Inject {@link TimeDuration}.
      */
     public int getDelay(StaplerRequest req) throws ServletException {
@@ -1851,6 +1866,12 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
     	
     }
 
+    /** @deprecated use {@link #doBuildWithParameters(StaplerRequest, StaplerResponse, TimeDuration)} */
+    @Deprecated
+    public void doBuildWithParameters(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+        doBuildWithParameters(req, rsp, TimeDuration.fromString(req.getParameter("delay")));
+    }
+
     /**
      * Schedules a new SCM polling command.
      */
@@ -1880,11 +1901,20 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
         delete();
         if (req == null || rsp == null)
             return;
-        View view = req.findAncestorObject(View.class);
-        if (view == null)
-            rsp.sendRedirect2(req.getContextPath() + '/' + getParent().getUrl());
-        else 
-            rsp.sendRedirect2(req.getContextPath() + '/' + view.getUrl());
+        List<Ancestor> ancestors = req.getAncestors();
+        ListIterator<Ancestor> it = ancestors.listIterator(ancestors.size());
+        String url = getParent().getUrl(); // fallback but we ought to get to Jenkins.instance at the root
+        while (it.hasPrevious()) {
+            Object a = it.previous().getObject();
+            if (a instanceof View) {
+                url = ((View) a).getUrl();
+                break;
+            } else if (a instanceof ViewGroup) {
+                url = ((ViewGroup) a).getUrl();
+                break;
+            }
+        }
+        rsp.sendRedirect2(req.getContextPath() + '/' + url);
     }
     
     @Override
@@ -1936,8 +1966,8 @@ public abstract class AbstractProject<P extends AbstractProject<P,R>,R extends A
 
         for (Trigger t : triggers())
             t.stop();
-        triggers = buildDescribable(req, Trigger.for_(this));
-        for (Trigger t : triggers)
+        triggers.replaceBy(buildDescribable(req, Trigger.for_(this)));
+        for (Trigger t : triggers())
             t.start(this,true);
 
         for (Publisher _t : Descriptor.newInstancesFromHeteroList(req, json, "publisher", Jenkins.getInstance().getExtensionList(BuildTrigger.DescriptorImpl.class))) {
