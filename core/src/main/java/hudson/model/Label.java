@@ -25,6 +25,7 @@ package hudson.model;
 
 import antlr.ANTLRException;
 import static hudson.Util.fixNull;
+
 import hudson.model.labels.LabelAtom;
 import hudson.model.labels.LabelExpression;
 import hudson.model.labels.LabelExpression.And;
@@ -44,11 +45,9 @@ import hudson.slaves.Cloud;
 import hudson.util.QuotedStringTokenizer;
 import hudson.util.VariableResolver;
 import jenkins.model.Jenkins;
-
+import jenkins.model.ModelObjectWithChildren;
 import org.acegisecurity.context.SecurityContext;
 import org.acegisecurity.context.SecurityContextHolder;
-import org.kohsuke.accmod.Restricted;
-import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
@@ -78,7 +77,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
  * @see Jenkins#getLabel(String)
  */
 @ExportedBean
-public abstract class Label extends Actionable implements Comparable<Label>, ModelObject {
+public abstract class Label extends Actionable implements Comparable<Label>, ModelObjectWithChildren {
     /**
      * Display name of this label.
      */
@@ -357,7 +356,6 @@ public abstract class Label extends Actionable implements Comparable<Label>, Mod
      * all jobs (mostly) irrespective of access.
      * @return a count of projects that are tied on this node.
      */
-    @Restricted(NoExternalUse.class)
     public int getTiedJobCount() {
         // denormalize for performance
         // we don't need to respect security as much when returning a simple count
@@ -512,6 +510,14 @@ public abstract class Label extends Actionable implements Comparable<Label>, Mod
     @Override
     public String toString() {
         return name;
+    }
+
+    public ContextMenu doChildrenContextMenu(StaplerRequest request, StaplerResponse response) throws Exception {
+        ContextMenu menu = new ContextMenu();
+        for (Node node : getNodes()) {
+            menu.add(node);
+        }
+        return menu;
     }
 
     public static final class ConverterImpl implements Converter {

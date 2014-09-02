@@ -90,6 +90,8 @@ import java.util.logging.Logger;
 import javax.annotation.CheckForNull;
 import org.kohsuke.stapler.interceptor.RequirePOST;
 
+import static java.util.logging.Level.WARNING;
+
 /**
  * Base implementation of {@link Run}s that build software.
  *
@@ -149,7 +151,7 @@ public abstract class AbstractBuild<P extends AbstractProject<P,R>,R extends Abs
     private volatile Set<String> culprits;
 
     /**
-     * During the build this field remembers {@link BuildWrapper.Environment}s created by
+     * During the build this field remembers {@link hudson.tasks.BuildWrapper.Environment}s created by
      * {@link BuildWrapper}. This design is bit ugly but forced due to compatibility.
      */
     protected transient List<Environment> buildEnvironments;
@@ -160,9 +162,12 @@ public abstract class AbstractBuild<P extends AbstractProject<P,R>,R extends Abs
      * <p>
      * Unlike {@link Run}, {@link AbstractBuild}s do lazy-loading, so we don't use
      * {@link Run#previousBuild} and {@link Run#nextBuild}, and instead use these
-     * fields and point to {@link #selfReference} of adjacent builds.
+     * fields and point to {@link #selfReference} (or {@link #none}) of adjacent builds.
      */
     private volatile transient BuildReference<R> previousBuild, nextBuild;
+
+    @SuppressWarnings({"unchecked", "rawtypes"}) private static final BuildReference NONE = new BuildReference("NONE", null);
+    @SuppressWarnings("unchecked") private BuildReference<R> none() {return NONE;}
 
     /*package*/ final transient BuildReference<R> selfReference = new BuildReference<R>(getId(),_this());
 
@@ -191,11 +196,7 @@ public abstract class AbstractBuild<P extends AbstractProject<P,R>,R extends Abs
         if(nextBuild!=null) {
             AbstractBuild nb = nextBuild.get();
             if (nb!=null) {
-                // remove the oldest build
-                if (previousBuild == selfReference) 
-                    nb.previousBuild = nextBuild;
-                else 
-                    nb.previousBuild = previousBuild;
+                nb.previousBuild = previousBuild;
             }
         }
         if(previousBuild!=null) {
@@ -213,7 +214,7 @@ public abstract class AbstractBuild<P extends AbstractProject<P,R>,R extends Abs
                 // having two neighbors pointing to each other is important to make RunMap.removeValue work
                 P _parent = getParent();
                 if (_parent == null) {
-                    throw new IllegalStateException("no parent for " + this);
+                    throw new IllegalStateException("no parent for " + number + " in " + workspace);
                 }
                 R pb = _parent._getRuns().search(number-1, Direction.DESC);
                 if (pb!=null) {
@@ -221,13 +222,11 @@ public abstract class AbstractBuild<P extends AbstractProject<P,R>,R extends Abs
                     this.previousBuild = pb.selfReference;
                     return pb;
                 } else {
-                    // this indicates that we know there's no previous build
-                    // (as opposed to we don't know if/what our previous build is.
-                    this.previousBuild = selfReference;
+                    this.previousBuild = none();
                     return null;
                 }
             }
-            if (r==selfReference)
+            if (r==none())
                 return null;
 
             R referent = r.get();
@@ -251,13 +250,11 @@ public abstract class AbstractBuild<P extends AbstractProject<P,R>,R extends Abs
                     this.nextBuild = nb.selfReference;
                     return nb;
                 } else {
-                    // this indicates that we know there's no next build
-                    // (as opposed to we don't know if/what our next build is.
-                    this.nextBuild = selfReference;
+                    this.nextBuild = none();
                     return null;
                 }
             }
-            if (r==selfReference)
+            if (r==none())
                 return null;
 
             R referent = r.get();
@@ -356,7 +353,7 @@ public abstract class AbstractBuild<P extends AbstractProject<P,R>,R extends Abs
     }
 
     /**
-     * Normally, a workspace is assigned by {@link RunExecution}, but this lets you set the workspace in case
+     * Normally, a workspace is assigned by {@link hudson.model.Run.RunExecution}, but this lets you set the workspace in case
      * {@link AbstractBuild} is created without a build.
      */
     protected void setWorkspace(FilePath ws) {
@@ -475,7 +472,7 @@ public abstract class AbstractBuild<P extends AbstractProject<P,R>,R extends Abs
 
     /**
      * @deprecated as of 1.467
-     *      Please use {@link RunExecution}
+     *      Please use {@link hudson.model.Run.RunExecution}
      */
     public abstract class AbstractRunner extends AbstractBuildExecution {
 
@@ -665,6 +662,10 @@ public abstract class AbstractBuild<P extends AbstractProject<P,R>,R extends Abs
                             } catch (Exception e) {
                                 throw new IOException2("Failed to parse changelog",e);
                             }
+
+                        // Get a chance to do something after checkout and changelog is done
+                        scm.postCheckout( build, launcher, build.getWorkspace(), listener );
+
                         return;
                     }
                 } catch (AbortException e) {
@@ -756,7 +757,7 @@ public abstract class AbstractBuild<P extends AbstractProject<P,R>,R extends Abs
                     } catch (Exception e) {
                         String msg = "Publisher " + bs.getClass().getName() + " aborted due to exception";
                         e.printStackTrace(listener.error(msg));
-                        LOGGER.log(Level.WARNING, msg, e);
+                        LOGGER.log(WARNING, msg, e);
                         setResult(Result.FAILURE);
                     }
             }
@@ -897,9 +898,9 @@ public abstract class AbstractBuild<P extends AbstractProject<P,R>,R extends Abs
         try {
             return scm.parse(this,changelogFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(WARNING, "Failed to parse "+changelogFile,e);
         } catch (SAXException e) {
-            e.printStackTrace();
+            LOGGER.log(WARNING, "Failed to parse "+changelogFile,e);
         }
         return ChangeLogSet.createEmpty(this);
     }

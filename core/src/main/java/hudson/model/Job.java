@@ -128,6 +128,13 @@ public abstract class Job<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, R
      */
     private transient volatile boolean holdOffBuildUntilSave;
 
+    /**
+     * {@link ItemListener}s can, and do, modify the job with a corresponding save which will clear
+     * {@link #holdOffBuildUntilSave} prematurely. The {@link LastItemListener} is responsible for
+     * clearing this flag as the last item listener.
+     */
+    private transient volatile boolean holdOffBuildUntilUserSave;
+
     private volatile BuildDiscarder logRotator;
 
     /**
@@ -153,7 +160,7 @@ public abstract class Job<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, R
     @Override
     public synchronized void save() throws IOException {
         super.save();
-        holdOffBuildUntilSave = false;
+        holdOffBuildUntilSave = holdOffBuildUntilUserSave;
     }
 
     @Override
@@ -207,7 +214,25 @@ public abstract class Job<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, R
         super.onCopiedFrom(src);
         synchronized (this) {
             this.nextBuildNumber = 1; // reset the next build number
-            this.holdOffBuildUntilSave = true;
+            this.holdOffBuildUntilUserSave = true;
+            this.holdOffBuildUntilSave = this.holdOffBuildUntilUserSave;
+        }
+    }
+
+    @Extension(ordinal = -Double.MAX_VALUE)
+    public static class LastItemListener extends ItemListener {
+
+        @Override
+        public void onCopied(Item src, Item item) {
+            // If any of the other ItemListeners modify the job, they effect
+            // a save, which will clear the holdOffBuildUntilUserSave and
+            // causing a regression of JENKINS-2494
+            if (item instanceof Job) {
+                Job job = (Job) item;
+                synchronized (job) {
+                    job.holdOffBuildUntilUserSave = false;
+                }
+            }
         }
     }
 
@@ -229,7 +254,7 @@ public abstract class Job<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, R
         return new TextFile(new File(this.getRootDir(), "nextBuildNumber"));
     }
 
-    protected boolean isHoldOffBuildUntilSave() {
+    public synchronized boolean isHoldOffBuildUntilSave() {
         return holdOffBuildUntilSave;
     }
 
@@ -343,6 +368,11 @@ public abstract class Job<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, R
         // so don't let that inherit to the new child process.
         // see http://www.nabble.com/Run-Job-with-JDK-1.4.2-tf4468601.html
         env.put("CLASSPATH","");
+
+        // apply them in a reverse order so that higher ordinal ones can modify values added by lower ordinal ones
+        for (EnvironmentContributor ec : EnvironmentContributor.all().reverseView())
+            ec.buildEnvironmentFor(this,env,listener);
+
 
         return env;
     }
@@ -963,7 +993,7 @@ public abstract class Job<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, R
         if (lastBuild != null)
             return lastBuild.getIconColor();
         else
-            return BallColor.GREY;
+            return BallColor.NOTBUILT;
     }
 
     /**

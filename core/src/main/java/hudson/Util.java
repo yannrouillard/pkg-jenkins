@@ -34,7 +34,6 @@ import hudson.util.IOException2;
 import hudson.util.QuotedStringTokenizer;
 import hudson.util.VariableResolver;
 import hudson.util.jna.WinIOException;
-import jenkins.model.Jenkins;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.tools.ant.BuildException;
@@ -45,7 +44,6 @@ import org.apache.tools.ant.types.FileSet;
 import jnr.posix.FileStat;
 import jnr.posix.POSIX;
 import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
-import org.kohsuke.stapler.Stapler;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -452,7 +450,7 @@ public class Util {
     public static void copyStream(InputStream in,OutputStream out) throws IOException {
         byte[] buf = new byte[8192];
         int len;
-        while((len=in.read(buf))>0)
+        while((len=in.read(buf))>=0)
             out.write(buf,0,len);
     }
 
@@ -555,7 +553,7 @@ public class Util {
      *      The stream will be closed by this method at the end of this method.
      * @return
      *      32-char wide string
-     * @see DigestUtils#md5(InputStream)
+     * @see DigestUtils#md5Hex(InputStream)
      */
     public static String getDigestOf(InputStream source) throws IOException {
         try {
@@ -807,10 +805,10 @@ public class Util {
 
     /**
      * Encode a single path component for use in an HTTP URL.
-     * Escapes all non-ASCII, general unsafe (space and "#%<>[\]^`{|}~)
-     * and HTTP special characters (/;:?) as specified in RFC1738.
-     * (so alphanumeric and !@$&*()-_=+',. are not encoded)
-     * Note that slash(/) is encoded, so the given string should be a
+     * Escapes all non-ASCII, general unsafe (space and {@code "#%<>[\]^`{|}~})
+     * and HTTP special characters ({@code /;:?}) as specified in RFC1738.
+     * (so alphanumeric and {@code !@$&*()-_=+',.} are not encoded)
+     * Note that slash ({@code /}) is encoded, so the given string should be a
      * single path component used in constructing a URL.
      * Method name inspired by PHP's rawurlencode.
      */
@@ -1116,14 +1114,14 @@ public class Util {
                         // we still prefer to try JNA first as PosixAPI supports even smaller platforms.
                         POSIX posix = PosixAPI.jnr();
                         if (posix.isNative()) {
-                            // XXX should we rethrow PosixException as IOException here?
+                            // TODO should we rethrow PosixException as IOException here?
                             r = posix.symlink(targetPath,symlinkFile.getAbsolutePath());
                         }
                     }
                 }
                 if (r==null) {
                     // if all else fail, fall back to the most expensive approach of forking a process
-                    // XXX is this really necessary? JavaPOSIX should do this automatically
+                    // TODO is this really necessary? JavaPOSIX should do this automatically
                     r = new LocalProc(new String[]{
                         "ln","-s", targetPath, symlinkPath},
                         new String[0],listener.getLogger(), baseDir).join();
@@ -1296,9 +1294,7 @@ public class Util {
      * @since 1.173
      */
     public static String wrapToErrorSpan(String s) {
-        s = "<span class=error><img src='"+
-            Stapler.getCurrentRequest().getContextPath()+ Jenkins.RESOURCE_PATH+
-            "/images/none.gif' height=16 width=1>"+s+"</span>";
+        s = "<span class=error style='display:inline-block'>"+s+"</span>";
         return s;
     }
     
