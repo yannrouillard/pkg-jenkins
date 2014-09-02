@@ -3,11 +3,12 @@
 VERSION=$2
 TAR=../jenkins_$VERSION.orig.tar.xz
 DIR=jenkins-$VERSION
+FILE=../jenkins-$VERSION.tar.gz
 mkdir -p $DIR
 
 # Unpack ready fo re-packing
-tar -xzf $3 -C $DIR --strip-components=1
-rm $3
+tar -xzf $FILE -C $DIR --strip-components=1
+rm $FILE
 
 # Repack excluding stuff we don't need
 XZ_OPT=--best tar -cJf $TAR \
