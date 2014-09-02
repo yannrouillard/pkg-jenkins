@@ -39,12 +39,18 @@ THE SOFTWARE.
         </st:attribute>
     </st:documentation>
     <j:set var="id" value="${h.generateId()}"/>
-    <form method="${post ? 'POST' : 'GET'}" action="${attrs.href}" name="${id}"/>
-    <a href="#" onclick="confirmPOST('${id}', '${message}')"><d:invokeBody/></a>
+    <a href="#" onclick="confirmPOST_${id}(${post ?: 'false'}, '${attrs.href}', '${h.jsStringEscape(message)}')"><d:invokeBody/></a>
     <script>
-        function confirmPOST(id, message) {
+        function confirmPOST_${id}(post, href, message) {
             if (confirm(message)) {
-                document[id].submit();
+                var form = document.createElement('form');
+                form.setAttribute('method', post ? 'POST' : 'GET');
+                form.setAttribute('action', href);
+                if (post) {
+                    crumb.appendToForm(form);
+                }
+                document.body.appendChild(form);
+                form.submit();
             }
             return false;
         }

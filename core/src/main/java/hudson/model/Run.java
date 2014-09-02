@@ -91,7 +91,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
+import com.jcraft.jzlib.GZIPInputStream;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -110,6 +110,7 @@ import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
 import com.thoughtworks.xstream.XStream;
+import hudson.model.Run.RunExecution;
 import java.io.ByteArrayInputStream;
 import org.kohsuke.stapler.interceptor.RequirePOST;
 
@@ -119,6 +120,8 @@ import java.io.OutputStream;
 import static java.util.logging.Level.*;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import jenkins.model.PeepholePermalink;
+import jenkins.model.RunAction2;
 
 /**
  * A particular execution of {@link Job}.
@@ -313,10 +316,15 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
     /**
      * Called after the build is loaded and the object is added to the build list.
      */
+    @SuppressWarnings("deprecation")
     protected void onLoad() {
-        for (Action a : getActions())
-            if (a instanceof RunAction)
+        for (Action a : getActions()) {
+            if (a instanceof RunAction2) {
+                ((RunAction2) a).onLoad(this);
+            } else if (a instanceof RunAction) {
                 ((RunAction) a).onLoad();
+            }
+        }
     }
     
     /**
@@ -332,14 +340,24 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
         return Collections.unmodifiableList(actions);
     }
    
+    @SuppressWarnings("deprecation")
     @Override
     public void addAction(Action a) {
         super.addAction(a);
-        if (a instanceof RunAction)
+        if (a instanceof RunAction2) {
+            ((RunAction2) a).onAttached(this);
+        } else if (a instanceof RunAction) {
             ((RunAction) a).onAttached(this);
+        }
     }
 
-    /*package*/ static long parseTimestampFromBuildDir(File buildDir) throws IOException {
+    static class InvalidDirectoryNameException extends IOException {
+        InvalidDirectoryNameException(File buildDir) {
+            super("Invalid directory name " + buildDir);
+        }
+    }
+
+    /*package*/ static long parseTimestampFromBuildDir(File buildDir) throws IOException, InvalidDirectoryNameException {
         try {
             if(Util.isSymlink(buildDir)) {
                 // "Util.resolveSymlink(file)" resolves NTFS symlinks. 
@@ -349,11 +367,11 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
             }
             // canonicalization to ensure we are looking at the ID in the directory name
             // as opposed to build numbers which are used in symlinks
-            return ID_FORMATTER.get().parse(buildDir.getCanonicalFile().getName()).getTime();
+            // (just in case the symlink check above did not work)
+            buildDir = buildDir.getCanonicalFile();
+            return ID_FORMATTER.get().parse(buildDir.getName()).getTime();
         } catch (ParseException e) {
-            throw new IOException2("Invalid directory name "+buildDir,e);
-        } catch (NumberFormatException e) {
-            throw new IOException2("Invalid directory name "+buildDir,e);
+            throw new InvalidDirectoryNameException(buildDir);
         } catch (InterruptedException e) {
             throw new IOException2("Interrupted while resolving symlink directory "+buildDir,e);
         }
@@ -1569,8 +1587,7 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
 
                     RunListener.fireStarted(this,listener);
 
-                    // create a symlink from build number to ID.
-                    Util.createSymlink(getParent().getBuildDir(),getId(),String.valueOf(getNumber()),listener);
+                    updateSymlinks(listener);
 
                     setResult(job.run(listener));
 
@@ -1644,6 +1661,40 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
         } finally {
             onEndBuilding();
         }
+    }
+
+    /**
+     * Creates a symlink from build number to ID.
+     * Also makes sure that {@code lastSuccessful} and {@code lastStable} legacy links in the project’s root directory exist.
+     * Normally you do not need to call this explicitly, since {@link #execute} does so,
+     * but this may be needed if you are creating synthetic {@link Run}s as part of a container project (such as Maven builds in a module set).
+     * You should also ensure that {@link RunListener#fireStarted} and {@link RunListener#fireCompleted} are called.
+     * @param listener probably unused
+     * @throws InterruptedException probably not thrown
+     * @since 1.530
+     */
+    public final void updateSymlinks(TaskListener listener) throws InterruptedException {
+        Util.createSymlink(getParent().getBuildDir(), getId(), String.valueOf(getNumber()), listener);
+        createSymlink(listener, "lastSuccessful", PermalinkProjectAction.Permalink.LAST_SUCCESSFUL_BUILD);
+        createSymlink(listener, "lastStable", PermalinkProjectAction.Permalink.LAST_STABLE_BUILD);
+    }
+    /**
+     * Backward compatibility.
+     *
+     * We used to have $JENKINS_HOME/jobs/JOBNAME/lastStable and lastSuccessful symlinked to the appropriate
+     * builds, but now those are done in {@link PeepholePermalink}. So here, we simply create symlinks that
+     * resolves to the symlink created by {@link PeepholePermalink}.
+     */
+    private void createSymlink(TaskListener listener, String name, PermalinkProjectAction.Permalink target) throws InterruptedException {
+        File buildDir = getParent().getBuildDir();
+        File rootDir = getParent().getRootDir();
+        String targetDir;
+        if (buildDir.equals(new File(rootDir, "builds"))) {
+            targetDir = "builds" + File.separator + target.getId();
+        } else {
+            targetDir = buildDir + File.separator + target.getId();
+        }
+        Util.createSymlink(rootDir, targetDir, name, listener);
     }
 
     /**
