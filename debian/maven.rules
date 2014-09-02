@@ -33,10 +33,11 @@ com.octo.captcha s/jcaptcha-all/jcaptcha/ * s/.*/debian/ * *
 commons-collections commons-collections * s/3\..*/3.x/ * *
 commons-httpclient commons-httpclient * s/3\..*/3.x/ * *
 commons-logging s/commons-logging-api/commons-logging/ * s/.*/debian/ * *
-s/groovy/org.codehaus.groovy/ groovy * s/.*/debian/ * *
 org.kohsuke.stapler maven-stapler-plugin * s/.*/1.16/ * *
 s/ant/org.apache.ant/ * * s/.*/debian/ * *
-s/groovy/org.codehaus.groovy/ groovy* * s/.*/debian/ * *
+s/groovy/org.codehaus.groovy/ groovy * s/.*/1.x/ * *
+s/groovy/org.codehaus.groovy/ groovy* * s/.*/1.x/ * *
+org.codehaus.groovy groovy* * s/.*/1.x/ * *
 org.mortbay.jetty * * s/6\..*/6.x/ * *
 org.springframework * * s/2\..*/3.x/ * *
 s/javax.servlet/javax.servlet.jsp/ jsp-api jar s/2\..*/2.1/ * *
