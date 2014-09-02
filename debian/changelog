@@ -3,6 +3,7 @@ jenkins (1.509.2+dfsg-3) UNRELEASED; urgency=medium
   * Team upload.
   * Fixed a build failure caused by the relocation of the Maven artifacts
     in groovy 1.8.6-4 (Closes: #759946)
+  * debian/watch: Fixed to match only the LTS releases (Closes: #731204)
   * Switch to debhelper level 9
   * debian/control:
     - Standards-Version updated to 3.9.5 (no changes)
