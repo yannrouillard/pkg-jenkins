@@ -98,10 +98,10 @@ Build-Depends-Indep:
  libtxw2-java,
  libxpp3-java,
  ttf-dejavu-core
-Standards-Version: 3.9.4
-Homepage: http://jenkins-ci.org/
+Standards-Version: 3.9.5
 Vcs-Git: git://anonscm.debian.org/pkg-java/jenkins.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-java/jenkins.git
+Homepage: http://jenkins-ci.org
 
 Package: libjenkins-java
 Architecture: all
