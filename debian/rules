@@ -7,7 +7,7 @@ include /usr/share/cdbs/1/class/maven.mk
 
 JAVA_HOME := /usr/lib/jvm/default-java
 # Parse upstream version without +dfsg for source download+
-DEB_UPSTREAM_VERSION=$(shell dpkg-parsechangelog | sed -rne 's,^Version: ([^+]+).*,\1,p')
+#DEB_UPSTREAM_VERSION=$(shell dpkg-parsechangelog | sed -rne 's,^Version: ([^+]+).*,\1,p')
 DEB_MAVEN_BUILD_TARGET := install
 DEB_MAVEN_ARGS := -e -Dbuild.version="$(DEB_UPSTREAM_VERSION)"
 DEB_MAVEN_INSTALL_TO_USJ := false
