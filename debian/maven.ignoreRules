@@ -21,6 +21,7 @@ org.apache.maven.plugins maven-pmd-plugin * * * *
 org.apache.maven.plugins maven-project-info-reports-plugin * * * *
 org.apache.maven.plugins maven-release-plugin * * * *
 org.apache.maven.plugins maven-remote-resources-plugin * * * *
+org.apache.maven.plugins maven-enforcer-plugin * * * *
 # OK: Used for generating the wiki - not required for Debian
 org.codehaus.mojo apt-maven-plugin * * * *
 org.jvnet.maven-jellydoc-plugin maven-jellydoc-plugin * * * *

@@ -7,11 +7,9 @@ Iterations.skip -> Iterators.advance
  core/src/main/java/hudson/util/RunList.java | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/core/src/main/java/hudson/util/RunList.java b/core/src/main/java/hudson/util/RunList.java
-index 25f7dea..cb35d2c 100644
 --- a/core/src/main/java/hudson/util/RunList.java
 +++ b/core/src/main/java/hudson/util/RunList.java
-@@ -138,7 +138,7 @@ public class RunList<R extends Run> extends AbstractList<R> {
+@@ -133,7 +133,7 @@
      public List<R> subList(int fromIndex, int toIndex) {
          List<R> r = new ArrayList<R>();
          Iterator<R> itr = iterator();

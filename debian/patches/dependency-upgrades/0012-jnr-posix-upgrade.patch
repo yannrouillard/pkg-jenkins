@@ -10,8 +10,8 @@ Subject: jnr-posix-upgrade
 
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -123,6 +123,11 @@
-       <version>3.0.0</version>
+@@ -105,6 +105,11 @@
+       <version>3.0.1</version>
      </dependency>
      <dependency>
 +      <groupId>org.jruby.extras</groupId>
@@ -161,7 +161,7 @@ Subject: jnr-posix-upgrade
  /**
 --- a/core/src/main/java/hudson/Util.java
 +++ b/core/src/main/java/hudson/Util.java
-@@ -41,8 +41,8 @@
+@@ -40,8 +40,8 @@
  import org.apache.tools.ant.taskdefs.Chmod;
  import org.apache.tools.ant.taskdefs.Copy;
  import org.apache.tools.ant.types.FileSet;
@@ -170,5 +170,5 @@ Subject: jnr-posix-upgrade
 +import org.jruby.ext.posix.FileStat;
 +import org.jruby.ext.posix.POSIX;
  import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
- import org.kohsuke.stapler.Stapler;
  
+ import javax.crypto.SecretKey;

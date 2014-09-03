@@ -7,15 +7,12 @@ Subject: remove-licensing-report
  .../main/resources/hudson/AboutJenkins/index.properties   |  4 ++--
  2 files changed, 2 insertions(+), 17 deletions(-)
 
-diff --git a/core/src/main/resources/hudson/AboutJenkins/index.jelly b/core/src/main/resources/hudson/AboutJenkins/index.jelly
-index 267ef11..21e3d00 100644
 --- a/core/src/main/resources/hudson/AboutJenkins/index.jelly
 +++ b/core/src/main/resources/hudson/AboutJenkins/index.jelly
-@@ -31,21 +31,6 @@ THE SOFTWARE.
-       <p>
+@@ -32,20 +32,6 @@
          ${%blurb}
        </p>
--
+ 
 -      <p>
 -        ${%dependencies}
 -      </p>
@@ -30,11 +27,9 @@ index 267ef11..21e3d00 100644
 -              <p>${%No information recorded}</p>
 -          </j:otherwise>
 -      </j:choose>
-     </l:main-panel>
-   </l:layout>
- </j:jelly>
-diff --git a/core/src/main/resources/hudson/AboutJenkins/index.properties b/core/src/main/resources/hudson/AboutJenkins/index.properties
-index 08f9d8a..8b1e58d 100644
+       <p>${%plugin.dependencies}</p>
+       <ul>
+           <j:forEach var="p" items="${app.pluginManager.plugins}"> <!-- TODO sort -->
 --- a/core/src/main/resources/hudson/AboutJenkins/index.properties
 +++ b/core/src/main/resources/hudson/AboutJenkins/index.properties
 @@ -20,7 +20,7 @@
@@ -45,6 +40,4 @@ index 08f9d8a..8b1e58d 100644
 +about=About Jenkins {0} (Debian/Ubuntu distribution)
  blurb=<a href="http://jenkins-ci.org/">Jenkins</a> is a community-developed open-source continuous integration server.
  
--dependencies=Jenkins depends on the following 3rd party libraries.
-\ No newline at end of file
-+dependencies=Jenkins depends on the following 3rd party libraries.
+ dependencies=Jenkins depends on the following 3rd party libraries.

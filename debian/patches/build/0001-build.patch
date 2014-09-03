@@ -9,7 +9,7 @@ Subject: build
 
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -330,6 +330,16 @@
+@@ -312,6 +312,16 @@
        <groupId>commons-jelly</groupId>
        <artifactId>commons-jelly-tags-fmt</artifactId>
        <version>1.0</version>
@@ -28,24 +28,23 @@ Subject: build
        <groupId>commons-jelly</groupId>
 --- a/pom.xml
 +++ b/pom.xml
-@@ -48,10 +48,7 @@
+@@ -48,9 +48,7 @@
  
    <modules>
      <module>core</module>
--    <module>maven-plugin</module>
 -    <module>ui-samples-plugin</module>
      <module>war</module>
 -    <module>test</module>
      <module>cli</module>
      <module>plugins</module>
    </modules>
-@@ -618,9 +615,6 @@
+@@ -626,9 +624,6 @@
                  <requireJavaVersion>
                    <version>1.6.0-18</version>
                  </requireJavaVersion>
 -                <requireMavenVersion>
 -                  <version>3.0</version>
 -                </requireMavenVersion>
-               </rules>
-             </configuration>
-           </execution>
+                 <enforceBytecodeVersion>
+                   <maxJdkVersion>1.${java.level}</maxJdkVersion>
+                 </enforceBytecodeVersion>

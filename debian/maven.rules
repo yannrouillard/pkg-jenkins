@@ -22,7 +22,7 @@ commons-httpclient commons-httpclient jar s/3\..*/3.x/ * *
 junit s/junit-dep/junit/ * s/.*/4.x/ * *
 junit junit * s/.*/4.x/ * *
 # Map onto exact version during build process
-org.jenkins-ci.main * * s/1\..*/1.509.4/ * *
+org.jenkins-ci.main * * s/1\..*/1.532.1/ * *
 # Handle plugin package
 org.kohsuke access-modifier-annotation jar s/.*/1.4/ * *
 org.kohsuke access-modifier-checker *  s/.*/1.4/ * *
@@ -70,3 +70,5 @@ s/org.jvnet.hudson/org.jenkins-ci/ annotation-indexer * s/.*/debian/ * *
 s/org.kohsuke/org.jvnet.libpam4j/ libpam4j * s/.*/debian/ * *
 # Updates for 1.480.3
 org.springframework s/spring-webmvc/spring-web/ * s/.*/3.x/ * *
+
+com.google.inject guice * s/.*/debian/ s/no_aop// *

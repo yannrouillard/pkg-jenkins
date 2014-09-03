@@ -6,11 +6,9 @@ Subject: fileupload-compat
  core/src/main/java/hudson/model/FileParameterValue.java | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/core/src/main/java/hudson/model/FileParameterValue.java b/core/src/main/java/hudson/model/FileParameterValue.java
-index 2251ea5..afcfcaf 100644
 --- a/core/src/main/java/hudson/model/FileParameterValue.java
 +++ b/core/src/main/java/hudson/model/FileParameterValue.java
-@@ -40,6 +40,7 @@ import javax.servlet.ServletException;
+@@ -40,6 +40,7 @@
  
  import org.apache.commons.fileupload.FileItem;
  import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -18,7 +16,7 @@ index 2251ea5..afcfcaf 100644
  import org.apache.commons.io.FilenameUtils;
  import org.apache.commons.io.IOUtils;
  import org.apache.commons.lang.StringUtils;
-@@ -284,5 +285,12 @@ public class FileParameterValue extends ParameterValue {
+@@ -292,5 +293,12 @@
          public OutputStream getOutputStream() throws IOException {
              return new FileOutputStream(file);
          }

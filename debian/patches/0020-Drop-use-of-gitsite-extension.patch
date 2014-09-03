@@ -9,7 +9,7 @@ This is not required for the package build
 
 --- a/pom.xml
 +++ b/pom.xml
-@@ -667,14 +667,6 @@
+@@ -701,14 +701,6 @@
          </dependencies>
        </plugin>
      </plugins>

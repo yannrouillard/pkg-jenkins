@@ -1,0 +1,30 @@
+Description: Ensure the compatibility with the version of args4j in Debian
+Author: Emmanuel Bourg <ebourg@apache.org>
+Forwarded: no
+--- a/core/src/main/java/hudson/cli/declarative/MethodBinder.java
++++ b/core/src/main/java/hudson/cli/declarative/MethodBinder.java
+@@ -79,6 +79,14 @@
+                 public boolean isMultiValued() {
+                     return false;
+                 }
++
++                public java.lang.reflect.AnnotatedElement asAnnotatedElement() {
++                    return null;
++                }
++
++                public org.kohsuke.args4j.spi.FieldSetter asFieldSetter() {
++                    return null;
++                }
+             };
+             Option option = p.annotation(Option.class);
+             if (option!=null) {
+@@ -148,5 +156,9 @@
+         public Class<? extends Annotation> annotationType() {
+             return base.annotationType();
+         }
++
++        public boolean hidden() {
++            return base.hidden();
++        }
+     }
+ }

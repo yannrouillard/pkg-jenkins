@@ -47,7 +47,7 @@ Subject: remove-findbugs
  import hudson.Proc.LocalProc;
  import hudson.model.TaskListener;
  import hudson.os.PosixAPI;
-@@ -357,7 +356,6 @@
+@@ -355,7 +354,6 @@
          return !fileInCanonicalParent.getCanonicalFile().equals( fileInCanonicalParent.getAbsoluteFile() );
      }
  
@@ -85,7 +85,7 @@ Subject: remove-findbugs
                      throw (ChannelClosedException)args[0];
 --- a/core/src/main/java/hudson/logging/LogRecorderManager.java
 +++ b/core/src/main/java/hudson/logging/LogRecorderManager.java
-@@ -112,7 +112,6 @@
+@@ -125,7 +125,6 @@
      /**
       * Configure the logging level.
       */
@@ -113,7 +113,7 @@ Subject: remove-findbugs
      @Initializer(after=JOB_LOADED)
 --- a/core/src/main/java/hudson/util/PluginServletFilter.java
 +++ b/core/src/main/java/hudson/util/PluginServletFilter.java
-@@ -58,7 +58,6 @@
+@@ -59,7 +59,6 @@
      public PluginServletFilter() {
      }
  
@@ -131,7 +131,7 @@ Subject: remove-findbugs
  import hudson.PluginManager;
  import hudson.PluginWrapper;
  import hudson.diagnosis.OldDataMonitor;
-@@ -388,7 +387,6 @@
+@@ -389,7 +388,6 @@
  
          private PluginManager pm;
  
@@ -141,7 +141,7 @@ Subject: remove-findbugs
                  return classOwnership.ownerOf(clazz);
 --- a/core/src/main/java/jenkins/model/Jenkins.java
 +++ b/core/src/main/java/jenkins/model/Jenkins.java
-@@ -731,10 +731,6 @@
+@@ -735,10 +735,6 @@
       * @param pluginManager
       *      If non-null, use existing plugin manager.  create a new one.
       */
@@ -152,7 +152,7 @@ Subject: remove-findbugs
      protected Jenkins(File root, ServletContext context, PluginManager pluginManager) throws IOException, InterruptedException, ReactorException {
          long start = System.currentTimeMillis();
          
-@@ -2647,7 +2643,6 @@
+@@ -2650,7 +2646,6 @@
      /**
       * Called to shut down the system.
       */
@@ -160,7 +160,7 @@ Subject: remove-findbugs
      public void cleanUp() {
          for (ItemListener l : ItemListener.all())
              l.onBeforeShutdown();
-@@ -3089,7 +3084,6 @@
+@@ -3094,7 +3089,6 @@
      /**
       * For debugging. Expose URL to perform GC.
       */
@@ -214,31 +214,3 @@ Subject: remove-findbugs
      public void testSuiteStdioTrimmingSurefire() throws Exception {
          File data = File.createTempFile("TEST-", ".xml");
          try {
---- a/maven-plugin/src/main/java/hudson/maven/MavenUtil.java
-+++ b/maven-plugin/src/main/java/hudson/maven/MavenUtil.java
-@@ -23,7 +23,6 @@
-  */
- package hudson.maven;
- 
--import edu.umd.cs.findbugs.annotations.SuppressWarnings;
- import hudson.AbortException;
- import hudson.FilePath;
- import hudson.Util;
-@@ -139,7 +138,6 @@
-      * Creates a fresh {@link MavenEmbedder} instance.
-      *
-      */
--    @SuppressWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
-     public static MavenEmbedder createEmbedder(MavenEmbedderRequest mer) throws MavenEmbedderException, IOException {
-         
-         
---- a/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java
-+++ b/maven-plugin/src/main/java/hudson/maven/reporters/SurefireArchiver.java
-@@ -199,7 +199,6 @@
-         return true;
-     }
-     
--    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification="It's okay to write to static fields here, as each Maven build is started in its own VM")
-     private void markBuildAsSuccess(Throwable mojoError, MavenBuildInformation buildInfo) {
-         if(mojoError == null // in the success case we don't get any exception in Maven 3.0.2+; Maven < 3.0.2 returns no exception anyway
-            || mojoError instanceof MojoFailureException) {

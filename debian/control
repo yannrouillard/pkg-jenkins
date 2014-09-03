@@ -46,6 +46,7 @@ Build-Depends-Indep:
  libcommons-io-java (>= 2.4),
  libcommons-lang-java,
  libcommons-logging-java,
+ libguice-java,
  libjaxen-java,
  libjbcrypt-java (>= 0.3-4~),
  libjellydoc-java,
@@ -54,7 +55,7 @@ Build-Depends-Indep:
  libjenkins-htmlunit-java,
  libjenkins-json-java (>= 2.4-jenkins-1),
  libjenkins-plugin-parent-java,
- libjenkins-remoting-java (>= 2.23),
+ libjenkins-remoting-java (>= 2.32),
  libjenkins-trilead-ssh2-java (>= 214-jenkins-1),
  libjenkins-winstone-java (>= 0.9.10-jenkins-44),
  libjenkins-xstream-java (>= 1.4.4-jenkins-3),
@@ -164,7 +165,7 @@ Description: Jenkins Plugin Parent Maven POM
 Package: jenkins-common
 Architecture: all
 Depends:
- libjenkins-remoting-java (>= 2.23),
+ libjenkins-remoting-java (>= 2.32),
  libjffi-java,
  libjna-java,
  libjnr-posix-java,

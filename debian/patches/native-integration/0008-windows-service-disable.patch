@@ -8,11 +8,10 @@ Subject: windows-service-disable
 
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -763,32 +763,6 @@
-           </execution>
+@@ -736,32 +736,6 @@
          </executions>
        </plugin>
--      <plugin>
+       <plugin>
 -        <artifactId>maven-dependency-plugin</artifactId>
 -        <executions>
 -          <execution>
@@ -27,7 +26,7 @@ Subject: windows-service-disable
 -                <artifactItem>
 -                  <groupId>com.sun.winsw</groupId>
 -                  <artifactId>winsw</artifactId>
--                  <version>1.10</version>
+-                  <version>1.13</version>
 -                  <classifier>bin</classifier>
 -                  <type>exe</type>
 -                  <outputDirectory>${project.build.outputDirectory}/windows-service</outputDirectory>
@@ -38,6 +37,7 @@ Subject: windows-service-disable
 -          </execution>
 -        </executions>
 -      </plugin>
-       <plugin><!-- set main class -->
-         <artifactId>maven-jar-plugin</artifactId>
-         <!-- version specified in grandparent pom -->
+-      <plugin>
+         <artifactId>maven-surefire-plugin</artifactId>
+         <configuration>
+           <forkCount>0.5C</forkCount>

@@ -9,7 +9,7 @@ This pulls in asm4 which creates class loading issues.
 
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -116,6 +116,16 @@
+@@ -98,6 +98,16 @@
        <groupId>org.jruby.ext.posix</groupId>
        <artifactId>jna-posix</artifactId>
        <version>1.0.3</version>

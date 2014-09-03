@@ -3,15 +3,15 @@ Author: Emmanuel Bourg <ebourg@apache.org>
 Forwarded: not-needed
 --- a/core/src/main/java/hudson/model/AbstractProject.java
 +++ b/core/src/main/java/hudson/model/AbstractProject.java
-@@ -91,7 +91,6 @@
- import net.sf.json.JSONObject;
+@@ -96,7 +96,6 @@
+ import org.acegisecurity.Authentication;
  import org.acegisecurity.context.SecurityContext;
  import org.acegisecurity.context.SecurityContextHolder;
 -import org.jenkinsci.bytecode.AdaptField;
  import org.kohsuke.accmod.Restricted;
  import org.kohsuke.accmod.restrictions.NoExternalUse;
  import org.kohsuke.args4j.Argument;
-@@ -236,8 +235,7 @@
+@@ -244,8 +243,7 @@
      /**
       * List of all {@link Trigger}s for this project.
       */
@@ -21,7 +21,7 @@ Forwarded: not-needed
      private static final AtomicReferenceFieldUpdater<AbstractProject,DescribableList> triggersUpdater
              = AtomicReferenceFieldUpdater.newUpdater(AbstractProject.class,DescribableList.class,"triggers");
  
-@@ -332,7 +330,7 @@
+@@ -346,7 +344,7 @@
          if (triggers == null) {
              triggersUpdater.compareAndSet(this,null,new DescribableList<Trigger<?>,TriggerDescriptor>(this));
          }
@@ -30,7 +30,7 @@ Forwarded: not-needed
      }
  
      @Override
-@@ -1966,7 +1964,7 @@
+@@ -2003,7 +2001,7 @@
  
          for (Trigger t : triggers())
              t.stop();
@@ -78,17 +78,12 @@ Forwarded: not-needed
      public Api getApi() {
 --- a/core/src/main/java/hudson/ClassicPluginStrategy.java
 +++ b/core/src/main/java/hudson/ClassicPluginStrategy.java
-@@ -626,11 +626,12 @@
+@@ -693,8 +693,6 @@
  
-             return url;
-         }
--
-+/*
          @Override
          protected Class defineClassFromData(File container, byte[] classData, String classname) throws IOException {
-             return super.defineClassFromData(container, pluginManager.getCompatibilityTransformer().transform(classname,classData), classname);
+-            if (!DISABLE_TRANSFORMER)
+-                classData = pluginManager.getCompatibilityTransformer().transform(classname, classData);
+             return super.defineClassFromData(container, classData, classname);
          }
-+*/
      }
- 
-     public static boolean useAntClassLoader = Boolean.getBoolean(ClassicPluginStrategy.class.getName()+".useAntClassLoader");

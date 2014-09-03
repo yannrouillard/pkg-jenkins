@@ -6,11 +6,9 @@ Subject: purge-winp
  core/src/main/java/hudson/util/ProcessTree.java | 81 -------------------------
  1 file changed, 81 deletions(-)
 
-diff --git a/core/src/main/java/hudson/util/ProcessTree.java b/core/src/main/java/hudson/util/ProcessTree.java
-index 392e73c..da06757 100644
 --- a/core/src/main/java/hudson/util/ProcessTree.java
 +++ b/core/src/main/java/hudson/util/ProcessTree.java
-@@ -37,8 +37,6 @@ import hudson.util.ProcessTree.OSProcess;
+@@ -37,8 +37,6 @@
  import hudson.util.ProcessTreeRemoting.IOSProcess;
  import hudson.util.ProcessTreeRemoting.IProcessTree;
  import org.apache.commons.io.FileUtils;
@@ -19,7 +17,7 @@ index 392e73c..da06757 100644
  
  import java.io.BufferedReader;
  import java.io.ByteArrayOutputStream;
-@@ -331,9 +329,6 @@ public abstract class ProcessTree implements Iterable<OSProcess>, IProcessTree,
+@@ -332,9 +330,6 @@
              return DEFAULT;
  
          try {
@@ -29,11 +27,10 @@ index 392e73c..da06757 100644
              String os = Util.fixNull(System.getProperty("os.name"));
              if(os.equals("Linux"))
                  return new Linux();
-@@ -390,82 +385,6 @@ public abstract class ProcessTree implements Iterable<OSProcess>, IProcessTree,
-         }
+@@ -392,92 +387,6 @@
      };
  
--
+ 
 -    private static final class Windows extends Local {
 -        Windows() {
 -            for (final WinProcess p : WinProcess.all()) {
@@ -48,9 +45,10 @@ index 392e73c..da06757 100644
 -                        return null;
 -                    }
 -
--                    public void killRecursively() {
+-                    public void killRecursively() throws InterruptedException {
 -                        LOGGER.finer("Killing recursively "+getPid());
 -                        p.killRecursively();
+-                        killByKiller();
 -                    }
 -
 -                    public void kill() throws InterruptedException {
@@ -67,7 +65,17 @@ index 392e73c..da06757 100644
 -
 -                    @Override
 -                    public synchronized EnvVars getEnvironmentVariables() {
--                        if(env==null)   env = new EnvVars(p.getEnvironmentVariables());
+-                        if(env !=null)
+-                          return env;
+-                        env = new EnvVars();   
+-                        
+-                        try 
+-                        {
+-                           env.putAll(p.getEnvironmentVariables());
+-                        } catch (WinpException e)
+-                        {
+-                           LOGGER.log(FINE, "Failed to get environment variable ", e);
+-                        }                          
 -                        return env;
 -                    }
 -                });
