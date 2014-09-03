@@ -1,11 +1,13 @@
-jenkins (1.532.1-1) UNRELEASED; urgency=medium
+jenkins (1.532.2-1) UNRELEASED; urgency=medium
 
   * Team upload.
   * New upstream release
+    - Fixes multiple security vulnerabilities (Closes: #732708, #739067)
     - Refreshed the patches
     - Ignore the dependency on bytecode-compatibility-transformer
     - Added a dependency on libguice-java
     - Depend on libjenkins-remoting-java >= 2.32
+    - Depend on libannotation-indexer-java >= 1.7
   * Fixed a build failure caused by the relocation of the Maven artifacts
     in groovy 1.8.6-4 (Closes: #759946)
   * Removed the sourceless and unused connection.swf file (Closes: #736792)

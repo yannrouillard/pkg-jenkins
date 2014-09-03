@@ -8,7 +8,7 @@ Subject: windows-service-disable
 
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -736,32 +736,6 @@
+@@ -742,32 +742,6 @@
          </executions>
        </plugin>
        <plugin>

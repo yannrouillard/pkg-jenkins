@@ -67,7 +67,7 @@ Subject: remove-findbugs
          Logger.getLogger("").addHandler(handler);
 --- a/core/src/main/java/hudson/cli/GroovyshCommand.java
 +++ b/core/src/main/java/hudson/cli/GroovyshCommand.java
-@@ -87,7 +87,6 @@
+@@ -88,7 +88,6 @@
              private static final long serialVersionUID = 1L;
  
              @SuppressWarnings("unused")
@@ -75,7 +75,7 @@ Subject: remove-findbugs
              public Object doCall(Object[] args) {
                  assert(args.length == 1);
                  assert(args[0] instanceof Shell);
-@@ -110,7 +109,6 @@
+@@ -111,7 +110,6 @@
              private static final long serialVersionUID = 1L;
  
              @SuppressWarnings("unused")
@@ -95,7 +95,7 @@ Subject: remove-findbugs
          Level lv;
 --- a/core/src/main/java/hudson/triggers/Trigger.java
 +++ b/core/src/main/java/hudson/triggers/Trigger.java
-@@ -63,7 +63,6 @@
+@@ -57,7 +57,6 @@
  
  import antlr.ANTLRException;
  import javax.annotation.CheckForNull;
@@ -103,14 +103,14 @@ Subject: remove-findbugs
  
  /**
   * Triggers a {@link Build}.
-@@ -280,7 +279,6 @@
+@@ -276,7 +275,6 @@
       *
-      * If plugins want to run periodic jobs, they should implement {@link PeriodicWork}.
+      * @deprecated Use {@link jenkins.util.Timer#get()} instead.
       */
 -    @SuppressWarnings("MS_SHOULD_BE_FINAL")
-     public static @CheckForNull Timer timer;
+     @Deprecated
+     public static @CheckForNull java.util.Timer timer;
  
-     @Initializer(after=JOB_LOADED)
 --- a/core/src/main/java/hudson/util/PluginServletFilter.java
 +++ b/core/src/main/java/hudson/util/PluginServletFilter.java
 @@ -59,7 +59,6 @@
@@ -123,7 +123,7 @@ Subject: remove-findbugs
      	synchronized (LIST)  {
 --- a/core/src/main/java/hudson/util/XStream2.java
 +++ b/core/src/main/java/hudson/util/XStream2.java
-@@ -41,7 +41,6 @@
+@@ -43,7 +43,6 @@
  import com.thoughtworks.xstream.io.HierarchicalStreamReader;
  import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
  import com.thoughtworks.xstream.mapper.CannotResolveClassException;
@@ -131,7 +131,7 @@ Subject: remove-findbugs
  import hudson.PluginManager;
  import hudson.PluginWrapper;
  import hudson.diagnosis.OldDataMonitor;
-@@ -389,7 +388,6 @@
+@@ -412,7 +411,6 @@
  
          private PluginManager pm;
  
@@ -141,7 +141,7 @@ Subject: remove-findbugs
                  return classOwnership.ownerOf(clazz);
 --- a/core/src/main/java/jenkins/model/Jenkins.java
 +++ b/core/src/main/java/jenkins/model/Jenkins.java
-@@ -735,10 +735,6 @@
+@@ -741,10 +741,6 @@
       * @param pluginManager
       *      If non-null, use existing plugin manager.  create a new one.
       */
@@ -152,7 +152,7 @@ Subject: remove-findbugs
      protected Jenkins(File root, ServletContext context, PluginManager pluginManager) throws IOException, InterruptedException, ReactorException {
          long start = System.currentTimeMillis();
          
-@@ -2650,7 +2646,6 @@
+@@ -2661,7 +2657,6 @@
      /**
       * Called to shut down the system.
       */
@@ -160,7 +160,7 @@ Subject: remove-findbugs
      public void cleanUp() {
          for (ItemListener l : ItemListener.all())
              l.onBeforeShutdown();
-@@ -3094,7 +3089,6 @@
+@@ -3109,7 +3104,6 @@
      /**
       * For debugging. Expose URL to perform GC.
       */

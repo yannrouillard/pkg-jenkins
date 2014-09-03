@@ -29,7 +29,7 @@ Build-Depends-Indep:
  libacegi-security-java,
  libakuma-java (>= 1.8),
  libanimal-sniffer-java,
- libannotation-indexer-java,
+ libannotation-indexer-java (>= 1.7),
  libantlr-java,
  libantlr-maven-plugin-java,
  libaopalliance-java,
