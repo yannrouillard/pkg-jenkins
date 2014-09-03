@@ -168,6 +168,8 @@ public class RunList<R extends Run> extends AbstractList<R> {
         return !iterator().hasNext();
     }
 
+    /** @deprecated see {@link #size()} for why this violates lazy-loading */
+    @Deprecated
     public R getFirstBuild() {
         size();
         return first;
@@ -185,9 +187,10 @@ public class RunList<R extends Run> extends AbstractList<R> {
 
     /**
      * Returns elements that satisfy the given predicate.
+     * <em>Warning:</em> this method mutates the original list and then returns it.
+     * @since TODO
      */
-    // for compatibility reasons, this method doesn't create a new list but updates the current one
-    private RunList<R> filter(Predicate<R> predicate) {
+    public RunList<R> filter(Predicate<R> predicate) {
         size = null;
         first = null;
         base = Iterables.filter(base,predicate);

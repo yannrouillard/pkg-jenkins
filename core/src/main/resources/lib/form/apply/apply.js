@@ -29,10 +29,7 @@ Behaviour.specify("INPUT.apply-button", 'apply', 0, function (e) {
 
             // create a throw-away IFRAME to avoid back button from loading the POST result back
             id = "iframe"+(iota++);
-            target = document.createElement("iframe");
-            target.setAttribute("id",id);
-            target.setAttribute("name",id);
-            target.setAttribute("style","height:100%; width:100%");
+            target = Element('iframe', {id: id, name: id, style: 'height:100%; width:100%'});
             $(containerId).appendChild(target);
 
             attachIframeOnload(target, function () {
@@ -45,8 +42,15 @@ Behaviour.specify("INPUT.apply-button", 'apply', 0, function (e) {
                     var error = doc.getElementById('error-description');
                     if (!error) {
                         // fallback if it's not a regular error dialog from oops.jelly: use the entire body
-                        error = doc.getElementsByTagName('body')[0];
+                        error = Element('div', {id: 'error-description'});
+                        error.appendChild(doc.getElementsByTagName('body')[0]);
                     }
+
+                    if (oldError = $('error-description')) {
+                        // Remove old error if there is any
+                        $(containerId).removeChild(oldError);
+                    }
+
                     $(containerId).appendChild(error);
                     var r = YAHOO.util.Dom.getClientRegion();
 
