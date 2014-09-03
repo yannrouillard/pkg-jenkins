@@ -160,7 +160,7 @@ Subject: remove-findbugs
      public void cleanUp() {
          for (ItemListener l : ItemListener.all())
              l.onBeforeShutdown();
-@@ -3109,7 +3104,6 @@
+@@ -3111,7 +3106,6 @@
      /**
       * For debugging. Expose URL to perform GC.
       */
