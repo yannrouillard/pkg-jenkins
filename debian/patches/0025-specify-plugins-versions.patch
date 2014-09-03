@@ -1,3 +1,6 @@
+Description: Set the missing versions on the plugins
+Author: Emmanuel Bourg <ebourg@apache.org>
+Forwarded: not-needed
 --- a/pom.xml
 +++ b/pom.xml
 @@ -399,7 +399,7 @@
