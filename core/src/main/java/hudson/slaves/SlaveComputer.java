@@ -23,68 +23,62 @@
  */
 package hudson.slaves;
 
-import hudson.model.*;
-import hudson.util.io.ReopenableRotatingFileOutputStream;
-import jenkins.model.Jenkins.MasterComputer;
-import hudson.remoting.Channel;
-import hudson.remoting.VirtualChannel;
-import hudson.remoting.Callable;
-import hudson.util.StreamTaskListener;
-import hudson.util.NullStream;
-import hudson.util.RingBufferLogHandler;
-import hudson.util.Futures;
+import hudson.AbortException;
 import hudson.FilePath;
 import hudson.Util;
-import hudson.AbortException;
+import hudson.model.Computer;
+import hudson.model.Executor;
+import hudson.model.ExecutorListener;
+import hudson.model.Node;
+import hudson.model.Queue;
+import hudson.model.Slave;
+import hudson.model.TaskListener;
+import hudson.model.User;
+import hudson.remoting.Callable;
+import hudson.remoting.Channel;
 import hudson.remoting.Launcher;
+import hudson.remoting.VirtualChannel;
 import hudson.security.ACL;
-import static hudson.slaves.SlaveComputer.LogHolder.SLAVE_LOG_HANDLER;
 import hudson.slaves.OfflineCause.ChannelTermination;
-import hudson.util.Secret;
-
-import java.io.File;
-import java.io.OutputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.security.SecureRandom;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.List;
-import java.util.Collections;
-import java.util.ArrayList;
-import java.nio.charset.Charset;
-import java.util.concurrent.Future;
-import java.security.Security;
-
+import hudson.util.Futures;
+import hudson.util.NullStream;
+import hudson.util.RingBufferLogHandler;
+import hudson.util.StreamTaskListener;
 import hudson.util.io.ReopenableFileOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
-import java.security.GeneralSecurityException;
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.RequestDispatcher;
+import hudson.util.io.ReopenableRotatingFileOutputStream;
 import jenkins.model.Jenkins;
+import jenkins.slaves.EncryptedSlaveAgentJnlpFile;
 import jenkins.slaves.JnlpSlaveAgentProtocol;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.HttpResponse;
-import org.kohsuke.stapler.HttpRedirect;
-
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponseWrapper;
+import jenkins.slaves.systemInfo.SlaveSystemInfo;
 import org.acegisecurity.context.SecurityContext;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.apache.commons.io.IOUtils;
-import org.kohsuke.stapler.ResponseImpl;
+import org.kohsuke.stapler.HttpRedirect;
+import org.kohsuke.stapler.HttpResponse;
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.WebMethod;
-import org.kohsuke.stapler.compression.FilterServletOutputStream;
+import org.kohsuke.stapler.interceptor.RequirePOST;
+
+import javax.servlet.ServletException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.nio.charset.Charset;
+import java.security.Security;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Future;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+
+import static hudson.slaves.SlaveComputer.LogHolder.*;
 
 /**
  * {@link Computer} for {@link Slave}s.
@@ -176,7 +170,13 @@ public class SlaveComputer extends Computer {
 
     @Override
     public Slave getNode() {
-        return (Slave)super.getNode();
+        Node node = super.getNode();
+        if (node == null || node instanceof Slave) {
+            return (Slave)node;
+        } else {
+            logger.log(Level.WARNING, "found an unexpected kind of node {0} from {1} with nodeName={2}", new Object[] {node, this, nodeName});
+            return null;
+        }
     }
 
     @Override
@@ -525,6 +525,7 @@ public class SlaveComputer extends Computer {
             return channel.call(new SlaveLogFetcher());
     }
 
+    @RequirePOST
     public HttpResponse doDoDisconnect(@QueryParameter String offlineMessage) throws IOException, ServletException {
         if (channel!=null) {
             //does nothing in case computer is already disconnected
@@ -549,6 +550,7 @@ public class SlaveComputer extends Computer {
         });
     }
 
+    @RequirePOST
     public void doLaunchSlaveAgent(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
         if(channel!=null) {
             req.getView(this,"already-launched.jelly").forward(req, rsp);
@@ -583,40 +585,8 @@ public class SlaveComputer extends Computer {
     }
 
     @WebMethod(name="slave-agent.jnlp")
-    public void doSlaveAgentJnlp(StaplerRequest req, StaplerResponse res) throws IOException, ServletException {
-        RequestDispatcher view = req.getView(this, "slave-agent.jnlp.jelly");
-        if ("true".equals(req.getParameter("encrypt"))) {
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            StaplerResponse temp = new ResponseImpl(req.getStapler(), new HttpServletResponseWrapper(res) {
-                @Override public ServletOutputStream getOutputStream() throws IOException {
-                    return new FilterServletOutputStream(baos);
-                }
-                @Override public PrintWriter getWriter() throws IOException {
-                    throw new IllegalStateException();
-                }
-            });
-            view.forward(req, temp);
-
-            byte[] iv = new byte[128/8];
-            new SecureRandom().nextBytes(iv);
-
-            byte[] jnlpMac = JnlpSlaveAgentProtocol.SLAVE_SECRET.mac(getName().getBytes("UTF-8"));
-            SecretKey key = new SecretKeySpec(jnlpMac, 0, /* export restrictions */ 128 / 8, "AES");
-            byte[] encrypted;
-            try {
-                Cipher c = Secret.getCipher("AES/CFB8/NoPadding");
-                c.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
-                encrypted = c.doFinal(baos.toByteArray());
-            } catch (GeneralSecurityException x) {
-                throw new IOException(x);
-            }
-            res.setContentType("application/octet-stream");
-            res.getOutputStream().write(iv);
-            res.getOutputStream().write(encrypted);
-        } else {
-            checkPermission(CONNECT);
-            view.forward(req, res);
-        }
+    public HttpResponse doSlaveAgentJnlp(StaplerRequest req, StaplerResponse res) throws IOException, ServletException {
+        return new EncryptedSlaveAgentJnlpFile(this, "slave-agent.jnlp.jelly", getName(), CONNECT);
     }
 
     @Override
@@ -764,7 +734,7 @@ public class SlaveComputer extends Computer {
      */
     public static VirtualChannel getChannelToMaster() {
         if (Jenkins.getInstance()!=null)
-            return MasterComputer.localChannel;
+            return FilePath.localChannel;
 
         // if this method is called from within the slave computation thread, this should work
         Channel c = Channel.current();
@@ -772,6 +742,13 @@ public class SlaveComputer extends Computer {
             return c;
 
         return null;
+    }
+
+    /**
+     * Helper method for Jelly.
+     */
+    public static List<SlaveSystemInfo> getSystemInfoExtensions() {
+        return SlaveSystemInfo.all();
     }
 
     private static class SlaveLogFetcher implements Callable<List<LogRecord>,RuntimeException> {

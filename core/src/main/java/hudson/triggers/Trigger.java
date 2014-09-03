@@ -59,6 +59,7 @@ import antlr.ANTLRException;
 import javax.annotation.CheckForNull;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import hudson.model.Items;
+import jenkins.model.ParameterizedJobMixIn;
 
 /**
  * Triggers a {@link Build}.
@@ -193,14 +194,22 @@ public abstract class Trigger<J extends Item> implements Describable<Trigger<?>>
     public static class Cron extends PeriodicWork {
         private final Calendar cal = new GregorianCalendar();
 
+        public Cron() {
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+        }
+
         public long getRecurrencePeriod() {
             return MIN;
         }
 
-        public void doRun() {
-            while(new Date().getTime()-cal.getTimeInMillis()>1000) {
-                LOGGER.fine("cron checking "+cal.getTime().toLocaleString());
+        public long getInitialDelay() {
+            return MIN - (Calendar.getInstance().get(Calendar.SECOND) * 1000);
+        }
 
+        public void doRun() {
+            while(new Date().getTime() >= cal.getTimeInMillis()) {
+                LOGGER.log(Level.FINE, "cron checking {0}", cal.getTime());
                 try {
                     checkTriggers(cal);
                 } catch (Throwable e) {
@@ -246,20 +255,22 @@ public abstract class Trigger<J extends Item> implements Describable<Trigger<?>>
         }
 
         // Process all triggers, except SCMTriggers when synchronousPolling is set
-        for (AbstractProject<?,?> p : inst.getAllItems(AbstractProject.class)) {
+        for (ParameterizedJobMixIn.ParameterizedJob p : inst.getAllItems(ParameterizedJobMixIn.ParameterizedJob.class)) {
             for (Trigger t : p.getTriggers().values()) {
                 if (! (t instanceof SCMTrigger && scmd.synchronousPolling)) {
-                    LOGGER.fine("cron checking "+p.getName());
+                    LOGGER.log(Level.FINE, "cron checking {0} with spec ‘{1}’", new Object[] {p, t.spec.trim()});
 
                     if (t.tabs.check(cal)) {
-                        LOGGER.config("cron triggered "+p.getName());
+                        LOGGER.log(Level.CONFIG, "cron triggered {0}", p);
                         try {
                             t.run();
                         } catch (Throwable e) {
                             // t.run() is a plugin, and some of them throw RuntimeException and other things.
                             // don't let that cancel the polling activity. report and move on.
-                            LOGGER.log(Level.WARNING, t.getClass().getName()+".run() failed for "+p.getName(),e);
+                            LOGGER.log(Level.WARNING, t.getClass().getName() + ".run() failed for " + p, e);
                         }
+                    } else {
+                        LOGGER.log(Level.FINER, "did not trigger {0}", p);
                     }
                 }
             }

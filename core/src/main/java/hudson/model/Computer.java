@@ -60,6 +60,7 @@ import hudson.util.RunList;
 import hudson.util.Futures;
 import hudson.util.NamingThreadFactory;
 import jenkins.model.Jenkins;
+import jenkins.util.ContextResettingExecutorService;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.stapler.StaplerRequest;
@@ -97,6 +98,7 @@ import java.net.Inet4Address;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static javax.servlet.http.HttpServletResponse.*;
@@ -454,8 +456,8 @@ public /*transient*/ abstract class Computer extends Actionable implements Acces
     /**
      * Returns {@link Node#getNodeName() the name of the node}.
      */
-    public String getName() {
-        return nodeName;
+    public @Nonnull String getName() {
+        return nodeName != null ? nodeName : "";
     }
 
     /**
@@ -473,7 +475,7 @@ public /*transient*/ abstract class Computer extends Actionable implements Acces
 
     @Exported
     public LoadStatistics getLoadStatistics() {
-        return LabelAtom.get(nodeName != null ? nodeName : "").loadStatistics;
+        return LabelAtom.get(nodeName != null ? nodeName : Jenkins.getInstance().getSelfLabel().toString()).loadStatistics;
     }
 
     public BuildTimelineWidget getTimeline() {
@@ -615,7 +617,7 @@ public /*transient*/ abstract class Computer extends Actionable implements Acces
     }
 
     @Exported
-    public String getDisplayName() {
+    @Override public @Nonnull String getDisplayName() {
         return nodeName;
     }
 
@@ -916,7 +918,7 @@ public /*transient*/ abstract class Computer extends Actionable implements Acces
      * @see ProcStarter#envs(Map)
      * @since 1.489
      */
-    public EnvVars buildEnvironment(TaskListener listener) throws IOException, InterruptedException {
+    public @Nonnull EnvVars buildEnvironment(@Nonnull TaskListener listener) throws IOException, InterruptedException {
         EnvVars env = new EnvVars();
 
         Node node = getNode();
@@ -1062,7 +1064,10 @@ public /*transient*/ abstract class Computer extends Actionable implements Acces
         private static final long serialVersionUID = 1L;
     }
 
-    public static final ExecutorService threadPoolForRemoting = Executors.newCachedThreadPool(new ExceptionCatchingThreadFactory(new NamingThreadFactory(new DaemonThreadFactory(), "Computer.threadPoolForRemoting")));
+    public static final ExecutorService threadPoolForRemoting = new ContextResettingExecutorService(
+            Executors.newCachedThreadPool(
+                    new ExceptionCatchingThreadFactory(
+                            new NamingThreadFactory(new DaemonThreadFactory(), "Computer.threadPoolForRemoting"))));
 
 //
 //
@@ -1080,6 +1085,7 @@ public /*transient*/ abstract class Computer extends Actionable implements Acces
             runs.newBuilds(), Run.FEED_ADAPTER, req, rsp );
     }
 
+    @RequirePOST
     public HttpResponse doToggleOffline(@QueryParameter String offlineMessage) throws IOException, ServletException {
         if(!temporarilyOffline) {
             checkPermission(DISCONNECT);
@@ -1093,6 +1099,7 @@ public /*transient*/ abstract class Computer extends Actionable implements Acces
         return HttpResponses.redirectToDot();
     }
 
+    @RequirePOST
     public HttpResponse doChangeOfflineCause(@QueryParameter String offlineMessage) throws IOException, ServletException {
         checkPermission(DISCONNECT);
         offlineMessage = Util.fixEmptyAndTrim(offlineMessage);
@@ -1236,6 +1243,7 @@ public /*transient*/ abstract class Computer extends Actionable implements Acces
      * Really deletes the slave.
      */
     @CLIMethod(name="delete-node")
+    @RequirePOST
     public HttpResponse doDoDelete() throws IOException {
         checkPermission(DELETE);
         Node node = getNode();

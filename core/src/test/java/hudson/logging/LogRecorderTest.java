@@ -24,6 +24,7 @@
 
 package hudson.logging;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import org.junit.Test;
@@ -52,6 +53,21 @@ public class LogRecorderTest {
         assertNull(matches("hudson", "jenkins.model.Jenkins"));
         assertTrue(matches("", "hudson.model.Hudson"));
         assertFalse(matches("", "hudson.model.Hudson", Level.FINE));
+    }
+
+    @Test public void testClearing() throws IOException {
+        LogRecorder lr = new LogRecorder("foo");
+        LogRecorder.Target t = new LogRecorder.Target("", Level.FINE);
+        lr.targets.add(t);
+
+        LogRecord record = createLogRecord("jenkins", Level.INFO, "message");
+        lr.handler.publish(record);
+        assertEquals(lr.handler.getView().get(0), record);
+        assertEquals(1, lr.handler.getView().size());
+
+        lr.doClear();
+
+        assertEquals(0, lr.handler.getView().size());
     }
 
     @Test public void testSpecificExclusion() {

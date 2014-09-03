@@ -52,6 +52,8 @@ import org.kohsuke.stapler.export.ExportedBean;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
+import java.util.ListIterator;
 import javax.annotation.Nonnull;
 
 import org.kohsuke.stapler.StaplerRequest;
@@ -71,6 +73,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import org.kohsuke.stapler.Ancestor;
 
 /**
  * Partial default implementation of {@link Item}.
@@ -487,8 +490,23 @@ public abstract class AbstractItem extends Actionable implements Item, HttpDelet
     @RequirePOST
     public void doDoDelete( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException, InterruptedException {
         delete();
-        if (rsp != null) // null for CLI
-            rsp.sendRedirect2(req.getContextPath()+"/"+getParent().getUrl());
+        if (req == null || rsp == null) { // CLI
+            return;
+        }
+        List<Ancestor> ancestors = req.getAncestors();
+        ListIterator<Ancestor> it = ancestors.listIterator(ancestors.size());
+        String url = getParent().getUrl(); // fallback but we ought to get to Jenkins.instance at the root
+        while (it.hasPrevious()) {
+            Object a = it.previous().getObject();
+            if (a instanceof View) {
+                url = ((View) a).getUrl();
+                break;
+            } else if (a instanceof ViewGroup && a != this) {
+                url = ((ViewGroup) a).getUrl();
+                break;
+            }
+        }
+        rsp.sendRedirect2(req.getContextPath() + '/' + url);
     }
 
     public void delete( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
@@ -603,6 +621,34 @@ public abstract class AbstractItem extends Actionable implements Item, HttpDelet
         }
     }
 
+    /**
+     * Reloads this job from the disk.
+     *
+     * Exposed through CLI as well.
+     *
+     * TODO: think about exposing this to UI
+     *
+     * @since 1.556
+     */
+    @CLIMethod(name="reload-job")
+    @RequirePOST
+    public void doReload() throws IOException {
+        checkPermission(CONFIGURE);
+
+        // try to reflect the changes by reloading
+        getConfigFile().unmarshal(this);
+        Items.whileUpdatingByXml(new Callable<Void, IOException>() {
+            @Override
+            public Void call() throws IOException {
+                onLoad(getParent(), getRootDir().getName());
+                return null;
+            }
+        });
+        Jenkins.getInstance().rebuildDependencyGraphAsync();
+
+        SaveableListener.fireOnChange(this, getConfigFile());
+    }
+
 
     /* (non-Javadoc)
      * @see hudson.model.AbstractModelObject#getSearchName()
@@ -615,8 +661,8 @@ public abstract class AbstractItem extends Actionable implements Item, HttpDelet
         return getName();
     }
 
-    public String toString() {
-        return super.toString()+'['+getFullName()+']';
+    @Override public String toString() {
+        return super.toString() + '[' + (parent != null ? getFullName() : "?/" + name) + ']';
     }
 
     /**
@@ -625,6 +671,7 @@ public abstract class AbstractItem extends Actionable implements Item, HttpDelet
     @CLIResolver
     public static AbstractItem resolveForCLI(
             @Argument(required=true,metaVar="NAME",usage="Job name") String name) throws CmdLineException {
+        // TODO can this (and its pseudo-override in AbstractProject) share code with GenericItemOptionHandler, used for explicit CLICommand’s rather than CLIMethod’s?
         AbstractItem item = Jenkins.getInstance().getItemByFullName(name, AbstractItem.class);
         if (item==null)
             throw new CmdLineException(null,Messages.AbstractItem_NoSuchJobExists(name,AbstractProject.findNearest(name).getFullName()));
