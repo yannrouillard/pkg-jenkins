@@ -24,7 +24,6 @@
 package hudson.tasks.junit;
 
 import com.thoughtworks.xstream.XStream;
-
 import hudson.XmlFile;
 import hudson.model.AbstractBuild;
 import hudson.model.Action;
@@ -33,9 +32,6 @@ import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestObject;
 import hudson.util.HeapSpaceStringConverter;
 import hudson.util.XStream2;
-
-import org.kohsuke.accmod.Restricted;
-import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.StaplerProxy;
 
 import java.io.File;
@@ -72,7 +68,7 @@ public class TestResultAction extends AbstractTestResultAction<TestResultAction>
         setResult(result, listener);
     }
 
-    @Restricted(NoExternalUse.class)
+    /** @since 1.545 */
     public TestResultAction(TestResult result, BuildListener listener) {
         this(null, result, listener);
     }
@@ -166,18 +162,19 @@ public class TestResultAction extends AbstractTestResultAction<TestResultAction>
     public Object getTarget() {
         return getResult();
     }
-    
+
     public List<TestAction> getActions(TestObject object) {
-    	List<TestAction> result = new ArrayList<TestAction>();
-	// Added check for null testData to avoid NPE from issue 4257.
-	if (testData!=null) {
-        for (Data data : testData) {
-            result.addAll(data.getTestAction(object));
+        List<TestAction> result = new ArrayList<TestAction>();
+        // Added check for null testData to avoid NPE from issue 4257.
+        if (testData != null) {
+            for (Data data : testData)
+                for (TestAction ta : data.getTestAction(object))
+                    if (ta != null)
+                        result.add(ta);
         }
+        return Collections.unmodifiableList(result);
     }
-	return Collections.unmodifiableList(result);
-	
-    }
+
     public void setData(List<Data> testData) {
 	this.testData = testData;
     }

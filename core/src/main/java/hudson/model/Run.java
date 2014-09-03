@@ -34,7 +34,6 @@ import hudson.BulkChange;
 import hudson.EnvVars;
 import hudson.ExtensionPoint;
 import hudson.FeedAdapter;
-import hudson.FilePath;
 import hudson.Util;
 import hudson.XmlFile;
 import hudson.cli.declarative.CLIMethod;
@@ -55,8 +54,8 @@ import hudson.tasks.BuildWrapper;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.util.FlushProofOutputStream;
 import hudson.util.FormApply;
-import hudson.util.IOException2;
 import hudson.util.LogTaskListener;
+import hudson.util.ProcessTree;
 import hudson.util.XStream2;
 
 import java.io.BufferedReader;
@@ -212,7 +211,7 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
     /**
      * The current build state.
      */
-    protected volatile transient State state;
+    private volatile transient State state;
 
     private static enum State {
         /**
@@ -226,6 +225,11 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
         /**
          * Build is completed now, and the status is determined,
          * but log files are still being updated.
+         *
+         * The significance of this state is that Jenkins
+         * will now see this build as completed. Things like
+         * "triggering other builds" requires this as pre-condition.
+         * See JENKINS-980.
          */
         POST_PRODUCTION,
         /**
@@ -328,7 +332,7 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
      */
     @SuppressWarnings("deprecation")
     protected void onLoad() {
-        for (Action a : getActions()) {
+        for (Action a : getAllActions()) {
             if (a instanceof RunAction2) {
                 ((RunAction2) a).onLoad(this);
             } else if (a instanceof RunAction) {
@@ -344,7 +348,9 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
      * Return all transient actions associated with this build.
      * 
      * @return the list can be empty but never null. read only.
+     * @deprecated Use {@link #getAllActions} instead.
      */
+    @Deprecated
     public List<Action> getTransientActions() {
         List<Action> actions = new ArrayList<Action>();
         for (TransientBuildActionFactory factory: TransientBuildActionFactory.all()) {
@@ -387,7 +393,7 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
         } catch (ParseException e) {
             throw new InvalidDirectoryNameException(buildDir);
         } catch (InterruptedException e) {
-            throw new IOException2("Interrupted while resolving symlink directory "+buildDir,e);
+            throw new IOException("Interrupted while resolving symlink directory "+buildDir,e);
         }
     }
 
@@ -439,21 +445,11 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
      * Gets the subset of {@link #getActions()} that consists of {@link BuildBadgeAction}s.
      */
     public List<BuildBadgeAction> getBadgeActions() {
-        List<BuildBadgeAction> r = null;
-        for (Action a : getActions()) {
-            if(a instanceof BuildBadgeAction) {
-                if(r==null)
-                    r = new ArrayList<BuildBadgeAction>();
-                r.add((BuildBadgeAction)a);
-            }
-        }
+        List<BuildBadgeAction> r = getActions(BuildBadgeAction.class);
         if(isKeepLog()) {
-            if(r==null)
-                r = new ArrayList<BuildBadgeAction>();
             r.add(new KeepLogBuildBadge());
         }
-        if(r==null)     return Collections.emptyList();
-        else            return r;
+        return r;
     }
 
     /**
@@ -463,6 +459,15 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
     @Exported
     public boolean isBuilding() {
         return state.compareTo(State.POST_PRODUCTION) < 0;
+    }
+
+    /**
+     * Determine whether the run is being build right now.
+     * @return true if after started and before completed.
+     * @since 1.538
+     */
+    protected boolean isInProgress() {
+        return state.equals(State.BUILDING) || state.equals(State.POST_PRODUCTION);
     }
 
     /**
@@ -1240,7 +1245,7 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
 
         /**
          * Gets the artifact file.
-         * @deprecated May not be meaningful with custom artifact managers. Use {@link ArtifactManager#load} with {@link #relativePath} instead.
+         * @deprecated May not be meaningful with custom artifact managers. Use {@link ArtifactManager#root} plus {@link VirtualFile#child} with {@link #relativePath} instead.
          */
         @Deprecated
         public File getFile() {
@@ -1358,10 +1363,16 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
     public void writeWholeLogTo(OutputStream out) throws IOException, InterruptedException {
         long pos = 0;
         AnnotatedLargeText logText;
-        do {
+        logText = getLogText();
+        pos = logText.writeLogTo(pos, out);
+
+        while (!logText.isComplete()) {
+            // Instead of us hitting the log file as many times as possible, instead we get the information once every
+            // second to avoid CPU usage getting very high.
+            Thread.sleep(1000);
             logText = getLogText();
             pos = logText.writeLogTo(pos, out);
-        } while (!logText.isComplete());
+        }
     }
 
     /**
@@ -1376,7 +1387,7 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
         SearchIndexBuilder builder = super.makeSearchIndex()
                 .add("console")
                 .add("changes");
-        for (Action a : getActions()) {
+        for (Action a : getAllActions()) {
             if(a.getIconFileName()!=null)
                 builder.add(a.getUrlName());
         }
@@ -2081,7 +2092,7 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
     }
 
     public void keepLog(boolean newValue) throws IOException {
-        checkPermission(UPDATE);
+        checkPermission(newValue ? UPDATE : DELETE);
         keepLog = newValue;
         save();
     }
@@ -2111,7 +2122,7 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
             req.setAttribute("stackTraces", writer);
             req.getView(this, "delete-retry.jelly").forward(req, rsp);  
             return;
-        } 
+        }
         rsp.sendRedirect2(req.getContextPath()+'/' + getParent().getUrl());
     }
 
@@ -2155,7 +2166,7 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
      * processes for this build.
      *
      * <p>
-     * {@link BuildStep}s that invoke external processes should use this.
+     * {@link hudson.tasks.BuildStep}s that invoke external processes should use this.
      * This allows {@link BuildWrapper}s and other project configurations (such as JDK selection)
      * to take effect.
      *

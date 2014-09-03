@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import hudson.Util;
+import jenkins.security.SecurityListener;
 import org.acegisecurity.Authentication;
 import org.acegisecurity.AuthenticationException;
 import org.acegisecurity.ui.webapp.AuthenticationProcessingFilter;
@@ -87,6 +88,7 @@ public class AuthenticationProcessingFilter2 extends AuthenticationProcessingFil
         // doFilter method.
         request.getSession().invalidate();
         request.getSession();
+        SecurityListener.fireLoggedIn(authResult.getName());
     }
 
     /**
@@ -98,7 +100,11 @@ public class AuthenticationProcessingFilter2 extends AuthenticationProcessingFil
     @Override
     protected void onUnsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         super.onUnsuccessfulAuthentication(request, response, failed);
-        LOGGER.log(Level.INFO, "Login attempt failed", failed);
+        LOGGER.log(Level.FINE, "Login attempt failed", failed);
+        Authentication auth = failed.getAuthentication();
+        if (auth != null) {
+            SecurityListener.fireFailedToLogIn(auth.getName());
+        }
     }
 
     private static final Logger LOGGER = Logger.getLogger(AuthenticationProcessingFilter2.class.getName());

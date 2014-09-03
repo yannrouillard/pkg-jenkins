@@ -28,6 +28,7 @@ import hudson.Extension;
 import hudson.Util;
 import hudson.diagnosis.OldDataMonitor;
 import hudson.model.Descriptor.FormException;
+import hudson.model.listeners.ItemListener;
 import hudson.util.CaseInsensitiveComparator;
 import hudson.util.DescribableList;
 import hudson.util.FormValidation;
@@ -37,13 +38,18 @@ import hudson.views.ViewJobFilter;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.servlet.ServletException;
+import jenkins.model.Jenkins;
 
 import net.sf.json.JSONObject;
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.HttpResponse;
@@ -302,12 +308,6 @@ public class ListView extends View implements Saveable {
         return HttpResponses.ok();
     }
 
-    @Override
-    public synchronized void onJobRenamed(Item item, String oldName, String newName) {
-        if(jobNames.remove(oldName) && newName!=null)
-            jobNames.add(newName);
-    }
-
     /**
      * Handles the configuration submission.
      *
@@ -349,6 +349,7 @@ public class ListView extends View implements Saveable {
         statusFilter = filter != null ? "1".equals(filter) : null;
     }
     
+    /** @since 1.526 */
     public void setIncludeRegex(String includeRegex) {
         this.includeRegex = Util.nullify(includeRegex);
         if (this.includeRegex == null)
@@ -386,4 +387,60 @@ public class ListView extends View implements Saveable {
     public static List<ListViewColumn> getDefaultColumns() {
         return ListViewColumn.createDefaultInitialColumnList();
     }
+
+    @Restricted(NoExternalUse.class)
+    @Extension public static final class Listener extends ItemListener {
+        @Override public void onLocationChanged(Item item, String oldFullName, String newFullName) {
+            for (Item g : Jenkins.getInstance().getAllItems()) {
+                if (g instanceof ViewGroup) {
+                    ViewGroup vg = (ViewGroup) g;
+                    for (View v : vg.getViews()) {
+                        if (v instanceof ListView) {
+                            ListView lv = (ListView) v;
+                            boolean needsSave;
+                            synchronized (lv) {
+                                Set<String> oldJobNames = new HashSet<String>(lv.jobNames);
+                                lv.jobNames.clear();
+                                for (String oldName : oldJobNames) {
+                                    lv.jobNames.add(Items.computeRelativeNamesAfterRenaming(oldFullName, newFullName, oldName, vg.getItemGroup()));
+                                }
+                                needsSave = !oldJobNames.equals(lv.jobNames);
+                            }
+                            if (needsSave) { // do not hold ListView lock at the time
+                                try {
+                                    g.save();
+                                } catch (IOException x) {
+                                    Logger.getLogger(ListView.class.getName()).log(Level.WARNING, null, x);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        @Override public void onDeleted(Item item) {
+            for (Item g : Jenkins.getInstance().getAllItems()) {
+                if (g instanceof ViewGroup) {
+                    ViewGroup vg = (ViewGroup) g;
+                    for (View v : vg.getViews()) {
+                        if (v instanceof ListView) {
+                            ListView lv = (ListView) v;
+                            boolean needsSave;
+                            synchronized (lv) {
+                                needsSave = lv.jobNames.remove(item.getRelativeNameFrom(vg.getItemGroup()));
+                            }
+                            if (needsSave) {
+                                try {
+                                    g.save();
+                                } catch (IOException x) {
+                                    Logger.getLogger(ListView.class.getName()).log(Level.WARNING, null, x);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

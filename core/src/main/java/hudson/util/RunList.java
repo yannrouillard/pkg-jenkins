@@ -27,7 +27,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import hudson.model.AbstractBuild;
-import hudson.model.Item;
 import hudson.model.Job;
 import hudson.model.Node;
 import hudson.model.Result;
@@ -63,22 +62,22 @@ public class RunList<R extends Run> extends AbstractList<R> {
         for (TopLevelItem item : view.getItems())
             jobs.addAll(item.getAllJobs());
 
-        List<Iterable<R>> runs = new ArrayList<Iterable<R>>();
+        List<Iterable<R>> runLists = new ArrayList<Iterable<R>>();
         for (Job job : jobs) {
-            runs.add(job.getBuilds());
+            runLists.add(job.getBuilds());
         }
-        this.base = combine(runs);
+        this.base = combine(runLists);
     }
 
     public RunList(Collection<? extends Job> jobs) {
-        List<Iterable<R>> src = new ArrayList<Iterable<R>>();
+        List<Iterable<R>> runLists = new ArrayList<Iterable<R>>();
         for (Job j : jobs)
-            src.add(j.getBuilds());
-        this.base = combine(src);
+            runLists.add(j.getBuilds());
+        this.base = combine(runLists);
     }
 
-    private Iterable<R> combine(Iterable<Iterable<R>> jobs) {
-        return Iterables.mergeSorted(jobs, new Comparator<R>() {
+    private Iterable<R> combine(Iterable<Iterable<R>> runLists) {
+        return Iterables.mergeSorted(runLists, new Comparator<R>() {
             public int compare(R o1, R o2) {
                 long lhs = o1.getTimeInMillis();
                 long rhs = o2.getTimeInMillis();
@@ -188,7 +187,7 @@ public class RunList<R extends Run> extends AbstractList<R> {
     /**
      * Returns elements that satisfy the given predicate.
      * <em>Warning:</em> this method mutates the original list and then returns it.
-     * @since TODO
+     * @since 1.544
      */
     public RunList<R> filter(Predicate<R> predicate) {
         size = null;
@@ -292,13 +291,13 @@ public class RunList<R extends Run> extends AbstractList<R> {
     public RunList<R> byTimestamp(final long start, final long end) {
         return
         limit(new CountingPredicate<R>() {
-            public boolean apply(int index,R r) {
-                return r.getTimeInMillis()<end;
-            }
-        }).filter(new Predicate<R>() {
-            public boolean apply(R r) {
+            public boolean apply(int index, R r) {
                 return start<=r.getTimeInMillis();
             }
+        }).filter(new Predicate<R>() {
+        	public boolean apply(R r) {
+        		return r.getTimeInMillis()<end;
+                    }
         });
     }
 

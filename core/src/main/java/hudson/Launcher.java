@@ -1087,8 +1087,7 @@ public abstract class Launcher {
      */
     private static EnvVars inherit(Map<String,String> overrides) {
         EnvVars m = new EnvVars(EnvVars.masterEnvVars);
-        for (Map.Entry<String,String> o : overrides.entrySet()) 
-            m.override(o.getKey(),m.expand(o.getValue()));
+        m.overrideExpandingAll(overrides);
         return m;
     }
     

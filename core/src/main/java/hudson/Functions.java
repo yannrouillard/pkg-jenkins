@@ -44,6 +44,7 @@ import hudson.model.JobPropertyDescriptor;
 import hudson.model.ModelObject;
 import hudson.model.Node;
 import hudson.model.PageDecorator;
+import hudson.model.PaneStatusProperties;
 import hudson.model.ParameterDefinition;
 import hudson.model.ParameterDefinition.ParameterDescriptor;
 import hudson.model.Project;
@@ -140,7 +141,6 @@ import org.apache.commons.jelly.XMLOutput;
 import org.apache.commons.jexl.parser.ASTSizeFunction;
 import org.apache.commons.jexl.util.Introspector;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
 import org.jvnet.tiger_types.Types;
 import org.kohsuke.stapler.Ancestor;
 import org.kohsuke.stapler.Stapler;
@@ -258,7 +258,7 @@ public class Functions {
      * like "-5", "+/-0", "+3".
      */
     public static String getDiffString(int i) {
-        if(i==0)    return "\u00B10";   // +/-0
+        if(i==0)    return "±0";
         String s = Integer.toString(i);
         if(i>0)     return "+"+s;
         else        return s;
@@ -591,6 +591,10 @@ public class Functions {
         return false;
     }
 
+    public static boolean isCollapsed(String paneId) {
+    	return PaneStatusProperties.forCurrentUser().isCollapsed(paneId);
+    }
+    
     /**
      * Finds the given object in the ancestor list and returns its URL.
      * This is used to determine the "current" URL assigned to the given object,
@@ -1110,7 +1114,7 @@ public class Functions {
      * @param p the Item we want the relative display name
      * @param g the ItemGroup used as point of reference for the item
      * @return
-     *      String like "foo » bar"
+     *      String like "foo/bar"
      */
     public static String getRelativeNameFrom(Item p, ItemGroup g) {
         return getRelativeNameFrom(p, g, false);
@@ -1124,7 +1128,7 @@ public class Functions {
      * @param p the Item we want the relative display name
      * @param g the ItemGroup used as point of reference for the item
      * @return
-     *      String like "foo » bar"
+     *      String like "Foo » Bar"
      */
     public static String getRelativeDisplayNameFrom(Item p, ItemGroup g) {
         return getRelativeNameFrom(p, g, true);
@@ -1136,7 +1140,6 @@ public class Functions {
         return sorted;
     }
 
-    @IgnoreJRERequirement
     public static ThreadInfo[] getThreadInfos() {
         ThreadMXBean mbean = ManagementFactory.getThreadMXBean();
         return mbean.dumpAllThreads(mbean.isObjectMonitorUsageSupported(),mbean.isSynchronizerUsageSupported());
@@ -1157,8 +1160,10 @@ public class Functions {
             while (tg.getParent() != null) tg = tg.getParent();
             Thread[] threads = new Thread[tg.activeCount()*2];
             int threadsLen = tg.enumerate(threads, true);
-            for (int i = 0; i < threadsLen; i++)
-                map.put(threads[i].getId(), threads[i].getThreadGroup().getName());
+            for (int i = 0; i < threadsLen; i++) {
+                ThreadGroup group = threads[i].getThreadGroup();
+                map.put(threads[i].getId(), group != null ? group.getName() : null);
+            }
         }
 
         protected int compare(long idA, long idB) {
@@ -1198,20 +1203,14 @@ public class Functions {
     }
 
     /**
-     * Are we running on JRE6 or above?
+     * @deprecated Now always true.
      */
-    @IgnoreJRERequirement
+    @Deprecated
     public static boolean isMustangOrAbove() {
-        try {
-            System.console();
-            return true;
-        } catch(LinkageError e) {
-            return false;
-        }
+        return true;
     }
 
     // ThreadInfo.toString() truncates the stack trace by first 8, so needed my own version
-    @IgnoreJRERequirement
     public static String dumpThreadInfo(ThreadInfo ti, ThreadGroupMap map) {
         String grp = map.getThreadGroup(ti);
         StringBuilder sb = new StringBuilder("\"" + ti.getThreadName() + "\"" +
@@ -1864,4 +1863,14 @@ public class Functions {
             }
         }
     }
+
+    @Restricted(NoExternalUse.class) // for actions.jelly and ContextMenu.add
+    public static boolean isContextMenuVisible(Action a) {
+        if (a instanceof ModelObjectWithContextMenu.ContextMenuVisibility) {
+            return ((ModelObjectWithContextMenu.ContextMenuVisibility) a).isVisible();
+        } else {
+            return true;
+        }
+    }
+
 }

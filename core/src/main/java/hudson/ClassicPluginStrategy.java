@@ -27,16 +27,15 @@ import com.google.common.collect.Lists;
 import hudson.Plugin.DummyImpl;
 import hudson.PluginWrapper.Dependency;
 import hudson.model.Hudson;
+import jenkins.util.AntClassLoader;
 import hudson.util.CyclicGraphDetector;
 import hudson.util.CyclicGraphDetector.CycleDetectedException;
-import hudson.util.IOException2;
 import hudson.util.IOUtils;
 import hudson.util.MaskingClassLoader;
 import hudson.util.VersionNumber;
 import jenkins.ClassLoaderReflectionToolkit;
 import jenkins.ExtensionFilter;
 import org.apache.commons.io.output.NullOutputStream;
-import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Expand;
@@ -57,7 +56,6 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,7 +71,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ClassicPluginStrategy implements PluginStrategy {
-    private final ClassLoaderReflectionToolkit clt = new ClassLoaderReflectionToolkit();
 
     /**
      * Filter for jar files.
@@ -117,7 +114,7 @@ public class ClassicPluginStrategy implements PluginStrategy {
             try {
                 manifest = new Manifest(in);
             } catch (IOException e) {
-                throw new IOException2("Failed to load " + archive, e);
+                throw new IOException("Failed to load " + archive, e);
             } finally {
                 in.close();
             }
@@ -272,7 +269,10 @@ public class ClassicPluginStrategy implements PluginStrategy {
         new DetachedPlugin("external-monitor-job","1.467.*","1.0"),
         new DetachedPlugin("ldap","1.467.*","1.0"),
         new DetachedPlugin("pam-auth","1.467.*","1.0"),
-        new DetachedPlugin("mailer","1.493.*","1.2")
+        new DetachedPlugin("mailer","1.493.*","1.2"),
+        new DetachedPlugin("matrix-auth","1.535.*","1.0.2"),
+        new DetachedPlugin("windows-slaves","1.547.*","1.0"),
+        new DetachedPlugin("antisamy-markup-formatter","1.553.*","1.0")
     );
 
     /**
@@ -349,13 +349,13 @@ public class ClassicPluginStrategy implements PluginStrategy {
                     }
                     wrapper.setPlugin((Plugin) o);
                 } catch (LinkageError e) {
-                    throw new IOException2("Unable to load " + className + " from " + wrapper.getShortName(),e);
+                    throw new IOException("Unable to load " + className + " from " + wrapper.getShortName(),e);
                 } catch (ClassNotFoundException e) {
-                    throw new IOException2("Unable to load " + className + " from " + wrapper.getShortName(),e);
+                    throw new IOException("Unable to load " + className + " from " + wrapper.getShortName(),e);
                 } catch (IllegalAccessException e) {
-                    throw new IOException2("Unable to create instance of " + className + " from " + wrapper.getShortName(),e);
+                    throw new IOException("Unable to create instance of " + className + " from " + wrapper.getShortName(),e);
                 } catch (InstantiationException e) {
-                    throw new IOException2("Unable to create instance of " + className + " from " + wrapper.getShortName(),e);
+                    throw new IOException("Unable to create instance of " + className + " from " + wrapper.getShortName(),e);
                 }
             }
 
@@ -366,7 +366,7 @@ public class ClassicPluginStrategy implements PluginStrategy {
                 startPlugin(wrapper);
             } catch(Throwable t) {
                 // gracefully handle any error in plugin.
-                throw new IOException2("Failed to initialize",t);
+                throw new IOException("Failed to initialize",t);
             }
         } finally {
             Thread.currentThread().setContextClassLoader(old);
@@ -426,7 +426,7 @@ public class ClassicPluginStrategy implements PluginStrategy {
             unzipExceptClasses(archive, destDir, prj);
             createClassJarFromWebInfClasses(archive, destDir, prj);
         } catch (BuildException x) {
-            throw new IOException2("Failed to expand " + archive,x);
+            throw new IOException("Failed to expand " + archive,x);
         }
 
         try {
@@ -440,7 +440,7 @@ public class ClassicPluginStrategy implements PluginStrategy {
      * Repackage classes directory into a jar file to make it remoting friendly.
      * The remoting layer can cache jar files but not class files.
      */
-    private static void createClassJarFromWebInfClasses(File archive, File destDir, Project prj) {
+    private static void createClassJarFromWebInfClasses(File archive, File destDir, Project prj) throws IOException {
         File classesJar = new File(destDir, "WEB-INF/lib/classes.jar");
 
         ZipFileSet zfs = new ZipFileSet();
@@ -457,31 +457,36 @@ public class ClassicPluginStrategy implements PluginStrategy {
         mapper.add(gm);
 
         final long dirTime = archive.lastModified();
-        Zip z = new Zip() {
-            /**
-             * Forces the fixed timestamp for directories to make sure
-             * classes.jar always get a consistent checksum.
-             */
-            protected void zipDir(Resource dir, ZipOutputStream zOut, String vPath,
-                                  int mode, ZipExtraField[] extra)
-                throws IOException {
-
-                ZipOutputStream wrapped = new ZipOutputStream(new NullOutputStream()) {
-                    @Override
-                    public void putNextEntry(ZipEntry ze) throws IOException {
-                        ze.setTime(dirTime+1999);   // roundup
-                        super.putNextEntry(ze);
-                    }
-                };
-                super.zipDir(dir,wrapped,vPath,mode,extra);
+        // this ZipOutputStream is reused and not created for each directory
+        final ZipOutputStream wrappedZOut = new ZipOutputStream(new NullOutputStream()) {
+            @Override
+            public void putNextEntry(ZipEntry ze) throws IOException {
+                ze.setTime(dirTime+1999);   // roundup
+                super.putNextEntry(ze);
             }
         };
-        z.setProject(prj);
-        z.setTaskType("zip");
-        classesJar.getParentFile().mkdirs();
-        z.setDestFile(classesJar);
-        z.add(mapper);
-        z.execute();
+        try {
+            Zip z = new Zip() {
+                /**
+                 * Forces the fixed timestamp for directories to make sure
+                 * classes.jar always get a consistent checksum.
+                 */
+                protected void zipDir(Resource dir, ZipOutputStream zOut, String vPath,
+                                      int mode, ZipExtraField[] extra)
+                    throws IOException {
+                    // use wrappedZOut instead of zOut
+                    super.zipDir(dir,wrappedZOut,vPath,mode,extra);
+                }
+            };
+            z.setProject(prj);
+            z.setTaskType("zip");
+            classesJar.getParentFile().mkdirs();
+            z.setDestFile(classesJar);
+            z.add(mapper);
+            z.execute();
+        } finally {
+            wrappedZOut.close();
+        }
     }
 
     private static void unzipExceptClasses(File archive, File destDir, Project prj) {
@@ -562,10 +567,10 @@ public class ClassicPluginStrategy implements PluginStrategy {
             if (PluginManager.FAST_LOOKUP) {
                 for (PluginWrapper pw : getTransitiveDependencies()) {
                     try {
-                        Class c = clt.findLoadedClass(pw.classLoader,name);
+                        Class<?> c = ClassLoaderReflectionToolkit._findLoadedClass(pw.classLoader, name);
                         if (c!=null)    return c;
-                        return clt.findClass(pw.classLoader,name);
-                    } catch (InvocationTargetException e) {
+                        return ClassLoaderReflectionToolkit._findClass(pw.classLoader, name);
+                    } catch (ClassNotFoundException e) {
                         //not found. try next
                     }
                 }
@@ -589,15 +594,11 @@ public class ClassicPluginStrategy implements PluginStrategy {
             HashSet<URL> result = new HashSet<URL>();
 
             if (PluginManager.FAST_LOOKUP) {
-                try {
                     for (PluginWrapper pw : getTransitiveDependencies()) {
-                        Enumeration<URL> urls = clt.findResources(pw.classLoader, name);
+                        Enumeration<URL> urls = ClassLoaderReflectionToolkit._findResources(pw.classLoader, name);
                         while (urls != null && urls.hasMoreElements())
                             result.add(urls.nextElement());
                     }
-                } catch (InvocationTargetException e) {
-                    throw new Error(e);
-                }
             } else {
                 for (Dependency dep : dependencies) {
                     PluginWrapper p = pluginManager.getPlugin(dep.shortName);
@@ -615,14 +616,10 @@ public class ClassicPluginStrategy implements PluginStrategy {
         @Override
         protected URL findResource(String name) {
             if (PluginManager.FAST_LOOKUP) {
-                try {
                     for (PluginWrapper pw : getTransitiveDependencies()) {
-                        URL url = clt.findResource(pw.classLoader,name);
+                        URL url = ClassLoaderReflectionToolkit._findResource(pw.classLoader, name);
                         if (url!=null)    return url;
                     }
-                } catch (InvocationTargetException e) {
-                    throw new Error(e);
-                }
             } else {
                 for (Dependency dep : dependencies) {
                     PluginWrapper p = pluginManager.getPlugin(dep.shortName);
@@ -640,7 +637,7 @@ public class ClassicPluginStrategy implements PluginStrategy {
 
     /**
      * {@link AntClassLoader} with a few methods exposed and {@link Closeable} support.
-     * Deprecated as of Java 7, retained only for Java 5/6.
+     * Deprecated as of Java 7, retained only for Java 6.
      */
     private final class AntClassLoader2 extends AntClassLoader implements Closeable {
         private final Vector pathComponents;

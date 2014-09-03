@@ -135,6 +135,7 @@ public class UsageStatistics extends PageDecorator {
             if(c.getNode()==j) {
                 n.put("master",true);
                 n.put("jvm-vendor", System.getProperty("java.vm.vendor"));
+                n.put("jvm-name", System.getProperty("java.vm.name"));
                 n.put("jvm-version", System.getProperty("java.version"));
             }
             n.put("executors",c.getNumExecutors());
@@ -155,7 +156,7 @@ public class UsageStatistics extends PageDecorator {
         o.put("plugins",plugins);
 
         JSONObject jobs = new JSONObject();
-        List<TopLevelItem> items = j.getItems();
+        List<TopLevelItem> items = j.getAllItems(TopLevelItem.class);
         for (TopLevelItemDescriptor d : Items.all()) {
             int cnt=0;
             for (TopLevelItem item : items) {
