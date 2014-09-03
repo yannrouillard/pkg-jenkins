@@ -27,29 +27,31 @@
  */
 package hudson.model;
 
-import hudson.console.ConsoleLogFilter;
-import hudson.Functions;
+import com.jcraft.jzlib.GZIPInputStream;
+import com.thoughtworks.xstream.XStream;
 import hudson.AbortException;
 import hudson.BulkChange;
 import hudson.EnvVars;
 import hudson.ExtensionPoint;
 import hudson.FeedAdapter;
+import hudson.Functions;
 import hudson.Util;
 import hudson.XmlFile;
 import hudson.cli.declarative.CLIMethod;
 import hudson.console.AnnotatedLargeText;
+import hudson.console.ConsoleLogFilter;
 import hudson.console.ConsoleNote;
-import hudson.matrix.MatrixBuild;
-import hudson.matrix.MatrixRun;
+import hudson.console.ModelHyperlinkNote;
 import hudson.model.Descriptor.FormException;
+import hudson.model.Run.RunExecution;
 import hudson.model.listeners.RunListener;
 import hudson.model.listeners.SaveableListener;
-import hudson.security.PermissionScope;
 import hudson.search.SearchIndexBuilder;
 import hudson.security.ACL;
 import hudson.security.AccessControlled;
 import hudson.security.Permission;
 import hudson.security.PermissionGroup;
+import hudson.security.PermissionScope;
 import hudson.tasks.BuildWrapper;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.util.FlushProofOutputStream;
@@ -57,15 +59,18 @@ import hudson.util.FormApply;
 import hudson.util.LogTaskListener;
 import hudson.util.ProcessTree;
 import hudson.util.XStream2;
-
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
@@ -79,25 +84,34 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
 import java.util.logging.Level;
+import static java.util.logging.Level.*;
 import java.util.logging.Logger;
-import com.jcraft.jzlib.GZIPInputStream;
-
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
-
+import jenkins.model.ArtifactManager;
+import jenkins.model.ArtifactManagerConfiguration;
+import jenkins.model.ArtifactManagerFactory;
 import jenkins.model.BuildDiscarder;
 import jenkins.model.Jenkins;
 import jenkins.model.JenkinsLocationConfiguration;
+import jenkins.model.PeepholePermalink;
+import jenkins.model.RunAction2;
+import jenkins.model.StandardArtifactManager;
+import jenkins.model.lazy.BuildReference;
+import jenkins.util.VirtualFile;
 import jenkins.util.io.OnMaster;
 import net.sf.json.JSONObject;
+import org.acegisecurity.Authentication;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.jelly.XMLOutput;
 import org.kohsuke.accmod.Restricted;
@@ -105,26 +119,7 @@ import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.*;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
-
-import com.thoughtworks.xstream.XStream;
-import hudson.model.Run.RunExecution;
-import java.io.ByteArrayInputStream;
 import org.kohsuke.stapler.interceptor.RequirePOST;
-
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-
-import java.io.StringWriter;
-import static java.util.logging.Level.*;
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import jenkins.model.ArtifactManager;
-import jenkins.model.ArtifactManagerConfiguration;
-import jenkins.model.ArtifactManagerFactory;
-import jenkins.model.PeepholePermalink;
-import jenkins.model.StandardArtifactManager;
-import jenkins.model.RunAction2;
-import jenkins.util.VirtualFile;
 
 /**
  * A particular execution of {@link Job}.
@@ -154,7 +149,7 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
 
     /**
      * Previous build. Can be null.
-     * These two fields are maintained and updated by {@link RunMap}.
+     * TODO JENKINS-22052 this is not actually implemented any more
      *
      * External code should use {@link #getPreviousBuild()}
      */
@@ -435,17 +430,12 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
 
     public void setResult(Result r) {
         // state can change only when we are building
-        assert state==State.BUILDING;
+        assert state==State.BUILDING : state;
 
         // result can only get worse
-        if(result==null) {
+        if (result==null || r.isWorseThan(result)) {
             result = r;
-            LOGGER.log(FINE, toString()+" : result is set to "+r,new Exception());
-        } else {
-            if(r.isWorseThan(result)) {
-                LOGGER.log(FINE, toString()+" : result is set to "+r,new Exception());
-                result = r;
-            }
+            LOGGER.log(FINE, this + " in " + getRootDir() + ": result is set to " + r, LOGGER.isLoggable(Level.FINER) ? new Exception() : null);
         }
     }
 
@@ -749,7 +739,7 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
 
     @Override
     public String toString() {
-        return getFullDisplayName();
+        return project.getFullName() + " #" + number;
     }
 
     @Exported
@@ -781,16 +771,30 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
     }
 
     /**
+     * Called by {@link RunMap} to obtain a reference to this run.
+     * @see jenkins.model.lazy.LazyBuildMixIn.RunMixIn#createReference
+     * @since 1.556
+     */
+    protected BuildReference<RunT> createReference() {
+        return new BuildReference<RunT>(getId(), _this());
+    }
+
+    /**
      * Called by {@link RunMap} to drop bi-directional links in preparation for
      * deleting a build.
+     * @see jenkins.model.lazy.LazyBuildMixIn.RunMixIn#dropLinks
+     * @since 1.556
      */
-    /*package*/ void dropLinks() {
+    protected void dropLinks() {
         if(nextBuild!=null)
             nextBuild.previousBuild = previousBuild;
         if(previousBuild!=null)
             previousBuild.nextBuild = nextBuild;
     }
 
+    /**
+     * @see jenkins.model.lazy.LazyBuildMixIn.RunMixIn#getPreviousBuild
+     */
     public RunT getPreviousBuild() {
         return previousBuild;
     }
@@ -913,6 +917,9 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
         return builds;
     }
 
+    /**
+     * @see jenkins.model.lazy.LazyBuildMixIn.RunMixIn#getNextBuild
+     */
     public RunT getNextBuild() {
         return nextBuild;
     }
@@ -1428,9 +1435,11 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
      * @since 1.350
      */
     public synchronized void deleteArtifacts() throws IOException {
-        File artifactsDir = getArtifactsDir();
-
-        Util.deleteContentsRecursive(artifactsDir);
+        try {
+            getArtifactManager().delete();
+        } catch (InterruptedException x) {
+            throw new IOException(x);
+        }
     }
 
     /**
@@ -1439,17 +1448,19 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
      * @throws IOException
      *      if we fail to delete.
      */
-    public synchronized void delete() throws IOException {
+    public void delete() throws IOException {
+        File rootDir = getRootDir();
+        if (!rootDir.isDirectory()) {
+            throw new IOException(this + ": " + rootDir + " looks to have already been deleted; siblings: " + Arrays.toString(project.getBuildDir().list()));
+        }
+        
         RunListener.fireDeleted(this);
 
+        synchronized (this) { // avoid holding a lock while calling plugin impls of onDeleted
         // if we have a symlink, delete it, too
         File link = new File(project.getBuildDir(), String.valueOf(getNumber()));
         link.delete();
 
-        File rootDir = getRootDir();
-        if (!rootDir.isDirectory()) {
-            throw new IOException(rootDir + " looks to have already been deleted");
-        }
         File tmp = new File(rootDir.getParentFile(),'.'+rootDir.getName());
         
         if (tmp.exists()) {
@@ -1465,8 +1476,10 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
 
         if(!renamingSucceeded)
             throw new IOException(rootDir+" is in use");
+        LOGGER.log(FINE, "{0}: {1} successfully deleted", new Object[] {this, rootDir});
 
         removeRunFromParent();
+        }
     }
 
     @SuppressWarnings("unchecked") // seems this is too clever for Java's type system?
@@ -1677,13 +1690,22 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
 
                     listener.started(getCauses());
 
+                    Authentication auth = Jenkins.getAuthentication();
+                    if (!auth.equals(ACL.SYSTEM)) {
+                        String name = auth.getName();
+                        if (!auth.equals(Jenkins.ANONYMOUS)) {
+                            name = ModelHyperlinkNote.encodeTo(User.get(name));
+                        }
+                        listener.getLogger().println(Messages.Run_running_as_(name));
+                    }
+
                     RunListener.fireStarted(this,listener);
 
                     updateSymlinks(listener);
 
                     setResult(job.run(listener));
 
-                    LOGGER.info(toString()+" main build action completed: "+result);
+                    LOGGER.log(INFO, "{0} main build action completed: {1}", new Object[] {this, result});
                     CheckPoint.MAIN_COMPLETED.report();
                 } catch (ThreadDeath t) {
                     throw t;
@@ -1699,7 +1721,7 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
                     result = Executor.currentExecutor().abortResult();
                     listener.getLogger().println(Messages.Run_BuildAborted());
                     Executor.currentExecutor().recordCauseOfInterruption(Run.this,listener);
-                    LOGGER.log(Level.INFO,toString()+" aborted",e);
+                    LOGGER.log(Level.INFO, this + " aborted", e);
                 } catch( Throwable e ) {
                     handleFatalBuildProblem(listener,e);
                     result = Result.FAILURE;
@@ -1840,7 +1862,7 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
         }
         if (result == null) {
             result = Result.FAILURE;
-            LOGGER.warning(toString() + ": No build result is set, so marking as failure. This shouldn't happen.");
+            LOGGER.log(WARNING, "{0}: No build result is set, so marking as failure. This should not happen.", this);
         }
 
         RunListener.fireFinalized(this);
@@ -2057,8 +2079,9 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
 			} finally {
 				IOUtils.closeQuietly(input);
 			}
-		}
-        out.close();
+		} finally {
+            IOUtils.closeQuietly(out);
+        }
     }
 
     /**
@@ -2118,7 +2141,7 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
         // due to dependencies!
         String why = getWhyKeepLog();
         if (why!=null) {
-            sendError(Messages.Run_UnableToDelete(toString(),why),req,rsp);
+            sendError(Messages.Run_UnableToDelete(getFullDisplayName(), why), req, rsp);
             return;
         }
 
@@ -2183,10 +2206,10 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
      * Unlike earlier {@link #getEnvVars()}, this map contains the whole environment,
      * not just the overrides, so one can introspect values to change its behavior.
      * 
-     * @return the map with the environmental variables. Never <code>null</code>.
+     * @return the map with the environmental variables.
      * @since 1.305
      */
-    public EnvVars getEnvironment(TaskListener listener) throws IOException, InterruptedException {
+    public @Nonnull EnvVars getEnvironment(@Nonnull TaskListener listener) throws IOException, InterruptedException {
         Computer c = Computer.currentComputer();
         Node n = c==null ? null : c.getNode();
 
@@ -2272,8 +2295,6 @@ public abstract class Run <JobT extends Job<JobT,RunT>,RunT extends Run<JobT,Run
 
     static {
         XSTREAM.alias("build",FreeStyleBuild.class);
-        XSTREAM.alias("matrix-build",MatrixBuild.class);
-        XSTREAM.alias("matrix-run",MatrixRun.class);
         XSTREAM.registerConverter(Result.conv);
     }
 

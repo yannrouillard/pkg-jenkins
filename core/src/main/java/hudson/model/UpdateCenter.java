@@ -45,6 +45,8 @@ import hudson.util.DaemonThreadFactory;
 import hudson.util.FormValidation;
 import hudson.util.HttpResponses;
 import hudson.util.NamingThreadFactory;
+import hudson.util.IOException2;
+import hudson.util.IOUtils;
 import hudson.util.PersistedList;
 import hudson.util.XStream2;
 import jenkins.RestartRequiredException;
@@ -745,16 +747,19 @@ public class UpdateCenter extends AbstractModelObject implements Saveable, OnMas
          * @see DownloadJob
          */
         public File download(DownloadJob job, URL src) throws IOException {
+            CountingInputStream in = null;
+            OutputStream out = null;
+            URLConnection con = null;
             try {
-                URLConnection con = connect(job,src);
+                con = connect(job,src);
                 int total = con.getContentLength();
-                CountingInputStream in = new CountingInputStream(con.getInputStream());
+                in = new CountingInputStream(con.getInputStream());
                 byte[] buf = new byte[8192];
                 int len;
 
                 File dst = job.getDestination();
                 File tmp = new File(dst.getPath()+".tmp");
-                OutputStream out = new FileOutputStream(tmp);
+                out = new FileOutputStream(tmp);
 
                 LOGGER.info("Downloading "+job.getName());
                 try {
@@ -766,9 +771,6 @@ public class UpdateCenter extends AbstractModelObject implements Saveable, OnMas
                     throw new IOException("Failed to load "+src+" to "+tmp,e);
                 }
 
-                in.close();
-                out.close();
-
                 if (total!=-1 && total!=tmp.length()) {
                     // don't know exactly how this happens, but report like
                     // http://www.ashlux.com/wordpress/2009/08/14/hudson-and-the-sonar-plugin-fail-maveninstallation-nosuchmethoderror/
@@ -778,7 +780,18 @@ public class UpdateCenter extends AbstractModelObject implements Saveable, OnMas
 
                 return tmp;
             } catch (IOException e) {
-                throw new IOException("Failed to download from "+src,e);
+                // assist troubleshooting in case of e.g. "too many redirects" by printing actual URL
+                String extraMessage = "";
+                if (con != null && con.getURL() != null && !src.toString().equals(con.getURL().toString())) {
+                    // Two URLs are considered equal if different hosts resolve to same IP. Prefer to log in case of string inequality,
+                    // because who knows how the server responds to different host name in the request header?
+                    // Also, since it involved name resolution, it'd be an expensive operation.
+                    extraMessage = " (redirected to: " + con.getURL() + ")";
+                }
+                throw new IOException2("Failed to download from "+src+extraMessage,e);
+            } finally {
+                IOUtils.closeQuietly(in);
+                IOUtils.closeQuietly(out);
             }
         }
 

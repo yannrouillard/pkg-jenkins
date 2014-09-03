@@ -81,7 +81,7 @@ public abstract class AbstractCIBase extends Node implements ItemGroup<TopLevelI
         v.owner = this;
     }
     protected void interruptReloadThread() {
-        ViewJob.reloadThread.interrupt();
+        ViewJob.interruptReloadThread();
     }
 
     protected void killComputer(Computer c) {
@@ -146,7 +146,6 @@ public abstract class AbstractCIBase extends Node implements ItemGroup<TopLevelI
                 return;
             }
         }
-        throw new IllegalStateException("Trying to remove unknown computer");
     }
 
     /*package*/ @CheckForNull Computer getComputer(Node n) {

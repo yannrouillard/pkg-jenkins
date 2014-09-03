@@ -31,6 +31,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.Cause;
+import hudson.util.IOUtils;
 import jenkins.model.Jenkins;
 import hudson.model.Item;
 import hudson.model.Project;
@@ -45,6 +46,8 @@ import hudson.util.TimeUnit2;
 import hudson.util.SequentialExecutionQueue;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.jelly.XMLOutput;
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -260,6 +263,15 @@ public class SCMTrigger extends Trigger<SCMedItem> {
             resizeThreadPool();
         }
 
+        @Restricted(NoExternalUse.class)
+        public boolean isPollingThreadCountOptionVisible() {
+            // unless you have a fair number of projects, this option is likely pointless.
+            // so let's hide this option for new users to avoid confusing them
+            // unless it was already changed
+            return Jenkins.getInstance().getAllItems(AbstractProject.class).size() > 10
+                    || getPollingThreadCount() != 0;
+        }
+
         /**
          * Update the {@link ExecutorService} instance.
          */
@@ -337,8 +349,11 @@ public class SCMTrigger extends Trigger<SCMedItem> {
             rsp.setContentType("text/plain;charset=UTF-8");
             // Prevent jelly from flushing stream so Content-Length header can be added afterwards
             FlushProofOutputStream out = new FlushProofOutputStream(rsp.getCompressedOutputStream(req));
-            getPollingLogText().writeLogTo(0, out);
-            out.close();
+            try {
+                getPollingLogText().writeLogTo(0, out);
+            } finally {
+                IOUtils.closeQuietly(out);
+            }
         }
 
         public AnnotatedLargeText getPollingLogText() {

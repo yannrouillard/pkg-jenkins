@@ -145,6 +145,7 @@ public class XStream2 extends XStream {
         addImmutableType(Result.class);
 
         registerConverter(new RobustCollectionConverter(getMapper(),getReflectionProvider()),10);
+        registerConverter(new RobustMapConverter(getMapper()), 10);
         registerConverter(new ImmutableMapConverter(getMapper(),getReflectionProvider()),10);
         registerConverter(new ImmutableSortedSetConverter(getMapper(),getReflectionProvider()),10);
         registerConverter(new ImmutableSetConverter(getMapper(),getReflectionProvider()),10);
@@ -182,7 +183,7 @@ public class XStream2 extends XStream {
             }
         });
         AnnotationMapper a = new AnnotationMapper(m, getConverterRegistry(), getConverterLookup(), getClassLoader(), getReflectionProvider(), getJvm());
-        // TODO acc. to XSTR-744 this means that an XStream2 instance is not thread-safe and we would need a pool:
+        // TODO JENKINS-19561 this is unsafe:
         a.autodetectAnnotations(true);
 
         mapperInjectionPoint = new MapperInjectionPoint(a);

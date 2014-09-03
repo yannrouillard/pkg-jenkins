@@ -646,7 +646,7 @@ public class Queue extends ResourceController implements Saveable {
     
     public synchronized boolean cancel(Item item) {
         LOGGER.log(Level.FINE, "Cancelling {0} item#{1}", new Object[] {item.task, item.id});
-        boolean r = item.leave(this);
+        boolean r = item.cancel(this);
 
         LeftItem li = new LeftItem(item);
         li.enter(this);
@@ -819,11 +819,13 @@ public class Queue extends ResourceController implements Saveable {
     public synchronized int countBuildableItemsFor(Label l) {
         int r = 0;
         for (BuildableItem bi : buildables.values())
-            if(bi.getAssignedLabel()==l)
-                r++;
+            for (SubTask st : bi.task.getSubTasks())
+                if (null==l || st.getAssignedLabel()==l)
+                    r++;
         for (BuildableItem bi : pendings.values())
-            if(bi.getAssignedLabel()==l)
-                r++;
+            for (SubTask st : bi.task.getSubTasks())
+                if (null==l || st.getAssignedLabel()==l)
+                    r++;
         return r;
     }
 
@@ -831,7 +833,7 @@ public class Queue extends ResourceController implements Saveable {
      * Counts all the {@link BuildableItem}s currently in the queue.
      */
     public synchronized int countBuildableItems() {
-        return buildables.size()+pendings.size();
+        return countBuildableItemsFor(null);
     }
 
     /**
@@ -1516,7 +1518,7 @@ public class Queue extends ResourceController implements Saveable {
 
         @Override
         public String toString() {
-            return getClass().getName() + ':' + task + ':' + getWhy();
+            return getClass().getName() + ':' + task + ':' + id;
         }
 
         /**

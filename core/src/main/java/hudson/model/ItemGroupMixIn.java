@@ -24,6 +24,7 @@
 package hudson.model;
 
 import hudson.Util;
+import hudson.XmlFile;
 import hudson.model.listeners.ItemListener;
 import hudson.remoting.Callable;
 import hudson.security.AccessControlled;
@@ -102,7 +103,13 @@ public abstract class ItemGroupMixIn {
                 // Try to retain the identity of an existing child object if we can.
                 V item = (V) parent.getItem(subdir.getName());
                 if (item == null) {
-                    item = (V) Items.load(parent,subdir);
+                    XmlFile xmlFile = Items.getConfigFile( subdir );
+                    if (xmlFile.exists()) {
+                        item = (V) Items.load( parent, subdir );
+                    }else{
+                        Logger.getLogger( ItemGroupMixIn.class.getName() ).log( Level.WARNING, "could not find file " + xmlFile.getFile());
+                        continue;
+                    }
                 } else {
                     item.onLoad(parent, subdir.getName());
                 }

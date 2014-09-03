@@ -28,7 +28,6 @@ package hudson;
 import hudson.cli.CLICommand;
 import hudson.console.ConsoleAnnotationDescriptor;
 import hudson.console.ConsoleAnnotatorFactory;
-import hudson.matrix.MatrixProject;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.Describable;
@@ -47,7 +46,6 @@ import hudson.model.PageDecorator;
 import hudson.model.PaneStatusProperties;
 import hudson.model.ParameterDefinition;
 import hudson.model.ParameterDefinition.ParameterDescriptor;
-import hudson.model.Project;
 import hudson.model.Run;
 import hudson.model.TopLevelItem;
 import hudson.model.User;
@@ -190,11 +188,9 @@ public class Functions {
         return o instanceof ModelObjectWithChildren;
     }
     
-    /**
-     * @since 1.524
-     */
+    @Deprecated
     public static boolean isMatrixProject(Object o) {
-        return o instanceof MatrixProject;
+        return o != null && o.getClass().getName().equals("hudson.matrix.MatrixProject");
     }
 
     public static String xsDate(Calendar cal) {
@@ -409,7 +405,7 @@ public class Functions {
         return Node.Mode.values();
     }
 
-    public static String getProjectListString(List<Project> projects) {
+    public static String getProjectListString(List<AbstractProject> projects) {
         return Items.toNameList(projects);
     }
 
@@ -1832,9 +1828,11 @@ public class Functions {
      * @since 1.517
      */
     public static String breakableString(final String plain) {
-
+        if (plain == null) {
+            return null;
+        }
         return plain.replaceAll("([\\p{Punct}&&[^;]]+\\w)", "<wbr>$1")
-                .replaceAll("([^\\p{Punct}\\s-]{10})(?=[^\\p{Punct}\\s-]{3})", "$1<wbr>")
+                .replaceAll("([^\\p{Punct}\\s-]{20})(?=[^\\p{Punct}\\s-]{10})", "$1<wbr>")
         ;
     }
 
