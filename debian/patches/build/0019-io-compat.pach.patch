@@ -6,11 +6,9 @@ Subject: io-compat.pach
  core/src/main/java/hudson/util/IOUtils.java | 6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/core/src/main/java/hudson/util/IOUtils.java b/core/src/main/java/hudson/util/IOUtils.java
-index 4d046b7..240fda9 100644
 --- a/core/src/main/java/hudson/util/IOUtils.java
 +++ b/core/src/main/java/hudson/util/IOUtils.java
-@@ -76,16 +76,18 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
+@@ -79,16 +79,18 @@
       *
       * @since 1.349
       */

@@ -22,3 +22,5 @@ build/0019-io-compat.pach.patch
 0022-Exclude-asm-dependencies-from-jnr-posix.patch
 0023-ignore-bytecode-compatibility-transformer.patch
 0024-args4j-compatibility.patch
+0025-specify-plugins-versions.patch
+0026-add-jsr305-dependency.patch

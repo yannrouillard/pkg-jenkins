@@ -8,7 +8,7 @@ Subject: apt-stapler-processing
 
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -660,6 +660,24 @@
+@@ -648,6 +648,24 @@
          </executions>
        </plugin>
        <plugin>

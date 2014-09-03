@@ -9,7 +9,7 @@ Subject: use-stock-asm3
 
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -561,6 +561,13 @@
+@@ -556,6 +556,13 @@
      </dependency>
  
      <dependency>

@@ -1,0 +1,20 @@
+Description: Add an explicit dependency on com.google.code.findbugs:jsr305.
+ This was a transitive dependency of Guava 11 but it's now optional in the
+ version packaged in Debian and has to be declared explicitly in the pom.
+Author: Emmanuel Bourg <ebourg@apache.org>
+Forwarded: not-needed
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -49,6 +49,12 @@
+ 
+   <dependencies>
+     <dependency>
++      <groupId>com.google.code.findbugs</groupId>
++      <artifactId>jsr305</artifactId>
++      <version>1.3.9</version>
++    </dependency>
++
++    <dependency>
+       <groupId>${project.groupId}</groupId>
+       <artifactId>remoting</artifactId>
+       <!-- specified in the parent -->

@@ -161,7 +161,7 @@ Subject: jnr-posix-upgrade
  /**
 --- a/core/src/main/java/hudson/Util.java
 +++ b/core/src/main/java/hudson/Util.java
-@@ -40,8 +40,8 @@
+@@ -39,8 +39,8 @@
  import org.apache.tools.ant.taskdefs.Chmod;
  import org.apache.tools.ant.taskdefs.Copy;
  import org.apache.tools.ant.types.FileSet;
@@ -169,6 +169,6 @@ Subject: jnr-posix-upgrade
 -import jnr.posix.POSIX;
 +import org.jruby.ext.posix.FileStat;
 +import org.jruby.ext.posix.POSIX;
- import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
  
  import javax.crypto.SecretKey;
+ import javax.crypto.spec.SecretKeySpec;

@@ -6,11 +6,9 @@ Subject: ubuntu-font
  war/src/main/webapp/css/style.css | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/war/src/main/webapp/css/style.css b/war/src/main/webapp/css/style.css
-index eff6d3e..0b33301 100644
 --- a/war/src/main/webapp/css/style.css
 +++ b/war/src/main/webapp/css/style.css
-@@ -29,7 +29,7 @@ body {
+@@ -29,7 +29,7 @@
  
  body, table, form, input, td, th, p, textarea, select
  {
@@ -19,7 +17,7 @@ index eff6d3e..0b33301 100644
    font-size: 11px;
  }
  
-@@ -357,7 +357,7 @@ th.pane {
+@@ -372,7 +372,7 @@
    padding: 4px 0;
    margin-left: 0;
    border-bottom: 1px solid #090;

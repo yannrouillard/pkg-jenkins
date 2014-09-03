@@ -16,6 +16,7 @@
 
 # OK: Don't need native stuff for Debian/Ubuntu
 com.sun.winsw winsw * * * *
+org.kohsuke.jinterop j-interop * * * *
 # OK: Bits of the build which don't add value for Debian
 org.apache.maven.plugins maven-pmd-plugin * * * *
 org.apache.maven.plugins maven-project-info-reports-plugin * * * *
@@ -88,6 +89,7 @@ org.jenkins-ci.modules slave-installer * * * *
 org.jenkins-ci.modules windows-slave-installer * * * *
 org.jenkins-ci.modules upstart-slave-installer * * * *
 org.jenkins-ci.modules launchd-slave-installer * * * *
+org.jenkins-ci.modules systemd-slave-installer * * * *
 # Drop animal-sniffer plugin usage
 org.codehaus.mojo animal-sniffer-maven-plugin * * * *
 # TODO: To be packaged

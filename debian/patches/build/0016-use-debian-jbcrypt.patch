@@ -6,11 +6,9 @@ Subject: use-debian-jbcrypt
  core/src/main/java/hudson/security/HudsonPrivateSecurityRealm.java | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/core/src/main/java/hudson/security/HudsonPrivateSecurityRealm.java b/core/src/main/java/hudson/security/HudsonPrivateSecurityRealm.java
-index a656863..c68ae4d 100644
 --- a/core/src/main/java/hudson/security/HudsonPrivateSecurityRealm.java
 +++ b/core/src/main/java/hudson/security/HudsonPrivateSecurityRealm.java
-@@ -59,7 +59,7 @@ import org.kohsuke.stapler.HttpResponses;
+@@ -58,7 +58,7 @@
  import org.kohsuke.stapler.Stapler;
  import org.kohsuke.stapler.StaplerRequest;
  import org.kohsuke.stapler.StaplerResponse;

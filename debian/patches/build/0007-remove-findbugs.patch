@@ -47,7 +47,7 @@ Subject: remove-findbugs
  import hudson.Proc.LocalProc;
  import hudson.model.TaskListener;
  import hudson.os.PosixAPI;
-@@ -355,7 +354,6 @@
+@@ -349,7 +348,6 @@
          return !fileInCanonicalParent.getCanonicalFile().equals( fileInCanonicalParent.getAbsoluteFile() );
      }
  
@@ -57,7 +57,7 @@ Subject: remove-findbugs
              Object path = File.class.getMethod("toPath").invoke(file);
 --- a/core/src/main/java/hudson/WebAppMain.java
 +++ b/core/src/main/java/hudson/WebAppMain.java
-@@ -255,7 +255,6 @@
+@@ -280,7 +280,6 @@
  	/**
       * Installs log handler to monitor all Hudson logs.
       */
@@ -85,7 +85,7 @@ Subject: remove-findbugs
                      throw (ChannelClosedException)args[0];
 --- a/core/src/main/java/hudson/logging/LogRecorderManager.java
 +++ b/core/src/main/java/hudson/logging/LogRecorderManager.java
-@@ -125,7 +125,6 @@
+@@ -127,7 +127,6 @@
      /**
       * Configure the logging level.
       */
@@ -100,10 +100,10 @@ Subject: remove-findbugs
  import antlr.ANTLRException;
  import javax.annotation.CheckForNull;
 -import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+ import hudson.model.Items;
  
  /**
-  * Triggers a {@link Build}.
-@@ -276,7 +275,6 @@
+@@ -278,7 +277,6 @@
       *
       * @deprecated Use {@link jenkins.util.Timer#get()} instead.
       */
@@ -141,7 +141,7 @@ Subject: remove-findbugs
                  return classOwnership.ownerOf(clazz);
 --- a/core/src/main/java/jenkins/model/Jenkins.java
 +++ b/core/src/main/java/jenkins/model/Jenkins.java
-@@ -741,10 +741,6 @@
+@@ -738,10 +738,6 @@
       * @param pluginManager
       *      If non-null, use existing plugin manager.  create a new one.
       */
@@ -152,7 +152,7 @@ Subject: remove-findbugs
      protected Jenkins(File root, ServletContext context, PluginManager pluginManager) throws IOException, InterruptedException, ReactorException {
          long start = System.currentTimeMillis();
          
-@@ -2661,7 +2657,6 @@
+@@ -2677,7 +2673,6 @@
      /**
       * Called to shut down the system.
       */
@@ -160,7 +160,7 @@ Subject: remove-findbugs
      public void cleanUp() {
          for (ItemListener l : ItemListener.all())
              l.onBeforeShutdown();
-@@ -3111,7 +3106,6 @@
+@@ -3161,7 +3156,6 @@
      /**
       * For debugging. Expose URL to perform GC.
       */
@@ -175,9 +175,17 @@ Subject: remove-findbugs
  package jenkins.util;
  
 -import edu.umd.cs.findbugs.annotations.SuppressWarnings;
- import hudson.model.Computer;
  import java.util.concurrent.ExecutorService;
  import java.util.logging.Level;
+ import java.util.logging.Logger;
+@@ -80,7 +79,6 @@
+     /**
+      * For internal use.
+      */
+-    @SuppressWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
+     public final void start() {
+         final SecurityContext securityContext = SecurityContextHolder.getContext();
+         executorService().submit(new Runnable() {
 --- a/core/src/test/java/hudson/slaves/ComputerLauncherTest.java
 +++ b/core/src/test/java/hudson/slaves/ComputerLauncherTest.java
 @@ -24,7 +24,6 @@

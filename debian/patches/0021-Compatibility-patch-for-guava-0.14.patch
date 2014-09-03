@@ -9,7 +9,7 @@ Iterations.skip -> Iterators.advance
 
 --- a/core/src/main/java/hudson/util/RunList.java
 +++ b/core/src/main/java/hudson/util/RunList.java
-@@ -133,7 +133,7 @@
+@@ -132,7 +132,7 @@
      public List<R> subList(int fromIndex, int toIndex) {
          List<R> r = new ArrayList<R>();
          Iterator<R> itr = iterator();

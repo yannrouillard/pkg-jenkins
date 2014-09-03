@@ -28,17 +28,15 @@ Subject: build
        <groupId>commons-jelly</groupId>
 --- a/pom.xml
 +++ b/pom.xml
-@@ -48,9 +48,7 @@
- 
+@@ -49,7 +49,6 @@
    <modules>
      <module>core</module>
--    <module>ui-samples-plugin</module>
      <module>war</module>
 -    <module>test</module>
      <module>cli</module>
      <module>plugins</module>
    </modules>
-@@ -626,9 +624,6 @@
+@@ -629,9 +628,6 @@
                  <requireJavaVersion>
                    <version>1.6.0-18</version>
                  </requireJavaVersion>
@@ -47,4 +45,4 @@ Subject: build
 -                </requireMavenVersion>
                  <enforceBytecodeVersion>
                    <maxJdkVersion>1.${java.level}</maxJdkVersion>
-                 </enforceBytecodeVersion>
+                   <ignoreClasses>
