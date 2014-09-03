@@ -1,7 +1,7 @@
 <!--
 The MIT License
 
-Copyright (c) 2013- CloudBees, Inc.
+Copyright (c) 2004-2009, Sun Microsystems, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,35 +24,28 @@ THE SOFTWARE.
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
-  <!--
-    This is the page designated by web.xml and UncaughtExceptionHandler to process an exception thrown by us.
-  -->
-  <st:statusCode value="500" />
-  <l:layout title="Jenkins" norefresh="true">
-    <l:header />
-    <l:side-panel>
-      <l:task title="${%Jenkins project}" href="http://jenkins-ci.org/" icon="images/24x24/next.png" />
-      <l:task title="${%Bug tracker}" href="http://issues.jenkins-ci.org/" icon="images/24x24/gear2.png" />
-      <l:task title="${%Mailing Lists}" href="http://jenkins-ci.org/content/mailing-lists" icon="images/24x24/search.png"/>
-      <l:task title="${%Twitter: @jenkinsci}" href="https://twitter.com/jenkinsci" icon="images/24x24/user.png"/>
-
-    </l:side-panel>
+  <l:layout norefresh="true">
+    <st:include page="sidepanel.jelly" it="${app}"/>
     <l:main-panel>
-      <h1 style="text-align: center">
-        <img src="${imagesURL}/rage.png" height="179" width="154"/> <span style="font-size:50px"><st:nbsp/>${%Oops!}</span>
+      <h1>
+        <img src="${imagesURL}/48x48/terminal.png" alt="" height="48" width="48"/>
+        ${%Jenkins CLI}
       </h1>
-      <div id="error-description">
       <p>
-        ${%problemHappened}
-        ${%checkJIRA}
-        ${%vote}
-        ${%pleaseReport}
-        ${%stackTracePlease}
-        ${%checkML}
+        ${%blurb(rootURL)}
       </p>
-      <h2>${%Stack trace}</h2>
-      <pre style="margin:2em; clear:both">${h.printThrowable(request.getAttribute('javax.servlet.error.exception'))}</pre>
-      </div>
+      <j:set var="commandArgs" value="help"/>
+      <st:include page="example.jelly"/>
+
+      <h2>${%Available Commands}</h2>
+      <table>
+        <j:forEach items="${h.getCLICommands()}" var="command">
+          <tr>
+            <td><a href="command/${command.name}" style="color: black; font-weight: bold">${command.name}</a></td>
+            <td>${command.shortDescription}</td>
+          </tr>
+        </j:forEach>
+      </table>
     </l:main-panel>
   </l:layout>
 </j:jelly>

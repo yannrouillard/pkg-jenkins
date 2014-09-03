@@ -201,6 +201,7 @@ import jenkins.model.ProjectNamingStrategy.DefaultProjectNamingStrategy;
 import jenkins.security.ConfidentialKey;
 import jenkins.security.ConfidentialStore;
 import jenkins.slaves.WorkspaceLocator;
+import jenkins.util.Timer;
 import jenkins.util.io.FileBoolean;
 import net.sf.json.JSONObject;
 import org.acegisecurity.AccessDeniedException;
@@ -283,7 +284,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Stack;
 import java.util.StringTokenizer;
-import java.util.Timer;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -299,7 +299,6 @@ import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -380,6 +379,13 @@ public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGro
      * @see #setSecurityRealm(SecurityRealm)
      */
     private volatile SecurityRealm securityRealm = SecurityRealm.NO_AUTHENTICATION;
+
+    /**
+     * Disables the remember me on this computer option in the standard login screen.
+     *
+     * @since 1.534
+     */
+    private volatile boolean disableRememberMe;
     
     /**
      * The project naming strategy defines/restricts the names which can be given to a project/job. e.g. does the name have to follow a naming convention?
@@ -760,7 +766,7 @@ public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGro
             // doing this early allows InitStrategy to set environment upfront
             final InitStrategy is = InitStrategy.get(Thread.currentThread().getContextClassLoader());
 
-            Trigger.timer = new Timer("Jenkins cron thread");
+            Trigger.timer = new java.util.Timer("Jenkins cron thread");
             queue = new Queue(LoadBalancer.CONSISTENT_HASH);
 
             try {
@@ -833,15 +839,12 @@ public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGro
             }
             dnsMultiCast = new DNSMultiCast(this);
 
-            Timer timer = Trigger.timer;
-            if (timer != null) {
-                timer.scheduleAtFixedRate(new SafeTimerTask() {
-                    @Override
-                    protected void doRun() throws Exception {
-                        trimLabels();
-                    }
-                }, TimeUnit2.MINUTES.toMillis(5), TimeUnit2.MINUTES.toMillis(5));
-            }
+            Timer.get().scheduleAtFixedRate(new SafeTimerTask() {
+                @Override
+                protected void doRun() throws Exception {
+                    trimLabels();
+                }
+            }, TimeUnit2.MINUTES.toMillis(5), TimeUnit2.MINUTES.toMillis(5), TimeUnit.MILLISECONDS);
 
             updateComputerList();
 
@@ -2063,6 +2066,14 @@ public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGro
         authorizationStrategy = a;
     }
 
+    public boolean isDisableRememberMe() {
+        return disableRememberMe;
+    }
+
+    public void setDisableRememberMe(boolean disableRememberMe) {
+        this.disableRememberMe = disableRememberMe;
+    }
+
     public void disableSecurity() {
         useSecurity = null;
         setSecurityRealm(SecurityRealm.NO_AUTHENTICATION);
@@ -2667,12 +2678,16 @@ public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGro
         if(dnsMultiCast!=null)
             dnsMultiCast.close();
         interruptReloadThread();
-        Timer timer = Trigger.timer;
+
+        java.util.Timer timer = Trigger.timer;
         if (timer != null) {
             timer.cancel();
         }
         // TODO: how to wait for the completion of the last job?
         Trigger.timer = null;
+
+        Timer.shutdown();
+
         if(tcpSlaveAgentListener!=null)
             tcpSlaveAgentListener.shutdown();
 
@@ -3150,44 +3165,6 @@ public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGro
             args.add(new byte[1024*1024]);
     }
 
-    private transient final Map<UUID,FullDuplexHttpChannel> duplexChannels = new HashMap<UUID, FullDuplexHttpChannel>();
-
-    /**
-     * Handles HTTP requests for duplex channels for CLI.
-     */
-    public void doCli(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException, InterruptedException {
-        if (!"POST".equals(req.getMethod())) {
-            // for GET request, serve _cli.jelly, assuming this is a browser
-            checkPermission(READ);
-            req.getView(this,"_cli.jelly").forward(req,rsp);
-            return;
-        }
-
-        // do not require any permission to establish a CLI connection
-        // the actual authentication for the connecting Channel is done by CLICommand
-
-        UUID uuid = UUID.fromString(req.getHeader("Session"));
-        rsp.setHeader("Hudson-Duplex",""); // set the header so that the client would know
-
-        FullDuplexHttpChannel server;
-        if(req.getHeader("Side").equals("download")) {
-            duplexChannels.put(uuid,server=new FullDuplexHttpChannel(uuid, !hasPermission(ADMINISTER)) {
-                protected void main(Channel channel) throws IOException, InterruptedException {
-                    // capture the identity given by the transport, since this can be useful for SecurityRealm.createCliAuthenticator()
-                    channel.setProperty(CLICommand.TRANSPORT_AUTHENTICATION,getAuthentication());
-                    channel.setProperty(CliEntryPoint.class.getName(),new CliManagerImpl(channel));
-                }
-            });
-            try {
-                server.download(req,rsp);
-            } finally {
-                duplexChannels.remove(uuid);
-            }
-        } else {
-            duplexChannels.get(uuid).upload(req,rsp);
-        }
-    }
-
     /**
      * Binds /userContent/... to $JENKINS_HOME/userContent.
      */
@@ -3444,9 +3421,9 @@ public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGro
      */
     public void doIconSize( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
         String qs = req.getQueryString();
-        if(qs==null || !ICON_SIZE.matcher(qs).matches())
+        if(qs==null)
             throw new ServletException();
-        Cookie cookie = new Cookie("iconSize", qs);
+        Cookie cookie = new Cookie("iconSize", Functions.validateIconSize(qs));
         cookie.setMaxAge(/* ~4 mo. */9999999); // #762
         rsp.addCookie(cookie);
         String ref = req.getHeader("Referer");
@@ -3674,7 +3651,6 @@ public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGro
             || rest.startsWith("/tcpSlaveAgentListener")
             // TODO SlaveComputer.doSlaveAgentJnlp; there should be an annotation to request unprotected access
             || rest.matches("/computer/[^/]+/slave-agent[.]jnlp") && "true".equals(Stapler.getCurrentRequest().getParameter("encrypt"))
-            || rest.startsWith("/cli")
             || rest.startsWith("/federatedLoginService/")
             || rest.startsWith("/securityRealm"))
                 return this;    // URLs that are always visible without READ permission
@@ -3892,10 +3868,11 @@ public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGro
     }
 
     /**
-     * Shortcut for {@code Hudson.getInstance().lookup.get(type)}
+     * Shortcut for {@code Jenkins.getInstance().lookup.get(type)}
      */
-    public static <T> T lookup(Class<T> type) {
-        return Jenkins.getInstance().lookup.get(type);
+    public static @CheckForNull <T> T lookup(Class<T> type) {
+        Jenkins j = Jenkins.getInstance();
+        return j != null ? j.lookup.get(type) : null;
     }
 
     /**
@@ -4043,8 +4020,6 @@ public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGro
 
     private static final Logger LOGGER = Logger.getLogger(Jenkins.class.getName());
 
-    private static final Pattern ICON_SIZE = Pattern.compile("\\d+x\\d+");
-
     public static final PermissionGroup PERMISSIONS = Permission.HUDSON_PERMISSIONS;
     public static final Permission ADMINISTER = Permission.HUDSON_ADMINISTER;
     public static final Permission READ = new Permission(PERMISSIONS,"Read",Messages._Hudson_ReadPermission_Description(),Permission.READ,PermissionScope.JENKINS);
@@ -4067,6 +4042,8 @@ public class Jenkins extends AbstractCIBase implements ModifiableTopLevelItemGro
         // for backward compatibility with <1.75, recognize the tag name "view" as well.
         XSTREAM.alias("view", ListView.class);
         XSTREAM.alias("listView", ListView.class);
+        XSTREAM2.addCriticalField(Jenkins.class, "securityRealm");
+        XSTREAM2.addCriticalField(Jenkins.class, "authorizationStrategy");
         // this seems to be necessary to force registration of converter early enough
         Mode.class.getEnumConstants();
 

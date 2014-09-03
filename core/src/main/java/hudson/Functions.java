@@ -152,7 +152,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import java.util.concurrent.atomic.AtomicLong;
 import org.kohsuke.accmod.Restricted;
-import org.kohsuke.accmod.restrictions.DoNotUse;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 
 /**
  * Utility functions used in views.
@@ -445,13 +445,14 @@ public class Functions {
         return formatter.format(r);
     }
 
-    @Restricted(DoNotUse.class)
+    @Restricted(NoExternalUse.class)
     public static String[] printLogRecordHtml(LogRecord r, LogRecord prior) {
         String[] oldParts = prior == null ? new String[4] : logRecordPreformat(prior);
         String[] newParts = logRecordPreformat(r);
         for (int i = 0; i < /* not 4 */3; i++) {
             newParts[i] = "<span class='" + (newParts[i].equals(oldParts[i]) ? "logrecord-metadata-old" : "logrecord-metadata-new") + "'>" + newParts[i] + "</span>";
         }
+        newParts[3] = Util.xmlEscape(newParts[3]);
         return newParts;
     }
     /**
@@ -506,6 +507,15 @@ public class Functions {
         Cookie c = getCookie(req, name);
         if(c==null || c.getValue()==null) return defaultValue;
         return c.getValue();
+    }
+
+    private static final Pattern ICON_SIZE = Pattern.compile("\\d+x\\d+");
+    @Restricted(NoExternalUse.class)
+    public static String validateIconSize(String iconSize) throws SecurityException {
+        if (!ICON_SIZE.matcher(iconSize).matches()) {
+            throw new SecurityException("invalid iconSize");
+        }
+        return iconSize;
     }
 
     /**
@@ -1676,6 +1686,9 @@ public class Functions {
     public String getPasswordValue(Object o) {
         if (o==null)    return null;
         if (o instanceof Secret)    return ((Secret)o).getEncryptedValue();
+        if (getIsUnitTest()) {
+            throw new SecurityException("attempted to render plaintext ‘" + o + "’ in password field; use a getter of type Secret instead");
+        }
         return o.toString();
     }
 
@@ -1824,8 +1837,8 @@ public class Functions {
      */
     public static String breakableString(final String plain) {
 
-        return plain.replaceAll("(\\p{Punct}+\\w)", "<wbr>$1")
-                .replaceAll("(\\w{10})(?=\\w{3})", "$1<wbr>")
+        return plain.replaceAll("([\\p{Punct}&&[^;]]+\\w)", "<wbr>$1")
+                .replaceAll("([^\\p{Punct}\\s-]{10})(?=[^\\p{Punct}\\s-]{3})", "$1<wbr>")
         ;
     }
 
