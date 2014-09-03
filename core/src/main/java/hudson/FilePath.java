@@ -27,6 +27,7 @@ package hudson;
 
 import hudson.Launcher.LocalLauncher;
 import hudson.Launcher.RemoteLauncher;
+import hudson.os.PosixAPI;
 import jenkins.model.Jenkins;
 import hudson.model.TaskListener;
 import hudson.model.AbstractProject;
@@ -42,13 +43,11 @@ import hudson.remoting.RemoteInputStream;
 import hudson.remoting.Which;
 import hudson.security.AccessControlled;
 import hudson.util.DirScanner;
-import hudson.util.IOException2;
 import hudson.util.HeadBufferingStream;
 import hudson.util.FormValidation;
 import hudson.util.IOUtils;
 
 import static hudson.Util.*;
-import static hudson.util.jna.GNUCLibrary.LIBC;
 import static hudson.FilePath.TarCompression.GZIP;
 import hudson.org.apache.tools.tar.TarInputStream;
 import hudson.util.io.Archiver;
@@ -95,14 +94,12 @@ import java.util.concurrent.TimeoutException;
 import com.jcraft.jzlib.GZIPInputStream;
 import com.jcraft.jzlib.GZIPOutputStream;
 
-import com.sun.jna.Native;
 import hudson.os.PosixException;
 import hudson.util.FileVisitor;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
-import org.apache.tools.ant.taskdefs.Chmod;
 
 import org.apache.tools.zip.ZipFile;
 import org.apache.tools.zip.ZipEntry;
@@ -241,10 +238,11 @@ public final class FilePath implements Serializable {
      * Is the given path name an absolute path?
      */
     private static boolean isAbsolute(String rel) {
-        return rel.startsWith("/") || DRIVE_PATTERN.matcher(rel).matches();
+        return rel.startsWith("/") || DRIVE_PATTERN.matcher(rel).matches() || UNC_PATTERN.matcher(rel).matches();
     }
 
     private static final Pattern DRIVE_PATTERN = Pattern.compile("[A-Za-z]:[\\\\/].*"),
+            UNC_PATTERN = Pattern.compile("^\\\\\\\\.*"),
             ABSOLUTE_PREFIX_PATTERN = Pattern.compile("^(\\\\\\\\|(?:[A-Za-z]:)?[\\\\/])[\\\\/]*");
 
     /**
@@ -529,7 +527,12 @@ public final class FilePath implements Serializable {
                     if (p != null) {
                         p.mkdirs();
                     }
-                    IOUtils.copy(zip.getInputStream(e), f);
+                    InputStream input = zip.getInputStream(e);
+                    try {
+                        IOUtils.copy(input, f);
+                    } finally {
+                        input.close();
+                    }
                     try {
                         FilePath target = new FilePath(f);
                         int mode = e.getUnixMode();
@@ -630,7 +633,7 @@ public final class FilePath implements Serializable {
                 } catch (IOException e) {
                     // various people reported "java.io.IOException: Not in GZIP format" here, so diagnose this problem better
                     in.fillSide();
-                    throw new IOException2(e.getMessage()+"\nstream="+Util.toHexString(in.getSideBuffer()),e);
+                    throw new IOException(e.getMessage()+"\nstream="+Util.toHexString(in.getSideBuffer()),e);
                 }
             }
             public OutputStream compress(OutputStream out) throws IOException {
@@ -662,7 +665,7 @@ public final class FilePath implements Serializable {
                 private static final long serialVersionUID = 1L;
             });
         } finally {
-            IOUtils.closeQuietly(_in);
+            org.apache.commons.io.IOUtils.closeQuietly(_in);
         }
     }
 
@@ -754,13 +757,13 @@ public final class FilePath implements Serializable {
                 else
                     untarFrom(cis,GZIP);
             } catch (IOException e) {
-                throw new IOException2(String.format("Failed to unpack %s (%d bytes read of total %d)",
+                throw new IOException(String.format("Failed to unpack %s (%d bytes read of total %d)",
                         archive,cis.getByteCount(),con.getContentLength()),e);
             }
             timestamp.touch(sourceTimestamp);
             return true;
         } catch (IOException e) {
-            throw new IOException2("Failed to install "+archive+" to "+remote,e);
+            throw new IOException("Failed to install "+archive+" to "+remote,e);
         }
     }
 
@@ -780,7 +783,7 @@ public final class FilePath implements Serializable {
                         readFromTar("input stream", dir, GZIP.extract(cis));
                     }
                 } catch (IOException x) {
-                    throw new IOException2(String.format("Failed to unpack %s (%d bytes read)", archive, cis.getByteCount()), x);
+                    throw new IOException(String.format("Failed to unpack %s (%d bytes read)", archive, cis.getByteCount()), x);
                 }
             } finally {
                 in.close();
@@ -812,7 +815,7 @@ public final class FilePath implements Serializable {
     public void copyFrom(InputStream in) throws IOException, InterruptedException {
         OutputStream os = write();
         try {
-            IOUtils.copy(in, os);
+            org.apache.commons.io.IOUtils.copy(in, os);
         } finally {
             os.close();
         }
@@ -837,13 +840,13 @@ public final class FilePath implements Serializable {
             } catch (IOException e) {
                 throw e;
             } catch (Exception e) {
-                throw new IOException2(e);
+                throw new IOException(e);
             }
         } else {
             InputStream i = file.getInputStream();
             OutputStream o = write();
             try {
-                IOUtils.copy(i,o);
+                org.apache.commons.io.IOUtils.copy(i,o);
             } finally {
                 try {
                     o.close();
@@ -904,7 +907,7 @@ public final class FilePath implements Serializable {
                 throw e;    // pass through so that the caller can catch it as AbortException
             } catch (IOException e) {
                 // wrap it into a new IOException so that we get the caller's stack trace as well.
-                throw new IOException2("remote file operation failed: "+remote+" at "+channel,e);
+                throw new IOException("remote file operation failed: "+remote+" at "+channel,e);
             }
         } else {
             // the file is on the local machine.
@@ -986,7 +989,7 @@ public final class FilePath implements Serializable {
                 .callAsync(wrapper);
         } catch (IOException e) {
             // wrap it into a new IOException so that we get the caller's stack trace as well.
-            throw new IOException2("remote file operation failed",e);
+            throw new IOException("remote file operation failed",e);
         }
     }
 
@@ -1185,7 +1188,7 @@ public final class FilePath implements Serializable {
                 }
             }));
         } catch (IOException e) {
-            throw new IOException2("Failed to create a temp file on "+remote,e);
+            throw new IOException("Failed to create a temp file on "+remote,e);
         }
     }
 
@@ -1245,7 +1248,7 @@ public final class FilePath implements Serializable {
                     try {
                         f = File.createTempFile(prefix, suffix, dir);
                     } catch (IOException e) {
-                        throw new IOException2("Failed to create a temporary directory in "+dir,e);
+                        throw new IOException("Failed to create a temporary directory in "+dir,e);
                     }
 
                     Writer w = new FileWriter(f);
@@ -1259,7 +1262,7 @@ public final class FilePath implements Serializable {
                 }
             }));
         } catch (IOException e) {
-            throw new IOException2("Failed to create a temp file on "+remote,e);
+            throw new IOException("Failed to create a temp file on "+remote,e);
         }
     }
 
@@ -1289,7 +1292,7 @@ public final class FilePath implements Serializable {
                 }
             }));
         } catch (IOException e) {
-            throw new IOException2("Failed to create a temp directory on "+remote,e);
+            throw new IOException("Failed to create a temp directory on "+remote,e);
         }
     }
 
@@ -1404,6 +1407,45 @@ public final class FilePath implements Serializable {
     }
 
     /**
+     * Returns the number of unallocated bytes in the partition of that file.
+     * @since 1.542
+     */
+    public long getFreeDiskSpace() throws IOException, InterruptedException {
+        return act(new FileCallable<Long>() {
+            private static final long serialVersionUID = 1L;
+            @Override public Long invoke(File f, VirtualChannel channel) throws IOException {
+                return f.getFreeSpace();
+            }
+        });
+    }
+
+    /**
+     * Returns the total number of bytes in the partition of that file.
+     * @since 1.542
+     */
+    public long getTotalDiskSpace() throws IOException, InterruptedException {
+        return act(new FileCallable<Long>() {
+            private static final long serialVersionUID = 1L;
+            @Override public Long invoke(File f, VirtualChannel channel) throws IOException {
+                return f.getTotalSpace();
+            }
+        });
+    }
+
+    /**
+     * Returns the number of usable bytes in the partition of that file.
+     * @since 1.542
+     */
+    public long getUsableDiskSpace() throws IOException, InterruptedException {
+        return act(new FileCallable<Long>() {
+            private static final long serialVersionUID = 1L;
+            @Override public Long invoke(File f, VirtualChannel channel) throws IOException {
+                return f.getUsableSpace();
+            }
+        });
+    }
+
+    /**
      * Sets the file permission.
      *
      * On Windows, no-op.
@@ -1431,32 +1473,12 @@ public final class FilePath implements Serializable {
     }
 
     /**
-     * Run chmod via libc if we can, otherwise fall back to Ant.
+     * Run chmod via jnr-posix
      */
     private static void _chmod(File f, int mask) throws IOException {
         if (Functions.isWindows())  return; // noop
 
-        try {
-            if(LIBC.chmod(f.getAbsolutePath(),mask)!=0) {
-                throw new IOException("Failed to chmod "+f+" : "+LIBC.strerror(Native.getLastError()));
-            }
-        } catch(NoClassDefFoundError e) {  // cf. https://groups.google.com/group/hudson-dev/browse_thread/thread/6d16c3e8ea0dbc9?hl=fr
-            _chmodAnt(f, mask);
-        } catch(UnsatisfiedLinkError e2) { // HUDSON-8155: use Ant's chmod task on non-GNU C systems
-            _chmodAnt(f, mask);
-        }
-    }
-
-    private static void _chmodAnt(File f, int mask) {
-        if (!CHMOD_WARNED) { // only warn this once to avoid flooding the log
-            CHMOD_WARNED = true;
-            LOGGER.warning("GNU C Library not available: Using Ant's chmod task instead.");
-        }
-        Chmod chmodTask = new Chmod();
-        chmodTask.setProject(new Project());
-        chmodTask.setFile(f);
-        chmodTask.setPerm(Integer.toOctalString(mask));
-        chmodTask.execute();
+        PosixAPI.jnr().chmod(f.getAbsolutePath(),mask);
     }
 
     private static boolean CHMOD_WARNED = false;
@@ -1618,8 +1640,8 @@ public final class FilePath implements Serializable {
                     Util.copyStream(fis,p.getOut());
                     return null;
                 } finally {
-                    IOUtils.closeQuietly(fis);
-                    IOUtils.closeQuietly(p.getOut());
+                    org.apache.commons.io.IOUtils.closeQuietly(fis);
+                    org.apache.commons.io.IOUtils.closeQuietly(p.getOut());
                 }
             }
         });
@@ -1633,7 +1655,7 @@ public final class FilePath implements Serializable {
     public String readToString() throws IOException {
         InputStream in = read();
         try {
-            return IOUtils.toString(in);
+            return org.apache.commons.io.IOUtils.toString(in);
         } finally {
             in.close();
         }
@@ -1763,7 +1785,7 @@ public final class FilePath implements Serializable {
                 out.close();
             }
         } catch (IOException e) {
-            throw new IOException2("Failed to copy "+this+" to "+target,e);
+            throw new IOException("Failed to copy "+this+" to "+target,e);
         }
     }
 
@@ -1793,8 +1815,8 @@ public final class FilePath implements Serializable {
                     Util.copyStream(fis,out);
                     return null;
                 } finally {
-                    IOUtils.closeQuietly(fis);
-                    IOUtils.closeQuietly(out);
+                    org.apache.commons.io.IOUtils.closeQuietly(fis);
+                    org.apache.commons.io.IOUtils.closeQuietly(out);
                 }
             }
         });
@@ -1911,7 +1933,7 @@ public final class FilePath implements Serializable {
                         @Override public void visit(File f, String relativePath) throws IOException {
                             if (f.isFile()) {
                                 File target = new File(dest, relativePath);
-                                target.getParentFile().mkdirs();
+                                IOUtils.mkdirs(target.getParentFile());
                                 Util.copyFile(f, target);
                                 count.incrementAndGet();
                             }
@@ -1921,6 +1943,7 @@ public final class FilePath implements Serializable {
                         }
                         @Override public void visitSymlink(File link, String target, String relativePath) throws IOException {
                             try {
+                                IOUtils.mkdirs(new File(dest, relativePath).getParentFile());
                                 Util.createSymlink(dest, target, relativePath, TaskListener.NULL);
                             } catch (InterruptedException x) {
                                 throw (IOException) new IOException(x.toString()).initCause(x);
@@ -1958,7 +1981,7 @@ public final class FilePath implements Serializable {
                 future.get();
                 return future2.get();
             } catch (ExecutionException e) {
-                throw new IOException2(e);
+                throw new IOException(e);
             }
         } else {
             // remote -> local copy
@@ -1982,7 +2005,7 @@ public final class FilePath implements Serializable {
                     throw e;    // the remote side completed successfully, so the error must be local
                 } catch (ExecutionException x) {
                     // report both errors
-                    throw new IOException2(Functions.printThrowable(e),x);
+                    throw new IOException(Functions.printThrowable(e),x);
                 } catch (TimeoutException _) {
                     // remote is hanging
                     throw e;
@@ -1991,7 +2014,7 @@ public final class FilePath implements Serializable {
             try {
                 return future.get();
             } catch (ExecutionException e) {
-                throw new IOException2(e);
+                throw new IOException(e);
             }
         }
     }
@@ -2063,12 +2086,12 @@ public final class FilePath implements Serializable {
                 }
             }
         } catch(IOException e) {
-            throw new IOException2("Failed to extract "+name,e);
+            throw new IOException("Failed to extract "+name,e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt(); // process this later
-            throw new IOException2("Failed to extract "+name,e);
+            throw new IOException("Failed to extract "+name,e);
         } catch (IllegalAccessException e) {
-            throw new IOException2("Failed to extract "+name,e);
+            throw new IOException("Failed to extract "+name,e);
         } finally {
             t.close();
         }
@@ -2452,7 +2475,7 @@ public final class FilePath implements Serializable {
     /**
      * Used to tunnel {@link InterruptedException} over a Java signature that only allows {@link IOException}
      */
-    private static class TunneledInterruptedException extends IOException2 {
+    private static class TunneledInterruptedException extends IOException {
         private TunneledInterruptedException(InterruptedException cause) {
             super(cause);
         }

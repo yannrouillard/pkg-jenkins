@@ -251,8 +251,8 @@ public abstract class CLICommand implements ExtensionPoint, Cloneable {
     /**
      * Get parser for this command.
      *
-     * Exposed to be overridden by {@link CLIRegisterer}.
-     * @since TODO
+     * Exposed to be overridden by {@link hudson.cli.declarative.CLIRegisterer}.
+     * @since 1.538
      */
     protected CmdLineParser getCmdLineParser() {
         return new CmdLineParser(this);

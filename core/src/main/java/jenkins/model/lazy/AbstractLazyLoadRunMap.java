@@ -29,7 +29,6 @@ import hudson.model.RunMap;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.lang.ref.Reference;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -214,8 +213,8 @@ public abstract class AbstractLazyLoadRunMap<R> extends AbstractMap<Integer,R> i
      * Updates base directory location after directory changes.
      * This method should be used on jobs renaming, etc.
      * @param dir Directory location
+     * @since 1.546
      */
-    @Restricted(NoExternalUse.class)
     public final void updateBaseDir(File dir) {
         this.dir = dir;
     }
@@ -588,7 +587,7 @@ public abstract class AbstractLazyLoadRunMap<R> extends AbstractMap<Integer,R> i
         return unwrap(old);
     }
 
-    private R unwrap(Reference<R> ref) {
+    private R unwrap(BuildReference<R> ref) {
         return ref!=null ? ref.get() : null;
     }
 

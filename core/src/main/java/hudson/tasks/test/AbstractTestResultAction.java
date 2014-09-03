@@ -25,7 +25,6 @@ package hudson.tasks.test;
 
 import hudson.Functions;
 import hudson.model.*;
-import hudson.tasks.junit.CaseResult;
 import hudson.util.*;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 
@@ -35,9 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import jenkins.model.RunAction2;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -49,8 +46,6 @@ import org.jfree.chart.renderer.category.StackedAreaRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.RectangleInsets;
 import org.jvnet.localizer.Localizable;
-import org.kohsuke.accmod.Restricted;
-import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
@@ -71,7 +66,7 @@ public abstract class AbstractTestResultAction<T extends AbstractTestResultActio
 
     private Map<String,String> descriptions = new ConcurrentHashMap<String, String>();
 
-    @Restricted(NoExternalUse.class)
+    /** @since 1.545 */
     protected AbstractTestResultAction() {}
 
     /** @deprecated Use the default constructor and just call {@link Run#addAction} to associate the build with the action. */
@@ -206,7 +201,7 @@ public abstract class AbstractTestResultAction<T extends AbstractTestResultActio
      * 
      * @return List of failed tests from associated test result.
      */
-    public List<CaseResult> getFailedTests() {
+    public List<? extends TestResult> getFailedTests() {
         return Collections.emptyList();
     }
 

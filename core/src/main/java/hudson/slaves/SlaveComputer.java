@@ -24,8 +24,6 @@
 package hudson.slaves;
 
 import hudson.model.*;
-import hudson.util.IOException2;
-import hudson.util.IOUtils;
 import hudson.util.io.ReopenableRotatingFileOutputStream;
 import jenkins.model.Jenkins.MasterComputer;
 import hudson.remoting.Channel;
@@ -72,7 +70,6 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.RequestDispatcher;
 import jenkins.model.Jenkins;
 import jenkins.slaves.JnlpSlaveAgentProtocol;
-import org.acegisecurity.Authentication;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.QueryParameter;
@@ -84,6 +81,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponseWrapper;
 import org.acegisecurity.context.SecurityContext;
 import org.acegisecurity.context.SecurityContextHolder;
+import org.apache.commons.io.IOUtils;
 import org.kohsuke.stapler.ResponseImpl;
 import org.kohsuke.stapler.WebMethod;
 import org.kohsuke.stapler.compression.FilterServletOutputStream;
@@ -532,10 +530,7 @@ public class SlaveComputer extends Computer {
             //does nothing in case computer is already disconnected
             checkPermission(DISCONNECT);
             offlineMessage = Util.fixEmptyAndTrim(offlineMessage);
-            disconnect(OfflineCause.create(Messages._SlaveComputer_DisconnectedBy(
-                    Jenkins.getAuthentication().getName(),
-                    offlineMessage!=null ? " : " + offlineMessage : "")
-            ));
+            disconnect(new OfflineCause.UserCause(User.current(), offlineMessage));
         }
         return new HttpRedirect(".");
     }
@@ -613,7 +608,7 @@ public class SlaveComputer extends Computer {
                 c.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
                 encrypted = c.doFinal(baos.toByteArray());
             } catch (GeneralSecurityException x) {
-                throw new IOException2(x);
+                throw new IOException(x);
             }
             res.setContentType("application/octet-stream");
             res.getOutputStream().write(iv);

@@ -40,7 +40,6 @@ import hudson.security.Permission;
 import hudson.security.PermissionScope;
 import hudson.util.CyclicGraphDetector;
 import hudson.util.CyclicGraphDetector.CycleDetectedException;
-import hudson.util.IOException2;
 import hudson.util.PersistedList;
 import hudson.util.Service;
 import hudson.util.VersionNumber;
@@ -83,7 +82,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
@@ -110,7 +108,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import static hudson.init.InitMilestone.*;
+import hudson.model.DownloadService;
+import hudson.util.FormValidation;
 import static java.util.logging.Level.WARNING;
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 
 /**
  * Manages {@link PluginWrapper}s.
@@ -435,7 +437,7 @@ public abstract class PluginManager extends AbstractModelObject implements OnMas
             failedPlugins.add(new FailedPlugin(sn, e));
             activePlugins.remove(p);
             plugins.remove(p);
-            throw new IOException2("Failed to install "+ sn +" plugin",e);
+            throw new IOException("Failed to install "+ sn +" plugin",e);
         }
 
         // run initializers in the added plugin
@@ -449,7 +451,7 @@ public abstract class PluginManager extends AbstractModelObject implements OnMas
         try {
             new InitReactorRunner().run(r);
         } catch (ReactorException e) {
-            throw new IOException2("Failed to initialize "+ sn +" plugin",e);
+            throw new IOException("Failed to initialize "+ sn +" plugin",e);
         }
         LOGGER.info("Plugin " + sn + " dynamically installed");
     }
@@ -686,13 +688,31 @@ public abstract class PluginManager extends AbstractModelObject implements OnMas
             String n =  en.nextElement();
             if(n.startsWith("plugin.")) {
                 n = n.substring(7);
-                if (n.indexOf(".") > 0) {
-                    String[] pluginInfo = n.split("\\.");
-                    UpdateSite.Plugin p = Jenkins.getInstance().getUpdateCenter().getById(pluginInfo[1]).getPlugin(pluginInfo[0]);
-                    if(p==null)
-                        throw new Failure("No such plugin: "+n);
-                    p.deploy(dynamicLoad);
+                // JENKINS-22080 plugin names can contain '.' as could (according to rumour) update sites
+                int index = n.indexOf('.');
+                UpdateSite.Plugin p = null;
+                while (index != -1) {
+                    if (index + 1 >= n.length()) {
+                        break;
+                    }
+                    String pluginName = n.substring(0, index);
+                    String siteName = n.substring(index + 1);
+                    UpdateSite updateSite = Jenkins.getInstance().getUpdateCenter().getById(siteName);
+                    if (siteName != null) {
+                        UpdateSite.Plugin plugin = updateSite.getPlugin(pluginName);
+                        if (plugin != null) {
+                            if (p != null) {
+                                throw new Failure("Ambiguous plugin: " + n);
+                            }
+                            p = plugin;
+                        }
+                    }
+                    index = n.indexOf('.', index + 1);
                 }
+                if (p == null) {
+                    throw new Failure("No such plugin: " + n);
+                }
+                p.deploy(dynamicLoad);
             }
         }
         rsp.sendRedirect("../updateCenter/");
@@ -775,6 +795,24 @@ public abstract class PluginManager extends AbstractModelObject implements OnMas
         } catch (Exception e) {// grrr. fileItem.write throws this
             throw new ServletException(e);
         }
+    }
+
+    @Restricted(NoExternalUse.class)
+    @RequirePOST public HttpResponse doCheckUpdatesServer() throws IOException {
+        for (UpdateSite site : Jenkins.getInstance().getUpdateCenter().getSites()) {
+            FormValidation v = site.updateDirectlyNow(DownloadService.signatureCheck);
+            if (v.kind != FormValidation.Kind.OK) {
+                // TODO crude but enough for now
+                return v;
+            }
+        }
+        for (DownloadService.Downloadable d : DownloadService.Downloadable.all()) {
+            FormValidation v = d.updateNow();
+            if (v.kind != FormValidation.Kind.OK) {
+                return v;
+            }
+        }
+        return HttpResponses.forwardToPreviousPage();
     }
 
     protected String identifyPluginShortName(File t) {
@@ -925,7 +963,7 @@ public abstract class PluginManager extends AbstractModelObject implements OnMas
                 }
             });
         } catch (SAXException x) {
-            throw new IOException2("Failed to parse XML",x);
+            throw new IOException("Failed to parse XML",x);
         } catch (ParserConfigurationException e) {
             throw new AssertionError(e); // impossible since we don't tweak XMLParser
         }
@@ -941,8 +979,6 @@ public abstract class PluginManager extends AbstractModelObject implements OnMas
          * Keyed by the generated class name.
          */
         private ConcurrentMap<String, WeakReference<Class>> generatedClasses = new ConcurrentHashMap<String, WeakReference<Class>>();
-
-        private ClassLoaderReflectionToolkit clt = new ClassLoaderReflectionToolkit();
 
         public UberClassLoader() {
             super(PluginManager.class.getClassLoader());
@@ -964,11 +1000,11 @@ public abstract class PluginManager extends AbstractModelObject implements OnMas
             if (FAST_LOOKUP) {
                 for (PluginWrapper p : activePlugins) {
                     try {
-                        Class c = clt.findLoadedClass(p.classLoader,name);
+                        Class<?> c = ClassLoaderReflectionToolkit._findLoadedClass(p.classLoader, name);
                         if (c!=null)    return c;
                         // calling findClass twice appears to cause LinkageError: duplicate class def
-                        return clt.findClass(p.classLoader,name);
-                    } catch (InvocationTargetException e) {
+                        return ClassLoaderReflectionToolkit._findClass(p.classLoader, name);
+                    } catch (ClassNotFoundException e) {
                         //not found. try next
                     }
                 }
@@ -988,15 +1024,11 @@ public abstract class PluginManager extends AbstractModelObject implements OnMas
         @Override
         protected URL findResource(String name) {
             if (FAST_LOOKUP) {
-                try {
                     for (PluginWrapper p : activePlugins) {
-                        URL url = clt.findResource(p.classLoader,name);
+                        URL url = ClassLoaderReflectionToolkit._findResource(p.classLoader, name);
                         if(url!=null)
                             return url;
                     }
-                } catch (InvocationTargetException e) {
-                    throw new Error(e);
-                }
             } else {
                 for (PluginWrapper p : activePlugins) {
                     URL url = p.classLoader.getResource(name);
@@ -1011,13 +1043,9 @@ public abstract class PluginManager extends AbstractModelObject implements OnMas
         protected Enumeration<URL> findResources(String name) throws IOException {
             List<URL> resources = new ArrayList<URL>();
             if (FAST_LOOKUP) {
-                try {
                     for (PluginWrapper p : activePlugins) {
-                        resources.addAll(Collections.list(clt.findResources(p.classLoader, name)));
+                        resources.addAll(Collections.list(ClassLoaderReflectionToolkit._findResources(p.classLoader, name)));
                     }
-                } catch (InvocationTargetException e) {
-                    throw new Error(e);
-                }
             } else {
                 for (PluginWrapper p : activePlugins) {
                     resources.addAll(Collections.list(p.classLoader.getResources(name)));

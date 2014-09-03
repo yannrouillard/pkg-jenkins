@@ -32,7 +32,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
 import hudson.model.UnprotectedRootAction;
-import hudson.util.IOException2;
 import jenkins.model.Jenkins;
 
 import org.kohsuke.accmod.Restricted;
@@ -130,7 +129,7 @@ public class CLIAction implements UnprotectedRootAction, StaplerProxy {
                     duplexChannels.get(uuid).upload(req,rsp);
                 }
             } catch (InterruptedException e) {
-                throw new IOException2(e);
+                throw new IOException(e);
             }
         }
     }

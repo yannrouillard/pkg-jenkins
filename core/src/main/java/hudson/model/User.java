@@ -350,6 +350,13 @@ public class User extends AbstractModelObject implements AccessControlled, Descr
                 if (LOGGER.isLoggable(Level.FINE) && !fullName.equals(prev.getFullName())) {
                     LOGGER.log(Level.FINE, "mismatch on fullName (‘" + fullName + "’ vs. ‘" + prev.getFullName() + "’) for ‘" + id + "’", new Throwable());
                 }
+            } else if (!id.equals(fullName) && !getConfigFileFor(id).exists()) {
+                // JENKINS-16332: since the fullName may not be recoverable from the id, and various code may store the id only, we must save the fullName
+                try {
+                    u.save();
+                } catch (IOException x) {
+                    LOGGER.log(Level.WARNING, null, x);
+                }
             }
         }
         return u;
@@ -371,7 +378,10 @@ public class User extends AbstractModelObject implements AccessControlled, Descr
         Authentication a = Jenkins.getAuthentication();
         if(a instanceof AnonymousAuthenticationToken)
             return null;
-        return get(a.getName());
+
+        // Since we already know this is a name, we can just call getOrCreate with the name directly.
+        String id = a.getName();
+        return getOrCreate(id, id, true);
     }
 
     private static volatile long lastScanned;
@@ -574,11 +584,11 @@ public class User extends AbstractModelObject implements AccessControlled, Descr
     }
 
     public void doRssAll(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
-        rss(req, rsp, " all builds", RunList.fromRuns(getBuilds()), Run.FEED_ADAPTER);
+        rss(req, rsp, " all builds", getBuilds(), Run.FEED_ADAPTER);
     }
 
     public void doRssFailed(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
-        rss(req, rsp, " regression builds", RunList.fromRuns(getBuilds()).regressionOnly(), Run.FEED_ADAPTER);
+        rss(req, rsp, " regression builds", getBuilds().regressionOnly(), Run.FEED_ADAPTER);
     }
 
     public void doRssLatest(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
@@ -666,6 +676,7 @@ public class User extends AbstractModelObject implements AccessControlled, Descr
                 r.add(n);
             }
         }
+        Collections.sort(r, String.CASE_INSENSITIVE_ORDER);
         return r;
     }
 
