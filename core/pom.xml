@@ -29,7 +29,7 @@ THE SOFTWARE.
   <parent>
     <groupId>org.jenkins-ci.main</groupId>
     <artifactId>pom</artifactId>
-    <version>1.565.1</version>
+    <version>1.565.2</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -479,7 +479,7 @@ THE SOFTWARE.
     <dependency>
       <groupId>org.jvnet.winp</groupId>
       <artifactId>winp</artifactId>
-      <version>1.19</version>
+      <version>1.20</version>
     </dependency>
     <dependency>
       <groupId>org.jenkins-ci</groupId>
