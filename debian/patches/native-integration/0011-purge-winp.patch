@@ -8,16 +8,16 @@ Subject: purge-winp
 
 --- a/core/src/main/java/hudson/util/ProcessTree.java
 +++ b/core/src/main/java/hudson/util/ProcessTree.java
-@@ -38,8 +38,6 @@
+@@ -37,8 +37,6 @@
+ import hudson.util.ProcessTree.OSProcess;
  import hudson.util.ProcessTreeRemoting.IOSProcess;
  import hudson.util.ProcessTreeRemoting.IProcessTree;
- import org.apache.commons.io.FileUtils;
 -import org.jvnet.winp.WinProcess;
 -import org.jvnet.winp.WinpException;
  
- import java.io.BufferedReader;
- import java.io.ByteArrayOutputStream;
-@@ -333,9 +331,6 @@
+ import java.io.*;
+ import java.lang.reflect.Field;
+@@ -324,9 +322,6 @@
              return DEFAULT;
  
          try {
@@ -27,7 +27,7 @@ Subject: purge-winp
              String os = Util.fixNull(System.getProperty("os.name"));
              if(os.equals("Linux"))
                  return new Linux();
-@@ -393,92 +388,6 @@
+@@ -384,92 +379,6 @@
      };
  
  

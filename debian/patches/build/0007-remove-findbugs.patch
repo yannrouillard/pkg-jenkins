@@ -224,7 +224,7 @@ Subject: remove-findbugs
          try {
 --- a/core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java
 +++ b/core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java
-@@ -168,7 +168,6 @@
+@@ -170,7 +170,6 @@
       * Suitable for {@link SubTask#createExecutable}.
       */
      @SuppressWarnings("SleepWhileHoldingLock")

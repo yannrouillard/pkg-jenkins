@@ -22,7 +22,7 @@ commons-httpclient commons-httpclient jar s/3\..*/3.x/ * *
 junit s/junit-dep/junit/ * s/.*/4.x/ * *
 junit junit * s/.*/4.x/ * *
 # Map onto exact version during build process
-org.jenkins-ci.main * * s/1\..*/1.565.1/ * *
+org.jenkins-ci.main * * s/1\..*/1.565.2/ * *
 # Handle plugin package
 org.kohsuke access-modifier-annotation jar s/.*/1.4/ * *
 org.kohsuke access-modifier-checker *  s/.*/1.4/ * *
