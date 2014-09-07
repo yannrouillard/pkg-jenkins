@@ -3,15 +3,15 @@ Author: Emmanuel Bourg <ebourg@apache.org>
 Forwarded: not-needed
 --- a/core/src/main/java/hudson/model/AbstractProject.java
 +++ b/core/src/main/java/hudson/model/AbstractProject.java
-@@ -127,7 +127,6 @@
+@@ -118,7 +118,6 @@
+ import jenkins.util.TimeDuration;
+ import net.sf.json.JSONObject;
  import org.acegisecurity.Authentication;
- import org.acegisecurity.context.SecurityContext;
- import org.acegisecurity.context.SecurityContextHolder;
 -import org.jenkinsci.bytecode.AdaptField;
  import org.kohsuke.accmod.Restricted;
- import org.kohsuke.accmod.restrictions.DoNotUse;
  import org.kohsuke.accmod.restrictions.NoExternalUse;
-@@ -248,8 +247,7 @@
+ import org.kohsuke.args4j.Argument;
+@@ -237,8 +236,7 @@
      /**
       * List of all {@link Trigger}s for this project.
       */
@@ -21,7 +21,7 @@ Forwarded: not-needed
      private static final AtomicReferenceFieldUpdater<AbstractProject,DescribableList> triggersUpdater
              = AtomicReferenceFieldUpdater.newUpdater(AbstractProject.class,DescribableList.class,"triggers");
  
-@@ -351,7 +349,7 @@
+@@ -338,7 +336,7 @@
          if (triggers == null) {
              triggersUpdater.compareAndSet(this,null,new DescribableList<Trigger<?>,TriggerDescriptor>(this));
          }
@@ -30,7 +30,7 @@ Forwarded: not-needed
      }
  
      @Override
-@@ -2020,7 +2018,7 @@
+@@ -1832,7 +1830,7 @@
  
          for (Trigger t : triggers())
              t.stop();
@@ -38,7 +38,7 @@ Forwarded: not-needed
 +        ((DescribableList<Trigger<?>,TriggerDescriptor>) triggers).replaceBy(buildDescribable(req, Trigger.for_(this)));
          for (Trigger t : triggers())
              t.start(this,true);
- 
+     }
 --- a/core/src/main/java/hudson/PluginManager.java
 +++ b/core/src/main/java/hudson/PluginManager.java
 @@ -58,7 +58,6 @@
@@ -78,7 +78,7 @@ Forwarded: not-needed
      public Api getApi() {
 --- a/core/src/main/java/hudson/ClassicPluginStrategy.java
 +++ b/core/src/main/java/hudson/ClassicPluginStrategy.java
-@@ -690,8 +690,6 @@
+@@ -750,8 +750,6 @@
  
          @Override
          protected Class defineClassFromData(File container, byte[] classData, String classname) throws IOException {

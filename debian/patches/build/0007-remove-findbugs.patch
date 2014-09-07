@@ -101,9 +101,9 @@ Subject: remove-findbugs
  import javax.annotation.CheckForNull;
 -import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  import hudson.model.Items;
+ import jenkins.model.ParameterizedJobMixIn;
  
- /**
-@@ -278,7 +277,6 @@
+@@ -289,7 +288,6 @@
       *
       * @deprecated Use {@link jenkins.util.Timer#get()} instead.
       */
@@ -131,7 +131,7 @@ Subject: remove-findbugs
  import hudson.PluginManager;
  import hudson.PluginWrapper;
  import hudson.diagnosis.OldDataMonitor;
-@@ -412,7 +411,6 @@
+@@ -413,7 +412,6 @@
  
          private PluginManager pm;
  
@@ -141,7 +141,7 @@ Subject: remove-findbugs
                  return classOwnership.ownerOf(clazz);
 --- a/core/src/main/java/jenkins/model/Jenkins.java
 +++ b/core/src/main/java/jenkins/model/Jenkins.java
-@@ -738,10 +738,6 @@
+@@ -743,10 +743,6 @@
       * @param pluginManager
       *      If non-null, use existing plugin manager.  create a new one.
       */
@@ -152,7 +152,7 @@ Subject: remove-findbugs
      protected Jenkins(File root, ServletContext context, PluginManager pluginManager) throws IOException, InterruptedException, ReactorException {
          long start = System.currentTimeMillis();
          
-@@ -2677,7 +2673,6 @@
+@@ -2680,7 +2676,6 @@
      /**
       * Called to shut down the system.
       */
@@ -160,14 +160,14 @@ Subject: remove-findbugs
      public void cleanUp() {
          for (ItemListener l : ItemListener.all())
              l.onBeforeShutdown();
-@@ -3161,7 +3156,6 @@
+@@ -3171,7 +3166,6 @@
      /**
       * For debugging. Expose URL to perform GC.
       */
 -    @edu.umd.cs.findbugs.annotations.SuppressWarnings("DM_GC")
+     @RequirePOST
      public void doGc(StaplerResponse rsp) throws IOException {
          checkPermission(Jenkins.ADMINISTER);
-         System.gc();
 --- a/core/src/main/java/jenkins/util/ProgressiveRendering.java
 +++ b/core/src/main/java/jenkins/util/ProgressiveRendering.java
 @@ -24,7 +24,6 @@
@@ -222,3 +222,13 @@ Subject: remove-findbugs
      public void testSuiteStdioTrimmingSurefire() throws Exception {
          File data = File.createTempFile("TEST-", ".xml");
          try {
+--- a/core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java
++++ b/core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java
+@@ -168,7 +168,6 @@
+      * Suitable for {@link SubTask#createExecutable}.
+      */
+     @SuppressWarnings("SleepWhileHoldingLock")
+-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("SWL_SLEEP_WITH_LOCK_HELD")
+     public final synchronized RunT newBuild() throws IOException {
+     	// make sure we don't start two builds in the same second
+     	// so the build directories will be different too

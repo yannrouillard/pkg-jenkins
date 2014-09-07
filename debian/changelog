@@ -1,4 +1,4 @@
-jenkins (1.554.3-1) UNRELEASED; urgency=medium
+jenkins (1.565.1-1) UNRELEASED; urgency=medium
 
   * Team upload.
   * New upstream release
@@ -8,9 +8,11 @@ jenkins (1.554.3-1) UNRELEASED; urgency=medium
     - Ignore the dependency on org.kohsuke.jinterop:j-interop
     - Ignore the dependency on org.jenkins-ci.modules:systemd-slave-installer
     - Added a dependency on libguice-java and libjsr305-java
-    - Depend on libjenkins-remoting-java >= 2.32
+    - Depend on libjenkins-remoting-java >= 2.43
     - Depend on libannotation-indexer-java >= 1.7
-    - Depend on libstapler-java >= 1.223
+    - Depend on libstapler-java >= 1.224
+    - Depend on libstapler-adjunct-codemirror-java >= 1.3
+    - Depend on jenkins-test-annotations >= 1.1
   * Fixed a build failure caused by the relocation of the Maven artifacts
     in groovy 1.8.6-4 (Closes: #759946)
   * Removed the sourceless and unused connection.swf file (Closes: #736792)

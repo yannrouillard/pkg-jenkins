@@ -23,7 +23,7 @@ Subject: openjdk6
  
 --- a/core/src/main/java/hudson/model/AbstractBuild.java
 +++ b/core/src/main/java/hudson/model/AbstractBuild.java
-@@ -1365,6 +1365,15 @@
+@@ -1317,6 +1317,15 @@
      }
  
      private static final Logger LOGGER = Logger.getLogger(AbstractBuild.class.getName());

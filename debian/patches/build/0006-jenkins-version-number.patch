@@ -7,9 +7,6 @@ Subject: jenkins-version-number
  1 file changed, 486 insertions(+)
  create mode 100644 core/src/main/java/hudson/util/VersionNumber.java
 
-diff --git a/core/src/main/java/hudson/util/VersionNumber.java b/core/src/main/java/hudson/util/VersionNumber.java
-new file mode 100644
-index 0000000..afa8688
 --- /dev/null
 +++ b/core/src/main/java/hudson/util/VersionNumber.java
 @@ -0,0 +1,486 @@

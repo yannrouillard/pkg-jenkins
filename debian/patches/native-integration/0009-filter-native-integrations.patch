@@ -8,7 +8,7 @@ Subject: filter-native-integrations
 
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -672,6 +672,17 @@
+@@ -682,6 +682,17 @@
          <configuration>
            <fork>${staplerFork}</fork><!-- the source code is big enough now that otherwise it fails with OutOfMemoryError -->
            <maxmem>128m</maxmem>

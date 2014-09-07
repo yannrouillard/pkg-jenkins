@@ -6,8 +6,6 @@ Subject: purge-embedded-su4j
  core/src/main/java/hudson/os/SU.java | 16 ----------------
  1 file changed, 16 deletions(-)
 
-diff --git a/core/src/main/java/hudson/os/SU.java b/core/src/main/java/hudson/os/SU.java
-index b254f54..929e7eb 100644
 --- a/core/src/main/java/hudson/os/SU.java
 +++ b/core/src/main/java/hudson/os/SU.java
 @@ -23,7 +23,6 @@
@@ -15,10 +13,10 @@ index b254f54..929e7eb 100644
  package hudson.os;
  
 -import com.sun.solaris.EmbeddedSu;
+ import hudson.FilePath;
  import hudson.Launcher.LocalLauncher;
  import hudson.Util;
- import hudson.model.Computer;
-@@ -94,21 +93,6 @@ public abstract class SU {
+@@ -96,21 +95,6 @@
                  }
              }.start(listener,rootPassword);
  

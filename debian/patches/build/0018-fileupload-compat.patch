@@ -16,7 +16,7 @@ Subject: fileupload-compat
  import org.apache.commons.io.FilenameUtils;
  import org.apache.commons.io.IOUtils;
  import org.apache.commons.lang.StringUtils;
-@@ -292,5 +293,12 @@
+@@ -302,5 +303,12 @@
          public OutputStream getOutputStream() throws IOException {
              return new FileOutputStream(file);
          }

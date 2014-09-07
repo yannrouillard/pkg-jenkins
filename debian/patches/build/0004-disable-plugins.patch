@@ -20,7 +20,7 @@ Subject: disable-plugins
    </dependencies>
  
    <build>
-@@ -265,102 +270,6 @@
+@@ -265,108 +270,6 @@
                    <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
                    <destFileName>winstone.jar</destFileName>
                  </artifactItem>
@@ -99,7 +99,7 @@ Subject: disable-plugins
 -                <artifactItem>
 -                  <groupId>org.jenkins-ci.plugins</groupId>
 -                  <artifactId>mailer</artifactId>
--                  <version>1.6</version>
+-                  <version>1.8</version>
 -                  <type>hpi</type>
 -                </artifactItem>
 -                <artifactItem>
@@ -117,7 +117,13 @@ Subject: disable-plugins
 -                <artifactItem>
 -                  <groupId>org.jenkins-ci.plugins</groupId>
 -                  <artifactId>antisamy-markup-formatter</artifactId>
--                  <version>1.0</version>
+-                  <version>1.1</version>
+-                  <type>hpi</type>
+-                </artifactItem>
+-                <artifactItem>
+-                  <groupId>org.jenkins-ci.plugins</groupId>
+-                  <artifactId>matrix-project</artifactId>
+-                  <version>1.2</version>
 -                  <type>hpi</type>
 -                </artifactItem>
                </artifactItems>

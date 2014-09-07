@@ -22,7 +22,7 @@ Build-Depends-Indep:
  jenkins-memory-monitor,
  jenkins-ssh-cli-auth,
  jenkins-task-reactor,
- jenkins-test-annotations,
+ jenkins-test-annotations (>= 1.1),
  junit (>= 3.8.2),
  junit4,
  libaccess-modifier-checker-java,
@@ -55,7 +55,7 @@ Build-Depends-Indep:
  libjenkins-htmlunit-java,
  libjenkins-json-java (>= 2.4-jenkins-1),
  libjenkins-plugin-parent-java,
- libjenkins-remoting-java (>= 2.32),
+ libjenkins-remoting-java (>= 2.43),
  libjenkins-trilead-ssh2-java (>= 214-jenkins-1),
  libjenkins-winstone-java (>= 0.9.10-jenkins-44),
  libjenkins-xstream-java (>= 1.4.4-jenkins-3),
@@ -93,9 +93,9 @@ Build-Depends-Indep:
  libspring-core-java,
  libspring-ldap-java,
  libspring-web-java,
- libstapler-adjunct-codemirror-java (>= 1.2),
+ libstapler-adjunct-codemirror-java (>= 1.3),
  libstapler-adjunct-timeline-java (>= 1.4),
- libstapler-java (>= 1.223),
+ libstapler-java (>= 1.224),
  libtrilead-putty-extension-java (>= 1.2),
  libtxw2-java,
  libxpp3-java,
@@ -166,7 +166,7 @@ Description: Jenkins Plugin Parent Maven POM
 Package: jenkins-common
 Architecture: all
 Depends:
- libjenkins-remoting-java (>= 2.32),
+ libjenkins-remoting-java (>= 2.43),
  libjffi-java,
  libjna-java,
  libjnr-posix-java,

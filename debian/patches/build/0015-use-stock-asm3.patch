@@ -9,7 +9,7 @@ Subject: use-stock-asm3
 
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -556,6 +556,13 @@
+@@ -566,6 +566,13 @@
      </dependency>
  
      <dependency>
@@ -29,16 +29,16 @@ Subject: use-stock-asm3
  
  import hudson.PluginManager.UberClassLoader;
  import jenkins.model.Jenkins;
--import org.kohsuke.asm3.ClassWriter;
--import org.kohsuke.asm3.MethodVisitor;
--import org.kohsuke.asm3.Type;
+-import org.kohsuke.asm5.ClassWriter;
+-import org.kohsuke.asm5.MethodVisitor;
+-import org.kohsuke.asm5.Type;
 +import org.objectweb.asm.ClassWriter;
 +import org.objectweb.asm.MethodVisitor;
 +import org.objectweb.asm.Type;
  
  import java.lang.reflect.Constructor;
  
--import static org.kohsuke.asm3.Opcodes.*;
+-import static org.kohsuke.asm5.Opcodes.*;
 +import static org.objectweb.asm.Opcodes.*;
  
  /**

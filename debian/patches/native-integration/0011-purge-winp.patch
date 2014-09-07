@@ -8,7 +8,7 @@ Subject: purge-winp
 
 --- a/core/src/main/java/hudson/util/ProcessTree.java
 +++ b/core/src/main/java/hudson/util/ProcessTree.java
-@@ -37,8 +37,6 @@
+@@ -38,8 +38,6 @@
  import hudson.util.ProcessTreeRemoting.IOSProcess;
  import hudson.util.ProcessTreeRemoting.IProcessTree;
  import org.apache.commons.io.FileUtils;
@@ -17,7 +17,7 @@ Subject: purge-winp
  
  import java.io.BufferedReader;
  import java.io.ByteArrayOutputStream;
-@@ -332,9 +330,6 @@
+@@ -333,9 +331,6 @@
              return DEFAULT;
  
          try {
@@ -27,7 +27,7 @@ Subject: purge-winp
              String os = Util.fixNull(System.getProperty("os.name"));
              if(os.equals("Linux"))
                  return new Linux();
-@@ -392,92 +387,6 @@
+@@ -393,92 +388,6 @@
      };
  
  
@@ -67,15 +67,15 @@ Subject: purge-winp
 -                    public synchronized EnvVars getEnvironmentVariables() {
 -                        if(env !=null)
 -                          return env;
--                        env = new EnvVars();   
--                        
--                        try 
+-                        env = new EnvVars();
+-
+-                        try
 -                        {
 -                           env.putAll(p.getEnvironmentVariables());
 -                        } catch (WinpException e)
 -                        {
 -                           LOGGER.log(FINE, "Failed to get environment variable ", e);
--                        }                          
+-                        }
 -                        return env;
 -                    }
 -                });
