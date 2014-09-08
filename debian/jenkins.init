@@ -42,6 +42,8 @@ elif [ -r /etc/environment ]; then
   export LANG LANGUAGE
 fi
 
+VERBOSE=no
+
 # Define LSB log_* functions.
 # Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
 . /lib/lsb/init-functions
