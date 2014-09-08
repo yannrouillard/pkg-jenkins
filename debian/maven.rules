@@ -40,7 +40,7 @@ s/groovy/org.codehaus.groovy/ groovy* * s/.*/1.x/ * *
 org.codehaus.groovy groovy* * s/.*/1.x/ * *
 org.mortbay.jetty * * s/6\..*/6.x/ * *
 org.springframework * * s/2\..*/3.x/ * *
-s/javax.servlet/javax.servlet.jsp/ jsp-api jar s/2\..*/2.1/ * *
+s/javax.servlet/javax.servlet.jsp/ s/jsp-api/javax.servlet.jsp-api/ jar s/2\..*/2.3/ * *
 # Remap hudson forks back to standard versions
 s/org.jvnet.hudson/javax.activation/ activation * s/.*/debian/ * *
 s/org.jenkins-ci/javax.jmdns/ jmdns * s/.*/debian/ * *
@@ -58,8 +58,8 @@ javax.servlet jstl * s/1\.1\..*/1.1/ * *
 # Remap for rename jna->jnr in Debian
 org.jruby.ext.posix s/jna-posix/jnr-posix/ * s/.*/debian/ * *
 s/com.github.jnr/org.jruby.ext.posix/ jnr-posix * s/.*/debian/ * *
-# Update to servlet2.5
-javax.servlet servlet-api * s/.*/2.5/ * *
+# Update to servlet3.1
+javax.servlet s/servlet-api/javax.servlet-api/ * s/.*/3.1/ * *
 # Updates for 1.424.6
 s/org.kohsuke/owasp-java-html-sanitizer/ s/owasp-html-sanitizer/owasp-java-html-sanitizer/ * s/.*/debian/ * *
 # Updates for 1.447.1

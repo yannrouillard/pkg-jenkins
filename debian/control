@@ -86,7 +86,7 @@ Build-Depends-Indep:
  libowasp-java-html-sanitizer-java,
  libpam4j-java,
  librobust-http-client-java,
- libservlet2.5-java,
+ libservlet3.1-java,
  libsezpoz-java,
  libsisu-guice-java,
  libspring-aop-java,
@@ -139,7 +139,6 @@ Depends:
  libmaven-hpi-plugin-java (>= 1.93),
  libmaven-javadoc-plugin-java,
  libmaven-stapler-plugin-java,
- libservlet2.5-java,
  libsurefire-java,
  ${misc:Depends}
 Description: Jenkins Plugin Parent Maven POM

@@ -21,6 +21,7 @@ jenkins (1.565.2-1) UNRELEASED; urgency=medium
   * Switch to debhelper level 9
   * debian/control:
     - Standards-Version updated to 3.9.5 (no changes)
+    - Depend on the Servlet API 3.1 instead of 2.5
   * debian/copyright: Updated the Format URI to 1.0
   * Use XZ compression for the upstream tarball
   * Added a lintian override for the source-contains-prebuilt-javascript-object
