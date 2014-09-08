@@ -313,10 +313,10 @@ Description: Jenkins CI Command Line Interface
 
 Package: jenkins-tomcat
 Architecture: all
-Depends: jenkins-common (= ${binary:Version}), tomcat6, ${misc:Depends}
+Depends: jenkins-common (= ${binary:Version}), tomcat8, ${misc:Depends}
 Conflicts: jenkins
 Provides: jenkins
-Description: Jenkins CI on Tomcat 6
+Description: Jenkins CI on Tomcat 8
  Jenkins monitors executions of repeated jobs, such as building a software
  project or jobs run by cron. Among those things, current Jenkins focuses
  on the following two jobs:
@@ -334,4 +334,4 @@ Description: Jenkins CI on Tomcat 6
     Jenkins keeps those outputs and makes it easy for you to notice when
     something is wrong.
  .
- This package provides a Jenkins CI instance deployed on Apache Tomcat 6.
+ This package provides a Jenkins CI instance deployed on Apache Tomcat 8.

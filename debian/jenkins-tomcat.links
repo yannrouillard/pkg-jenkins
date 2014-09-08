@@ -1,1 +1,1 @@
-/etc/jenkins/jenkins-tomcat.xml /etc/tomcat6/Catalina/localhost/jenkins.xml
+/etc/jenkins/jenkins-tomcat.xml /etc/tomcat8/Catalina/localhost/jenkins.xml

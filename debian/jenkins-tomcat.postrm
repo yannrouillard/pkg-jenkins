@@ -6,10 +6,12 @@ case "$1" in
     remove)
 
         rm -f /etc/tomcat6/policy.d/05jenkins.policy
+        rm -f /etc/tomcat8/policy.d/05jenkins.policy
 
 	# Is there a way not to restart tomcat if it is due to be removed, too?
 	if [ -x /usr/sbin/invoke-rc.d ]; then
 	    invoke-rc.d tomcat6 restart || true
+	    invoke-rc.d tomcat8 restart || true
 	fi
 
     ;;

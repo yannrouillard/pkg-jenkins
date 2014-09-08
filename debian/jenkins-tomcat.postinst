@@ -8,9 +8,9 @@ set -e
 case "$1" in
     configure)
 
-        chown -R tomcat6:tomcat6 /var/lib/jenkins
+        chown -R tomcat8:tomcat8 /var/lib/jenkins
 
-        ln -sf /etc/jenkins/tomcat.policy /etc/tomcat6/policy.d/05jenkins.policy
+        ln -sf /etc/jenkins/tomcat.policy /etc/tomcat8/policy.d/05jenkins.policy
 
     ;;
 
@@ -25,9 +25,9 @@ case "$1" in
 
 esac
 
-invoke-rc.d --quiet tomcat6 restart || {
+invoke-rc.d --quiet tomcat8 restart || {
     RESULT=$?
-    # Ignore if tomcat6 init script does not exist (yet)
+    # Ignore if tomcat8 init script does not exist (yet)
     if [ $RESULT != 100 ]; then
 	exit $RESULT
     fi

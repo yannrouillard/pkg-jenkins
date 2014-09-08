@@ -1,4 +1,4 @@
-grant codeBase "file:/var/lib/tomcat6/webapps/jenkins/-" {
+grant codeBase "file:/var/lib/tomcat8/webapps/jenkins/-" {
   permission java.security.AllPermission;
 
 //  FIXME: These permissions don't work - the above is the Jenkins recommendation
@@ -12,9 +12,9 @@ grant codeBase "file:/var/lib/tomcat6/webapps/jenkins/-" {
 //  permission java.io.FilePermission "/usr/share/java", "read";
 //  permission java.io.FilePermission "/usr/share/java/-", "read";
 //  permission java.io.FilePermission "/usr/share/maven-repo/-", "read";
-//  permission java.io.FilePermission "/var/log/tomcat6/-", "read,write";
-//  permission java.io.FilePermission "/var/lib/tomcat6/webapps/jenkins/-", "read";
-//  permission java.io.FilePermission "/var/lib/tomcat6/temp/-", "read,write";
+//  permission java.io.FilePermission "/var/log/tomcat8/-", "read,write";
+//  permission java.io.FilePermission "/var/lib/tomcat8/webapps/jenkins/-", "read";
+//  permission java.io.FilePermission "/var/lib/tomcat8/temp/-", "read,write";
 //  permission java.io.FilePermission "/var/lib/jenkins", "read,write,delete";
 //  permission java.io.FilePermission "/var/lib/jenkins/-", "read,write,delete";
 //  permission java.io.FilePermission "/usr/share/jenkins/jenkins.war", "read";
