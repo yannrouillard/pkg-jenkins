@@ -13,6 +13,7 @@ jenkins (1.565.2-1) UNRELEASED; urgency=medium
     - Depend on libstapler-java >= 1.224
     - Depend on libstapler-adjunct-codemirror-java >= 1.3
     - Depend on jenkins-test-annotations >= 1.1
+    - Depend on libbridge-method-injector-java >= 1.9
   * jenkins-tomcat now targets Tomcat 8 instead of Tomcat 6 (Closes: #759623)
   * Fixed a build failure caused by the relocation of the Maven artifacts
     in groovy 1.8.6-4 (Closes: #759946)

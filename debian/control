@@ -35,7 +35,7 @@ Build-Depends-Indep:
  libaopalliance-java,
  libargs4j-java,
  libasm3-java,
- libbridge-method-injector-java,
+ libbridge-method-injector-java (>= 1.9),
  libclassworlds-java,
  libcommons-beanutils-java,
  libcommons-codec-java,
