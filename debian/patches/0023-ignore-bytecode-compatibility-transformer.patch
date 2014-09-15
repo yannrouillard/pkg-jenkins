@@ -11,16 +11,20 @@ Forwarded: not-needed
  import org.kohsuke.accmod.Restricted;
  import org.kohsuke.accmod.restrictions.NoExternalUse;
  import org.kohsuke.args4j.Argument;
-@@ -237,8 +236,7 @@
+@@ -237,10 +236,9 @@
      /**
       * List of all {@link Trigger}s for this project.
       */
 -    @AdaptField(was=List.class)
 -    protected volatile DescribableList<Trigger<?>,TriggerDescriptor> triggers = new DescribableList<Trigger<?>,TriggerDescriptor>(this);
+-    private static final AtomicReferenceFieldUpdater<AbstractProject,DescribableList> triggersUpdater
+-            = AtomicReferenceFieldUpdater.newUpdater(AbstractProject.class,DescribableList.class,"triggers");
 +    protected volatile List<Trigger<?>> triggers = new DescribableList<Trigger<?>,TriggerDescriptor>(this);
-     private static final AtomicReferenceFieldUpdater<AbstractProject,DescribableList> triggersUpdater
-             = AtomicReferenceFieldUpdater.newUpdater(AbstractProject.class,DescribableList.class,"triggers");
++    private static final AtomicReferenceFieldUpdater<AbstractProject,List> triggersUpdater
++            = AtomicReferenceFieldUpdater.newUpdater(AbstractProject.class,List.class,"triggers");
  
+     /**
+      * {@link Action}s contributed from subsidiary objects associated with
 @@ -338,7 +336,7 @@
          if (triggers == null) {
              triggersUpdater.compareAndSet(this,null,new DescribableList<Trigger<?>,TriggerDescriptor>(this));
