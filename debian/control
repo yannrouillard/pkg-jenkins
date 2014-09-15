@@ -34,7 +34,7 @@ Build-Depends-Indep:
  libantlr-maven-plugin-java,
  libaopalliance-java,
  libargs4j-java,
- libasm3-java,
+ libasm4-java,
  libbridge-method-injector-java (>= 1.9),
  libclassworlds-java,
  libcommons-beanutils-java,

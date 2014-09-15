@@ -28,7 +28,7 @@ org.kohsuke access-modifier-annotation jar s/.*/1.4/ * *
 org.kohsuke access-modifier-checker *  s/.*/1.4/ * *
 # 3.x is needed due to later versions of some deps in Debian
 # Patch to be submitted back upstream.
-asm * * s/2\..*/3.x/ * *
+s/asm/org.ow2.asm/ * * s/.*/4.x/ * *
 com.octo.captcha s/jcaptcha-all/jcaptcha/ * s/.*/debian/ * *
 commons-collections commons-collections * s/3\..*/3.x/ * *
 commons-httpclient commons-httpclient * s/3\..*/3.x/ * *
