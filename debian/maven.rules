@@ -33,7 +33,7 @@ com.octo.captcha s/jcaptcha-all/jcaptcha/ * s/.*/debian/ * *
 commons-collections commons-collections * s/3\..*/3.x/ * *
 commons-httpclient commons-httpclient * s/3\..*/3.x/ * *
 commons-logging s/commons-logging-api/commons-logging/ * s/.*/debian/ * *
-org.kohsuke.stapler maven-stapler-plugin * s/.*/1.16/ * *
+org.kohsuke.stapler maven-stapler-plugin * s/.*/1.17/ * *
 s/ant/org.apache.ant/ * * s/.*/debian/ * *
 s/groovy/org.codehaus.groovy/ groovy * s/.*/1.x/ * *
 s/groovy/org.codehaus.groovy/ groovy* * s/.*/1.x/ * *
@@ -73,4 +73,5 @@ org.springframework s/spring-webmvc/spring-web/ * s/.*/3.x/ * *
 
 com.google.inject guice * s/.*/debian/ s/no_aop// *
 s/com.google.code.findbugs/org.jsr-305/ jsr305 * s/.*/0.x/ * *
+org.jsr-305 jsr305 * 0.x * *
 s/org.jvnet.hudson/org.jenkins-ci/ test-annotations * s/.*/debian/ * *
