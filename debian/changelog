@@ -1,4 +1,4 @@
-jenkins (1.565.2-1) UNRELEASED; urgency=medium
+jenkins (1.565.2-1) unstable; urgency=medium
 
   * Team upload.
   * New upstream release
@@ -31,7 +31,7 @@ jenkins (1.565.2-1) UNRELEASED; urgency=medium
     *-debug.js file in the same directory with the original source.
     (Closes: #736793)
 
- -- Emmanuel Bourg <ebourg@apache.org>  Tue, 02 Sep 2014 09:17:51 +0200
+ -- Emmanuel Bourg <ebourg@apache.org>  Tue, 16 Sep 2014 14:38:16 +0200
 
 jenkins (1.509.2+dfsg-2) unstable; urgency=low
 
