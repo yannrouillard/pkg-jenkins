@@ -1,3 +1,10 @@
+jenkins (1.565.2-2) unstable; urgency=medium
+
+  * Team upload.
+  * debian/plugin-debian.pom.in: Updated the version of maven-stapler-plugin
+
+ -- Emmanuel Bourg <ebourg@apache.org>  Wed, 17 Sep 2014 17:12:36 +0200
+
 jenkins (1.565.2-1) unstable; urgency=medium
 
   * Team upload.
