@@ -13,7 +13,6 @@ Build-Depends:
 Build-Depends-Indep:
  ant,
  ant-optional,
- glassfish-activation,
  glassfish-mail,
  groovy (>= 1.8.6-4~),
  jenkins-crypto-util,

@@ -28,6 +28,8 @@ org.codehaus.mojo apt-maven-plugin * * * *
 org.jvnet.maven-jellydoc-plugin maven-jellydoc-plugin * * * *
 # OK: Bugs should be found upstream, not in Debian!
 org.codehaus.mojo findbugs-maven-plugin * * * *
+# OK: Provided by the JDK
+org.jvnet.hudson activation * * * *
 # FIXME: Used by test module - not currently enabled
 com.sun.maven maven-junit-plugin * * * *
 # OK: Only required for Java 1.5 which we don't support in Debia
