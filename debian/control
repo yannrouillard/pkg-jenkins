@@ -13,7 +13,6 @@ Build-Depends:
 Build-Depends-Indep:
  ant,
  ant-optional,
- glassfish-mail,
  groovy (>= 1.8.6-4~),
  jenkins-crypto-util,
  jenkins-executable-war (>= 1.28),
@@ -68,6 +67,7 @@ Build-Depends-Indep:
  libjstl1.1-java,
  libjtidy-java,
  liblocalizer-java,
+ libmail-java,
  libmaven-antrun-extended-plugin-java,
  libmaven-assembly-plugin-java,
  libmaven-dependency-plugin-java,
