@@ -38,7 +38,6 @@ s/ant/org.apache.ant/ * * s/.*/debian/ * *
 s/groovy/org.codehaus.groovy/ groovy * s/.*/1.x/ * *
 s/groovy/org.codehaus.groovy/ groovy* * s/.*/1.x/ * *
 org.codehaus.groovy groovy* * s/.*/1.x/ * *
-org.mortbay.jetty * * s/6\..*/6.x/ * *
 org.springframework * * s/2\..*/3.x/ * *
 s/javax.servlet/javax.servlet.jsp/ s/jsp-api/javax.servlet.jsp-api/ jar s/2\..*/2.3/ * *
 # Remap hudson forks back to standard versions
