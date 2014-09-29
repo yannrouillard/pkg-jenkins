@@ -34,6 +34,7 @@ Build-Depends-Indep:
  libargs4j-java,
  libasm4-java,
  libbridge-method-injector-java (>= 1.9),
+ libbytecode-compatibility-transformer-java,
  libclassworlds-java,
  libcommons-beanutils-java,
  libcommons-codec-java,

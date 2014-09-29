@@ -95,4 +95,3 @@ org.jenkins-ci.modules systemd-slave-installer * * * *
 # Drop animal-sniffer plugin usage
 org.codehaus.mojo animal-sniffer-maven-plugin * * * *
 # TODO: To be packaged
-org.jenkins-ci bytecode-compatibility-transformer * * * *
