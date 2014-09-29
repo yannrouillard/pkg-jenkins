@@ -1,4 +1,4 @@
-jenkins (1.565.2-3) UNRELEASED; urgency=medium
+jenkins (1.565.2-3) unstable; urgency=medium
 
   * Removed unused build dependencies: libjetty-java and glassfish-activation
   * Depend on libmail-java instead of glassfish-mail
@@ -6,7 +6,7 @@ jenkins (1.565.2-3) UNRELEASED; urgency=medium
   * Added a note about the manual installation of matrix-project-plugin
     in debian/jenkins.README.Debian
 
- -- Emmanuel Bourg <ebourg@apache.org>  Tue, 23 Sep 2014 13:42:42 +0200
+ -- Emmanuel Bourg <ebourg@apache.org>  Mon, 29 Sep 2014 15:49:56 +0200
 
 jenkins (1.565.2-2) unstable; urgency=medium
 
