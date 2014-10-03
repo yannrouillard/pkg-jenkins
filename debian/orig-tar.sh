@@ -3,7 +3,7 @@
 VERSION=$2
 TAR=../jenkins_$VERSION.orig.tar.xz
 DIR=jenkins-$VERSION
-FILE=../jenkins-$VERSION.tar.gz
+FILE=$3
 mkdir -p $DIR
 
 # Unpack ready fo re-packing
