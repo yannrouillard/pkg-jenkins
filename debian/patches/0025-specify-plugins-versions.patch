@@ -14,7 +14,7 @@ Forwarded: not-needed
              <dependency>
 --- a/core/pom.xml
 +++ b/core/pom.xml
-@@ -700,7 +700,7 @@
+@@ -696,7 +696,7 @@
        <plugin>
          <groupId>org.kohsuke.stapler</groupId>
          <artifactId>maven-stapler-plugin</artifactId>

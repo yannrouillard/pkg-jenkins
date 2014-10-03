@@ -141,7 +141,7 @@ Subject: remove-findbugs
                  return classOwnership.ownerOf(clazz);
 --- a/core/src/main/java/jenkins/model/Jenkins.java
 +++ b/core/src/main/java/jenkins/model/Jenkins.java
-@@ -743,10 +743,6 @@
+@@ -744,10 +744,6 @@
       * @param pluginManager
       *      If non-null, use existing plugin manager.  create a new one.
       */
@@ -152,7 +152,7 @@ Subject: remove-findbugs
      protected Jenkins(File root, ServletContext context, PluginManager pluginManager) throws IOException, InterruptedException, ReactorException {
          long start = System.currentTimeMillis();
          
-@@ -2680,7 +2676,6 @@
+@@ -2681,7 +2677,6 @@
      /**
       * Called to shut down the system.
       */
@@ -160,7 +160,7 @@ Subject: remove-findbugs
      public void cleanUp() {
          for (ItemListener l : ItemListener.all())
              l.onBeforeShutdown();
-@@ -3171,7 +3166,6 @@
+@@ -3172,7 +3167,6 @@
      /**
       * For debugging. Expose URL to perform GC.
       */

@@ -1,6 +1,10 @@
-jenkins (1.565.2-4) UNRELEASED; urgency=medium
+jenkins (1.565.3-1) UNRELEASED; urgency=medium
 
   * Team upload.
+  * New upstream release
+    - Fixes multiple security vulnerabilities (Closes: #763899)
+    - Refreshed the patches
+    - Removed 0018-fileupload-compat.patch (applied upstream)
   * Fixed debian/orig-tar.sh
 
  -- Emmanuel Bourg <ebourg@apache.org>  Fri, 03 Oct 2014 17:12:41 +0200
