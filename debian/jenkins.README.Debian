@@ -2,9 +2,10 @@ Jenkins for Debian
 ------------------
 
 This package differs in the following ways from the upstream distribution of
-jenkins:
+Jenkins:
  
- * Plugins are not bundled by default:
+ * A subset of the default plugins are bundled, most notably the following
+   plugins aren't installed by default:
     - SSH Slaves Plugin
     - Maven Integration Plugin
     - Subversion Plugin
@@ -13,9 +14,9 @@ jenkins:
    with Jenkins.
 
  * Some plugins assume the default plugins are always installed and do not
-   declare an explicit dependency. For example the Git plugin requires
-   matrix-project-plugin to be installed manually.
-   (see https://issues.jenkins-ci.org/browse/JENKINS-24864)
+   declare an explicit dependency. If you encounter a ClassNotFoundException
+   you may have to find the relevant dependencies in the plugins management
+   panel and install them.
 
  * Native OS integration features that are disabled:
     - Solaris: support for libzfs and libembeddedsu4j.

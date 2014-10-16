@@ -59,8 +59,6 @@ org.jruby.ext.posix s/jna-posix/jnr-posix/ * s/.*/debian/ * *
 s/com.github.jnr/org.jruby.ext.posix/ jnr-posix * s/.*/debian/ * *
 # Update to servlet3.1
 javax.servlet s/servlet-api/javax.servlet-api/ * s/.*/3.1/ * *
-# Updates for 1.424.6
-s/org.kohsuke/owasp-java-html-sanitizer/ s/owasp-html-sanitizer/owasp-java-html-sanitizer/ * s/.*/debian/ * *
 # Updates for 1.447.1
 s/org.jvnet.hudson/org.jenkins-ci/ commons-jexl * s/.*/debian/ * *
 s/org.jvnet.hudson/org.jenkins-ci/ annotation-indexer * s/.*/debian/ * *

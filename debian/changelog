@@ -1,3 +1,15 @@
+jenkins (1.565.3-2) UNRELEASED; urgency=medium
+
+  * Team upload.
+  * Install core plugins:
+    - matrix-auth 1.2 and matrix-project 1.3 (Closes: #764711)
+    - mailer 1.11 (Closes: #764960)
+    - ant 1.2
+    - antisamy-markup-formatter 1.2
+  * Removed the build dependency on libowasp-java-html-sanitizer-java
+
+ -- Emmanuel Bourg <ebourg@apache.org>  Fri, 10 Oct 2014 18:06:20 +0200
+
 jenkins (1.565.3-1) unstable; urgency=high
 
   * Team upload.
