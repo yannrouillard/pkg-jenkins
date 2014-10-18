@@ -7,6 +7,8 @@ jenkins (1.565.3-2) UNRELEASED; urgency=medium
     - ant 1.2
     - antisamy-markup-formatter 1.2
   * Removed the build dependency on libowasp-java-html-sanitizer-java
+  * Depend on libguice-java >= 4.0~beta5 to fix a NoSuchMethodError
+    at runtime with the Maven plugin
 
  -- Emmanuel Bourg <ebourg@apache.org>  Fri, 10 Oct 2014 18:06:20 +0200
 
