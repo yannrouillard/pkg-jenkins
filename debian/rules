@@ -12,10 +12,40 @@ DEB_MAVEN_BUILD_TARGET := install
 DEB_MAVEN_ARGS := -e -Dbuild.version="$(DEB_UPSTREAM_VERSION)"
 DEB_MAVEN_INSTALL_TO_USJ := false
 
+# Fetch the versions of the dependencies bundled in jenkins.war
+ACEGI_VERSION                  := $(shell dpkg-query -f '$${source:Version}' --show libacegi-security-java)
+BOUNCYCASTLE_VERSION           := $(shell dpkg-query -f '$${source:Version}' --show libbcpkix-java)
+FILEUPLOAD_VERSION             := $(shell dpkg-query -f '$${source:Version}' --show libcommons-fileupload-java)
+HTTPCLIENT_VERSION             := $(shell dpkg-query -f '$${source:Version}' --show libcommons-httpclient-java)
+SPRING_VERSION                 := $(shell dpkg-query -f '$${source:Version}' --show libspring-core-java)
+STAPLER_VERSION                := $(shell dpkg-query -f '$${source:Version}' --show libstapler-java)
+GUICE_VERSION                  := $(shell dpkg-query -f '$${source:Version}' --show libguice-java)
+WINSTONE_VERSION               := $(shell dpkg-query -f '$${source:Version}' --show libjenkins-winstone-java)
+ANT_PLUGIN_VERSION             := $(shell dpkg-query -f '$${source:Version}' --show jenkins-ant-plugin)
+ANTISAMY_PLUGIN_VERSION        := $(shell dpkg-query -f '$${source:Version}' --show jenkins-antisamy-markup-formatter-plugin)
+MAILER_PLUGIN_VERSION          := $(shell dpkg-query -f '$${source:Version}' --show jenkins-mailer-plugin)
+MATRIX_AUTH_PLUGIN_VERSION     := $(shell dpkg-query -f '$${source:Version}' --show jenkins-matrix-auth-plugin)
+MATRIX_PROJECT_PLUGIN_VERSION  := $(shell dpkg-query -f '$${source:Version}' --show jenkins-matrix-project-plugin)
+
+DEB_DH_GENCONTROL_ARGS := -- -Vacegi:Version=${ACEGI_VERSION} \
+                             -Vbouncycastle:Version=${BOUNCYCASTLE_VERSION} \
+                             -Vfileupload:Version=${FILEUPLOAD_VERSION} \
+                             -Vguice:Version=${GUICE_VERSION} \
+                             -Vhttpclient:Version=${HTTPCLIENT_VERSION} \
+                             -Vspring:Version=${SPRING_VERSION} \
+                             -Vstapler:Version=${STAPLER_VERSION} \
+                             -Vwinstone:Version=${WINSTONE_VERSION}
+# Jenkins plugins
+DEB_DH_GENCONTROL_ARGS +=    -Vant-plugin:Version=${ANT_PLUGIN_VERSION} \
+                             -Vantisamy-plugin:Version=${ANTISAMY_PLUGIN_VERSION} \
+                             -Vmailer-plugin:Version=${MAILER_PLUGIN_VERSION} \
+                             -Vmatrix-auth-plugin:Version=${MATRIX_AUTH_PLUGIN_VERSION} \
+                             -Vmatrix-project-plugin:Version=${MATRIX_PROJECT_PLUGIN_VERSION}
+
 # Debian package version use daemon to control jenkins processes
 # Ubuntu does not need this - managed by upstart
 ifeq ($(shell dpkg-vendor --derives-from ubuntu || echo debian ),debian)
-DEB_DH_GENCONTROL_ARGS:= -- -Tdebian/debian_control_vars
+DEB_DH_GENCONTROL_ARGS += -Tdebian/debian_control_vars
 endif
 
 # Generate POM file for plugins

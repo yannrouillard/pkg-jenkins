@@ -174,6 +174,20 @@ Depends:
  libjnr-posix-java,
  ${misc:Depends}
 Recommends: jenkins-cli
+Built-Using:
+ acegi-security (= ${acegi:Version}),
+ bouncycastle (= ${bouncycastle:Version}),
+ commons-httpclient (= ${httpclient:Version}),
+ guice (= ${guice:Version}),
+ jenkins-ant-plugin (= ${ant-plugin:Version}),
+ jenkins-antisamy-markup-formatter-plugin (= ${antisamy-plugin:Version}),
+ jenkins-mailer-plugin (= ${mailer-plugin:Version}),
+ jenkins-matrix-auth-plugin (= ${matrix-auth-plugin:Version}),
+ jenkins-matrix-project-plugin (= ${matrix-project-plugin:Version}),
+ jenkins-winstone (= ${winstone:Version}),
+ libcommons-fileupload-java (= ${fileupload:Version}),
+ libspring-java (= ${spring:Version}),
+ stapler (= ${stapler:Version})
 Description: Jenkins common Java components and web application
  Jenkins monitors executions of repeated jobs, such as building a software
  project or jobs run by cron. Among those things, current Jenkins focuses
