@@ -1,7 +1,9 @@
-jenkins (1.565.3-2.1) unstable; urgency=medium
+jenkins (1.565.3-3) unstable; urgency=medium
 
   * Team upload.
   * Added dependency on libcglib3-java to fix NoClassDefFoundError at runtime.
+  * Removed Context Resource symlinks directives as they don't work anymore in
+    Tomcat 8 and are not required for Jenkins (Closes: #769594)
 
  -- Yann Rouillard <yann@pleiades.fr.eu.org>  Sat, 15 Nov 2014 12:14:33 +0000
 
