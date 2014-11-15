@@ -1,3 +1,10 @@
+jenkins (1.565.3-2.1) unstable; urgency=medium
+
+  * Team upload.
+  * Added dependency on libcglib3-java to fix NoClassDefFoundError at runtime.
+
+ -- Yann Rouillard <yann@pleiades.fr.eu.org>  Sat, 15 Nov 2014 12:14:33 +0000
+
 jenkins (1.565.3-2) unstable; urgency=medium
 
   * Team upload.

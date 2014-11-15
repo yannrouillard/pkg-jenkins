@@ -40,6 +40,7 @@ Build-Depends-Indep:
  libasm4-java,
  libbridge-method-injector-java (>= 1.9),
  libbytecode-compatibility-transformer-java,
+ libcglib3-java,
  libclassworlds-java,
  libcommons-beanutils-java,
  libcommons-codec-java,

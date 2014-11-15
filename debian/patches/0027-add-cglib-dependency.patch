@@ -1,0 +1,23 @@
+Description: Add dependency on cglib as we don't use guice-noaop library,
+ and the one we use depends on cglib.
+ Note that the library cglib is required at runtime and not only at the
+ compilation step.
+Author: Yann Rouillard <yann@pleiades.fr.org>, François-Xavier Vende <francois.vende@gmail.com>
+Forwarded: not-needed
+Index: jenkins-1.565.3/core/pom.xml
+===================================================================
+--- jenkins-1.565.3.orig/core/pom.xml
++++ jenkins-1.565.3/core/pom.xml
+@@ -100,6 +100,12 @@ THE SOFTWARE.
+       <classifier>no_aop</classifier>
+     </dependency>
+
++    <dependency>
++      <groupId>cglib</groupId>
++      <artifactId>cglib</artifactId>
++      <version>3.x</version>
++    </dependency>
++
+     <dependency> <!-- for compatibility only; all new code should use JNR -->
+       <groupId>org.jruby.ext.posix</groupId>
+       <artifactId>jna-posix</artifactId>
