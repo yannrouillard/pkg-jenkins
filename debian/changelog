@@ -6,6 +6,8 @@ jenkins (1.565.3-3) unstable; urgency=medium
     Tomcat 8 and are not required for Jenkins (Closes: #769594)
   * Removed useless properties Debug and AllowLinking in Context definition
     to suppress warnings in Tomcat logs.
+  * Backported upstream patch to ensure HttpOnly cookie flag is properly set
+    and avoid warning messages about Security cookie flag (Closes: #769682)
 
  -- Yann Rouillard <yann@pleiades.fr.eu.org>  Sat, 15 Nov 2014 12:14:33 +0000
 

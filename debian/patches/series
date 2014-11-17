@@ -22,3 +22,4 @@ build/0019-io-compat.pach.patch
 0025-specify-plugins-versions.patch
 0026-add-jsr305-dependency.patch
 0027-add-cglib-dependency.patch
+0028-properly-set-httponly-flag-for-tomcat.patch
